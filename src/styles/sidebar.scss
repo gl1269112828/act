@@ -1,7 +1,7 @@
 
 #app {
     .el-aside{
-        width:  $menuWidth !important;
+        width:  $menuWidth;
     }
     .sidebar {
         background-color: $menuBg;
@@ -49,12 +49,10 @@
             border-right: 2px solid $childTextHover;
         }
 
-
-        //下箭头字体颜色
-        // .el-submenu__title i {
-        //     color: $menuText;
-        // }
-
+        .el-menu-vertical-demo:not(.el-menu--collapse) {
+            width: $menuWidth;
+            height: 100%;
+          }
         .el-menu-item-group__title{
             padding: 0;
         }

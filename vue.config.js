@@ -23,7 +23,7 @@ module.exports = {
         },
         proxy: {
             '/': {
-                target: 'https://npa.lishu-fd.com/',
+                target: 'http://chebb.top:8099',
                 changOrigin: true,//允许跨域
                 ws: false,
                 pathRewrite: {
