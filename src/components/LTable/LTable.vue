@@ -1,21 +1,8 @@
 <template>
   <div class="l-table">
-    <el-table
-      v-loading="isLoading"
-      :data="tableData"
-      size="medium"
-      :row-key="rowKey"
-      @selection-change="mirChange"
-      :row-style="rowStyle"
-    >
+    <el-table v-loading="isLoading" :data="tableData" size="medium" :row-key="rowKey" @selection-change="mirChange" :row-style="rowStyle">
       <template v-for="(item, i) in tableHeader">
-        <el-table-column
-          :key="i"
-          type="selection"
-          :width="item.width || ''"
-          align="center"
-          v-if="item.label == 'selection'"
-        ></el-table-column>
+        <el-table-column :key="i" type="selection" :width="item.width || ''" align="center" v-if="item.label == 'selection'"></el-table-column>
         <el-table-column
           :key="i"
           type="index"
@@ -35,39 +22,27 @@
           :min-width="item.minWidth || ''"
           :fixed="item.fixed || false"
           :sortable="item.sortable || false"
-          :show-overflow-tooltip="item.render? false : true"
+          :show-overflow-tooltip="item.render ? false : true"
           v-else
         >
           <template slot-scope="scope">
             <slot :name="item.prop" :data="scope.row" v-if="item.render"></slot>
-            <el-tooltip
-              class="item"
-              effect="dark"
-              :content="scope.row[item.prop]"
-              placement="top"
-              v-else-if="item.tooltip"
-            >
-              <div class="toltip-content" :style="{width:item.width+'px'}">{{scope.row[item.prop]}}</div>
+            <el-tooltip class="item" effect="dark" :content="scope.row[item.prop]" placement="top" v-else-if="item.tooltip">
+              <div class="toltip-content" :style="{ width: item.width + 'px' }">{{ scope.row[item.prop] }}</div>
             </el-tooltip>
             <span v-else>{{ scope.row[item.prop] }}</span>
           </template>
         </el-table-column>
       </template>
     </el-table>
-    <Pagination
-      :total="total"
-      :page.sync="pageData.pageIndex"
-      :limit.sync="pageData.pageMax"
-      @pagination="childMethod"
-      v-if="!isPagination"
-    />
+    <Pagination :total="total" :page.sync="pageData.pageIndex" :limit.sync="pageData.pageMax" @pagination="handlePagination" v-if="!isPagination" />
   </div>
 </template>
 
 <script>
-import Pagination from "@/components/Pagination";
+import Pagination from '@/components/Pagination';
 export default {
-  name: "l-table",
+  name: 'l-table',
   components: {
     Pagination
   },
@@ -114,7 +89,7 @@ export default {
     },
     rowKey: {
       type: String,
-      default: "$index"
+      default: '$index'
     },
     tooltip: {
       type: Boolean,
@@ -128,18 +103,16 @@ export default {
     //计算序号
     indexMethod(index) {
       if (!this.isPagination) {
-        return (
-          index + 1 + (this.pageData.pageIndex - 1) * this.pageData.pageMax
-        );
+        return index + 1 + (this.pageData.pageIndex - 1) * this.pageData.pageMax;
       } else {
         return index + 1;
       }
     },
-    childMethod() {
+    handlePagination() {
       this.getTableList();
     },
     mirChange(selection) {
-      this.$emit("update:select_table_data", selection);
+      this.$emit('update:select_table_data', selection);
     }
   }
 };
