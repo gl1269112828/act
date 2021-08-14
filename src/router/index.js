@@ -1,9 +1,9 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
-import Layout from '@/layout/index'
+import Layout from '@/layout/index';
 
-Vue.use(Router)
+Vue.use(Router);
 
 const routes = [
   {
@@ -51,6 +51,12 @@ const routes = [
         name: 'operate',
         component: () => import('@/views/system/operate/index'),
         meta: { title: '按钮管理' }
+      },
+      {
+        path: '/pageChild',
+        name: 'pageChild',
+        component: () => import('@/components/configPage/pageChild/index'),
+        meta: { title: '公共配置模板页' }
       }
     ]
   },
@@ -71,26 +77,26 @@ const routes = [
     component: Layout,
     children: [
       {
-        path: '/automatedConfiguration',
+        path: '/pageChild',
         name: 'automatedConfiguration',
-        component: () => import('@/views/configManage/automatedConfiguration/index'),
+        component: () => import('@/components/configPage/pageChild/index'),
         meta: { title: '公共配置模板页' }
       }
     ]
   }
-]
+];
 
 const createRouter = () =>
   new Router({
     mode: 'hash', // require service support
     scrollBehavior: () => ({ y: 0 }),
     routes: routes
-  })
+  });
 
-const router = createRouter()
+const router = createRouter();
 export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  const newRouter = createRouter();
+  router.matcher = newRouter.matcher; // reset router
 }
 
-export default router
+export default router;

@@ -20,7 +20,7 @@
           </template>
           <el-menu-item-group>
             <el-menu-item :index="itemJ.path" v-for="(itemJ,j) in item.children" :key="j">
-              <i  :class="itemJ.icon"></i>
+              <i :class="itemJ.icon"></i>
               {{itemJ.title}}
             </el-menu-item>
           </el-menu-item-group>
@@ -65,6 +65,8 @@ export default {
       return siderbarStyObj
     },
     handleSelect(index, indexPath) {
+      console.log(index)
+      return
       this.$router.push({ path: index })
     },
   }
@@ -72,7 +74,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/sidebarConfig.scss";
+@import '@/styles/sidebarConfig.scss';
 .sidebar-container {
   .sidebar-logo-container {
     width: $menuWidth;

@@ -1,28 +1,50 @@
 <template>
   <div class="role-container">
     <div class="operate-container">
-      <el-form :inline="true" :model="pageData" class="demo-form-inline" size="small">
+      <el-form :inline="true" :model="pageData" class="demo-form-inline" size="mini">
         <el-form-item label="角色名称:">
           <el-input v-model="pageData.dynamicFilters[0].value" placeholder="请输入角色名称" clearable></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="small" @click="handleSearch()" v-hasBtn="1003">查询</el-button>
-          <el-button type="primary" size="small" @click="handleAdd()" v-hasBtn="1001">添加</el-button>
+          <el-button type="primary" size="mini" @click="handleSearch()" v-hasBtn="1003">查询</el-button>
+          <el-button type="primary" size="mini" @click="handleAdd()" v-hasBtn="1001">添加</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <LTable :isLoading="isLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :pageData="pageData" :getTableList="getTableList">
+    <LTable
+      :isLoading="isLoading"
+      :tableHeader="tableHeader"
+      :tableData="tableData"
+      :total="total"
+      :pageData="pageData"
+      :getTableList="getTableList"
+    >
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
-          <el-button type="text" size="small" @click="handlePermission(scope.data)" v-hasBtn="1005">配置权限</el-button>
-          <el-button type="text" size="small" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
-          <el-button type="text" size="small" @click="handleDelete(scope.data)" :disabled="scope.data.id === 1 ? true : false" v-hasBtn="1004">删除</el-button>
+          <el-button
+            type="text"
+            size="mini"
+            @click="handlePermission(scope.data)"
+            v-hasBtn="1005"
+          >配置权限</el-button>
+          <el-button type="text" size="mini" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
+          <el-button
+            type="text"
+            size="mini"
+            @click="handleDelete(scope.data)"
+            :disabled="scope.data.id === 1 ? true : false"
+            v-hasBtn="1004"
+          >删除</el-button>
         </div>
       </template>
     </LTable>
     <AddPopups :showAdd="isAdd" v-on:hidePopups="isAdd = false" />
     <EditPopups :showEdit="isEdit" v-on:hidePopups="isEdit = false" :itemObj="itemObj" />
-    <PermissionPopups :showPermission="isPermission" v-on:hidePopups="isPermission = false" :itemObj="itemObj" />
+    <PermissionPopups
+      :showPermission="isPermission"
+      v-on:hidePopups="isPermission = false"
+      :itemObj="itemObj"
+    />
   </div>
 </template>
 
@@ -120,7 +142,7 @@ export default {
             this.getTableList();
           });
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }
 };
