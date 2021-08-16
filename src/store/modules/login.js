@@ -2,9 +2,7 @@ import { login, getRoleMenu, getOperateAuthority } from '@/api/login';
 import { resetRouter } from '@/router';
 
 const getDefaultState = () => {
-  return {
-    roleMenus: []
-  };
+  return {};
 };
 
 const state = getDefaultState();
@@ -12,14 +10,10 @@ const state = getDefaultState();
 const mutations = {
   RESET_STATE: state => {
     Object.assign(state, getDefaultState());
-  },
-  SET_ROLE_MENUES: (state, roleMenus) => {
-    state.roleMenus = roleMenus;
   }
 };
 
 const actions = {
-  // user login
   login({ commit }, userInfo) {
     const { userName, password } = userInfo;
     return new Promise((resolve, reject) => {
@@ -36,7 +30,6 @@ const actions = {
     });
   },
 
-  //获取菜单列表
   getMenu({ dispatch, commit }) {
     return new Promise((resolve, reject) => {
       const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
@@ -47,7 +40,6 @@ const actions = {
     });
   },
 
-  //获取按钮权限
   buttonAuthority({ dispatch, commit }, menuId) {
     return new Promise((resolve, reject) => {
       const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
@@ -58,7 +50,6 @@ const actions = {
     });
   },
 
-  // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       sessionStorage.clear();
