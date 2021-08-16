@@ -123,7 +123,7 @@ export default {
         this.boxLoading = true;
         const operateResponse = await getOperate({ pageIndex: 1, pageMax: 9999, dynamicFilters: [] });
         this.menuCheckOptions = operateResponse.data.datas;
-        const menuResponse = await getMenus({ pageIndex: 1, pageMax: 9999, dynamicFilters: [] });
+        const menuResponse = await getMenus({ pageIndex: 1, pageMax: 9999, dynamicFilters: [{ field: 'parentId', operate: 'Equal', value: "99999" }] });
         this.parentMenuDatas = menuResponse.data.datas;
         this.boxLoading = false;
       } catch (error) {

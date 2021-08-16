@@ -1,38 +1,22 @@
 <template>
   <div class="add">
     <el-dialog
-      title="添加页面"
+      title="创建页面"
       :visible="showAdd"
       :close-on-click-modal="false"
-      width="1200px"
+      width="800px"
       top="10vh"
       @close="hidePopups()"
     >
       <el-form ref="form" :model="form" :rules="rules" label-width="140px" size="small">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="页面名称:" prop="name">
-              <el-input v-model="form.name" placeholder="请输入页面名称" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="页面标识:" prop="key">
-              <el-input v-model="form.key" placeholder="请输入页面标识" clearable />
-            </el-form-item>
-          </el-col>
-          <!-- <el-col :span="12">
-            <el-form-item label="配置类型:" prop="roleId">
-              <el-select v-model="form.roleId" placeholder="-配置类型-" clearable>
-                <el-option
-                  v-for="item in roleList"
-                  :key="item.value"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>-->
-          <el-col :span="12">
+        <el-form-item label="页面名称:" prop="name">
+          <el-input v-model="form.name" placeholder="请输入页面名称" clearable />
+        </el-form-item>
+        <el-form-item label="页面标识:" prop="key">
+          <el-input v-model="form.key" placeholder="请输入页面标识" clearable />
+        </el-form-item>
+
+        <!-- <el-col :span="12">
             <el-form-item label="接口地址:" prop="dataUrl">
               <el-input v-model="form.dataUrl" placeholder="请输入接口地址" clearable />
             </el-form-item>
@@ -77,8 +61,7 @@
             <el-form-item label="操作列宽度:" prop="rowWith">
               <el-input v-model="form.rowWith" placeholder="请输入操作列宽度" clearable />
             </el-form-item>
-          </el-col>
-        </el-row>
+        </el-col>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel()" size="small">取消</el-button>

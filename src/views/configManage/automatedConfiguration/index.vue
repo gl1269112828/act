@@ -1,21 +1,33 @@
 <template>
   <div class="automated-configuration-container">
     <div class="operate-container">
-      <el-form :inline="true" :model="pageData" class="demo-form-inline" size="small">
-        <el-form-item label="用户名称:">
-          <el-input v-model="pageData.dynamicFilters[0].value" placeholder="请输入用户名称" clearable></el-input>
+      <el-form class="demo-form-inline" :inline="true" :model="pageData" size="mini">
+        <el-form-item label="页面名称:">
+          <el-input v-model="pageData.dynamicFilters[0].value" placeholder="请输入页面名称" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="页面标识:">
+          <el-input v-model="pageData.dynamicFilters[1].value" placeholder="请输入页面标识" clearable></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="small" @click="handleSearch()" v-hasBtn="1003">查询</el-button>
-          <el-button type="primary" size="small" @click="handleAdd()" v-hasBtn="1001">添加</el-button>
+          <el-button type="primary" size="mini" @click="handleSearch()" v-hasBtn="1003">查询</el-button>
+          <el-button type="primary" size="mini" @click="handleAdd()" v-hasBtn="1001">添加</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <LTable :isLoading="isLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :pageData="pageData" :getTableList="getTableList">
+    <LTable
+      :isLoading="isLoading"
+      :tableHeader="tableHeader"
+      :tableData="tableData"
+      :total="total"
+      :pageData="pageData"
+      :getTableList="getTableList"
+    >
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
-          <el-button type="text" size="small" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
-          <el-button type="text" size="small" @click="handleDelete(scope.data)" v-hasBtn="1004">删除</el-button>
+          <el-button type="text" size="mini" @click="handleTableConfig(scope.data)" v-hasBtn="1006">表格配置</el-button>
+          <el-button type="text" size="mini" @click="handleBtnConfig(scope.data)" v-hasBtn="1007">按钮配置</el-button>
+          <el-button type="text" size="mini" @click="handleFieldConfig(scope.data)" v-hasBtn="1008">字段配置</el-button>
+          <el-button type="text" size="mini" @click="handleDelete(scope.data)" v-hasBtn="1004">删除</el-button>
         </div>
       </template>
     </LTable>
@@ -39,23 +51,26 @@ export default {
       isLoading: false, //加载表格
       tableHeader: [
         { label: '序号', width: '60' },
-        { label: '页面标识', prop: 'userName', width: '150' },
-        { label: '页面名称', prop: 'roleName', width: '150' },
-        { label: '配置类型', prop: 'createTime', width: '150' },
-        { label: '数据提取地址', prop: 'createTime', width: '300' },
-        { label: '默认提取数据条件', prop: 'createTime', width: '150' },
-        { label: '是否具备多选', prop: 'createTime', width: '150' },
-        { label: '是否具备操作列', prop: 'createTime', width: '150' },
-        { label: '操作列宽度', prop: 'createTime', width: '150' },
-        { label: '创建时间', prop: 'createTime' },
-        { label: '操作', prop: 'operate', width: '180', render: true, fixed: 'right' }
+        { label: '页面名称', prop: 'name' },
+        { label: '页面标识', prop: 'key' },
+        // { label: '配置类型', prop: 'createTime', width: '150' },
+        // { label: '数据提取地址', prop: 'createTime', width: '300' },
+        // { label: '默认提取数据条件', prop: 'createTime', width: '150' },
+        // { label: '是否具备多选', prop: 'createTime', width: '150' },
+        // { label: '是否具备操作列', prop: 'createTime', width: '150' },
+        // { label: '操作列宽度', prop: 'createTime', width: '150' },
+        // { label: '创建时间', prop: 'createTime' },
+        { label: '操作', prop: 'operate', width: '260', render: true }
       ],
       tableData: [], //表格数据
       total: 0, //表格总数
       pageData: {
         pageIndex: 1,
         pageMax: 10,
-        dynamicFilters: [{ field: 'name', operate: 'Like', value: '' }]
+        dynamicFilters: [
+          { field: 'name', operate: 'Like', value: '' },
+          { field: 'key', operate: 'Like', value: '' }
+        ]
       }, //分页查询数据
       isAdd: false,
       isEdit: false,
@@ -71,10 +86,10 @@ export default {
       this.isLoading = true;
       try {
         let query = JSON.parse(JSON.stringify(this.pageData));
-        if (!query.dynamicFilters[0].value) {
+        if (!query.dynamicFilters[0].value && !query.dynamicFilters[0].value) {
           query.dynamicFilters = [];
         }
-        const { data } = await getAutomatedConfiguration(this.pageData);
+        const { data } = await getAutomatedConfiguration(query);
         this.total = data.totalCount;
         this.tableData = data.datas || [];
         this.isLoading = false;
@@ -95,6 +110,10 @@ export default {
       this.itemObj = data;
       this.isEdit = true;
     },
+    handleTableConfig(){},
+    handleBtnConfig(){},
+    handleFieldConfig(){},
+
     //删除
     handleDelete(data) {
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
@@ -111,7 +130,7 @@ export default {
             this.getTableList();
           });
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }
 };

@@ -1,6 +1,6 @@
 <template>
-  <el-form class="search-module-container" ref="elForm" size="small" :model="form" :rules="rules">
-    <el-form-item label="活动名称" prop="name">
+  <el-form class="search-module-container" :inline="true"  ref="elForm" size="small" :model="form" :rules="rules">
+    <el-form-item label="活动名称">
       <el-input v-model="form.name"></el-input>
     </el-form-item>
     <!-- <el-form-item>
@@ -23,7 +23,7 @@ export default {
       form: {
         name: ''
       },
-      rules: []
+      rules: {}
     };
   },
   methods: {}

@@ -1,9 +1,9 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
-import Layout from '@/layout/index'
+import Layout from '@/layout/index';
 
-Vue.use(Router)
+Vue.use(Router);
 
 const routes = [
   {
@@ -11,6 +11,7 @@ const routes = [
     name: 'login',
     component: () => import('@/views/login/index')
   },
+<<<<<<< HEAD
   // {
   //   path: '/home',
   //   component: Layout,
@@ -79,18 +80,94 @@ const routes = [
   //   ]
   // }
 ]
+=======
+  {
+    path: '/home',
+    component: Layout,
+    children: [
+      {
+        path: '/',
+        name: 'home',
+        component: () => import('@/views/home/index'),
+        meta: { title: '首页' }
+      }
+    ]
+  },
+  {
+    path: '/system',
+    component: Layout,
+    meta: { title: '基础数据管理' },
+    children: [
+      {
+        path: '/sysUser',
+        name: 'sysUser',
+        component: () => import('@/views/system/sysUser/index'),
+        meta: { title: '系统用户' }
+      },
+      {
+        path: '/role',
+        name: 'role',
+        component: () => import('@/views/system/role/index'),
+        meta: { title: '角色管理' }
+      },
+      {
+        path: '/menu',
+        name: 'menus',
+        component: () => import('@/views/system/menu/index'),
+        meta: { title: '菜单管理' }
+      },
+      {
+        path: '/operate',
+        name: 'operate',
+        component: () => import('@/views/system/operate/index'),
+        meta: { title: '按钮管理' }
+      },
+      {
+        path: '/pageChild',
+        name: 'pageChild',
+        component: () => import('@/components/configPage/pageChild/index'),
+        meta: { title: '公共配置模板页' }
+      }
+    ]
+  },
+  {
+    path: '/configManage',
+    component: Layout,
+    children: [
+      {
+        path: '/automatedConfiguration',
+        name: 'automatedConfiguration',
+        component: () => import('@/views/configManage/automatedConfiguration/index'),
+        meta: { title: '配置页面' }
+      }
+    ]
+  },
+  {
+    path: '/configPage',
+    component: Layout,
+    children: [
+      {
+        path: '/pageChild',
+        name: 'automatedConfiguration',
+        component: () => import('@/components/configPage/pageChild/index'),
+        meta: { title: '公共配置模板页' }
+      }
+    ]
+  }
+];
+>>>>>>> c39bab0bca2587fc3f16243d9318c7efa071dad4
 
 const createRouter = () =>
   new Router({
     mode: 'hash', // require service support
     scrollBehavior: () => ({ y: 0 }),
     routes: routes
-  })
+  });
 
-const router = createRouter()
+const router = createRouter();
 export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  const newRouter = createRouter();
+  router.matcher = newRouter.matcher; // reset router
 }
 
-export default router
+export default router;
