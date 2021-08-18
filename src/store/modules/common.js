@@ -32,62 +32,62 @@ const actions = {
       resolve(parm);
     });
   },
+  //构建路由
   constructRouter({ dispatch, commit }) {
     return new Promise(async (resolve, reject) => {
-      let roleMenus = await dispatch('login/getMenu', null, { root: true });
-      const dynamicRouter = roleMenus.map(item => {
+      const menus = await this.dispatch('login/getMenu');
+      // console.log(JSON.parse(JSON.stringify(menus)));
+      const recursionFn = (gObj, parentPath, array) => {
+        const brr = array.forEach((itemJ, index) => {
+          const pcPath = `${parentPath}/${itemJ.resource_dir_path}`;
+          let obj = new Object();
+          obj['path'] = '/' + itemJ.resource_dir_path;
+          obj['children'] = new Array();
+          obj['meta'] = new Object();
+          obj.meta['title'] = itemJ.perm_name;
+          obj.meta['icon'] = itemJ.resource_icon;
+          obj.meta['expansioneMenu'] = [`/${parentPath}`];
+          gObj.children[index] = obj;
+          if (itemJ.child_perms && itemJ.child_perms.length) {
+            obj['component'] = {
+              render(c) {
+                return c('router-view');
+              }
+            };
+            recursionFn(obj, pcPath, itemJ.child_perms);
+          } else {
+            obj['component'] = resolve => require([`@/views/${pcPath}/index.vue`], resolve);
+            return obj;
+          }
+        });
+        return brr;
+      };
+
+      const routers = menus.map(item => {
         let pObj = new Object();
-        pObj['path'] = item.path;
+        pObj['path'] = `/${item.resource_dir_path}`;
         pObj['component'] = Layout;
         pObj['children'] = new Array();
-        if (item.children.length) {
+        if (item.child_perms && item.child_perms.length) {
           pObj['meta'] = new Object();
-          pObj.meta['title'] = item.title;
-          pObj.meta['id'] = item.id;
-          pObj.meta['icon'] = item.icon;
-          item.children.forEach((itemJ, index) => {
-            let cObj = new Object();
-            cObj['path'] = itemJ.path;
-            cObj['component'] = resolve => require([`@/views/${item.resource_dir_path}/index.vue`], resolve);
-            cObj['meta'] = new Object();
-            cObj.meta['title'] = itemJ.title;
-            cObj.meta['id'] = itemJ.id;
-            cObj.meta['icon'] = itemJ.icon;
-            pObj.children[index] = cObj;
-          });
+          pObj.meta['title'] = item.perm_name;
+          pObj.meta['icon'] = item.resource_icon;
+          recursionFn(pObj, item.resource_dir_path, item.child_perms);
         } else {
           let cObj = new Object();
           cObj['path'] = '/';
-          cObj['component'] = resolve => require([`@/views${item.path}/index.vue`], resolve);
+          cObj['component'] = resolve => require([`@/views${item.resource_dir_path}/index.vue`], resolve);
           cObj['meta'] = new Object();
-          cObj.meta['title'] = item.title;
-          cObj.meta['id'] = item.id;
-          cObj.meta['icon'] = item.icon;
+          cObj.meta['title'] = item.perm_name;
+          cObj.meta['icon'] = item.resource_icon;
+          cObj.meta['expansioneMenu'] = [`/${item.resource_dir_path}`];
           pObj.children[0] = cObj;
         }
         return pObj;
       });
-      commit('SET_DYNANICROUTER', dynamicRouter);
-      resolve(dynamicRouter);
-
-      //   {
-      //     path: '/home',
-      //     component: Layout,
-      //     children: [
-      //       {
-      //         path: '/',
-      //         name: 'home',
-      //         component: () => import('@/views/home/index'),
-      //         meta: { title: '首页' }
-      //       }
-      //     ]
-      //   },
-      //   store.commit('login/SET_ROLE_MENUES', roleMenus);
-      // const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
-      // getRoleMenu({ roleId, roleId }).then(response => {
-      //   const roleMenus = response.data;
-      //   resolve(roleMenus);
-      // });
+      console.log(JSON.parse(JSON.stringify(routers)));
+      commit('SET_DYNANICROUTER', routers);
+      resolve(routers);
     });
   }
 };

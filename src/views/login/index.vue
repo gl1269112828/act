@@ -6,21 +6,10 @@
         <span>1.0</span>
       </div>
       <el-form-item prop="userName">
-        <el-input
-          v-model="form.userName"
-          prefix-icon="el-icon-user"
-          placeholder="请输入账号"
-          @keyup.enter.native.prevent="submitForm()"
-        ></el-input>
+        <el-input v-model="form.userName" prefix-icon="el-icon-user" placeholder="请输入账号" @keyup.enter.native.prevent="submitForm()"></el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input
-          v-model="form.password"
-          prefix-icon="el-icon-lock"
-          placeholder="请输入密码"
-          show-password
-          @keyup.enter.native.prevent="submitForm()"
-        ></el-input>
+        <el-input v-model="form.password" prefix-icon="el-icon-lock" placeholder="请输入密码" show-password @keyup.enter.native.prevent="submitForm()"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button style="width:100%" type="primary" @click="submitForm()" v-loading="loading">登录</el-button>
@@ -32,37 +21,40 @@
 
 <script>
 export default {
-  name: "login",
+  name: 'login',
   data() {
     return {
       loading: false,
       form: {
-        userName: "admin",//账号
-        password: "123qwe"//密码
+        userName: 'admin', //账号
+        password: '123qwe' //密码
       },
       rules: {
         userName: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       }
-    }
+    };
   },
   methods: {
     submitForm() {
-      this.$refs.form.validate((valid) => {
+      this.$refs.form.validate(valid => {
         if (valid) {
           this.loading = true;
-          this.$store.dispatch("login/login", this.form).then(() => {
-            this.$notify.success({ title: '登录成功' });
-            this.$router.push({ name: "home" })
-            this.loading = false;
-          }).catch(() => {
-            this.loading = false;
-          });
+          this.$store
+            .dispatch('login/login', this.form)
+            .then(() => {
+              this.$notify.success({ title: '登录成功' });
+              this.$router.push({ name: 'home' });
+              this.loading = false;
+            })
+            .catch(() => {
+              this.loading = false;
+            });
         }
       });
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
