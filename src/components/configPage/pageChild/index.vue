@@ -25,10 +25,10 @@
 </template>
 
 <script>
-import QueryModule from './components/queryModule';
+// import QueryModule from './components/queryModule';
 export default {
   components: {
-    QueryModule
+    // QueryModule
   },
   data() {
     return {

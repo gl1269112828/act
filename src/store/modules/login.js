@@ -33,6 +33,7 @@ const actions = {
   getMenu({ dispatch, commit }) {
     return new Promise((resolve, reject) => {
       const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
+      dispatch('getButtonAuthority');
       getRoleMenu({ roleId, roleId }).then(response => {
         const roleMenus = response.data;
         resolve(roleMenus);
@@ -40,7 +41,7 @@ const actions = {
     });
   },
 
-  buttonAuthority({ dispatch, commit }, menuId) {
+  getButtonAuthority({ dispatch, commit }, menuId) {
     return new Promise((resolve, reject) => {
       const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
       getOperateAuthority({ roleId: roleId, menuId: menuId }).then(response => {
@@ -52,6 +53,7 @@ const actions = {
 
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
+      this.commit('common/SET_DYNANICROUTER', []);
       sessionStorage.clear();
       commit('RESET_STATE');
       resetRouter();

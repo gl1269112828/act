@@ -44,7 +44,7 @@ export default {
             .dispatch('login/login', this.form)
             .then(() => {
               this.$notify.success({ title: '登录成功' });
-              this.$router.push({ name: 'home' });
+              this.$router.push({ path: '/home' }).catch(() =>{});
               this.loading = false;
             })
             .catch(() => {

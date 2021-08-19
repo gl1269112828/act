@@ -39,24 +39,32 @@ const actions = {
       // console.log(JSON.parse(JSON.stringify(menus)));
       const recursionFn = (gObj, parentPath, array) => {
         const brr = array.forEach((itemJ, index) => {
-          const pcPath = `${parentPath}/${itemJ.resource_dir_path}`;
+          const pcPath = `${parentPath}${itemJ.path}`;
           let obj = new Object();
-          obj['path'] = '/' + itemJ.resource_dir_path;
+          obj['path'] = itemJ.path;
           obj['children'] = new Array();
           obj['meta'] = new Object();
-          obj.meta['title'] = itemJ.perm_name;
-          obj.meta['icon'] = itemJ.resource_icon;
+          obj.meta['title'] = itemJ.title;
+          obj.meta['icon'] = itemJ.icon;
           obj.meta['expansioneMenu'] = [`/${parentPath}`];
           gObj.children[index] = obj;
-          if (itemJ.child_perms && itemJ.child_perms.length) {
+          if (itemJ.children && itemJ.children.length) {
             obj['component'] = {
               render(c) {
                 return c('router-view');
               }
             };
-            recursionFn(obj, pcPath, itemJ.child_perms);
+            recursionFn(obj, pcPath, itemJ.children);
           } else {
-            obj['component'] = resolve => require([`@/views/${pcPath}/index.vue`], resolve);
+            // console.log(parentPath);
+            // console.log(itemJ.path);
+            // console.log(itemJ.path.indexOf('key'));
+            if (itemJ.path.indexOf('key') > -1) {
+              console.log(pcPath);
+              obj['component'] = resolve => require(['@/components/configPage/pageChild/index.vue'], resolve);
+            } else {
+              obj['component'] = resolve => require([`@/views${pcPath}/index.vue`], resolve);
+            }
             return obj;
           }
         });
@@ -65,24 +73,27 @@ const actions = {
 
       const routers = menus.map(item => {
         let pObj = new Object();
-        pObj['path'] = `/${item.resource_dir_path}`;
+        pObj['path'] = item.path;
         pObj['component'] = Layout;
         pObj['children'] = new Array();
-        if (item.child_perms && item.child_perms.length) {
-          pObj['meta'] = new Object();
-          pObj.meta['title'] = item.perm_name;
-          pObj.meta['icon'] = item.resource_icon;
-          recursionFn(pObj, item.resource_dir_path, item.child_perms);
-        } else {
-          let cObj = new Object();
-          cObj['path'] = '/';
-          cObj['component'] = resolve => require([`@/views${item.resource_dir_path}/index.vue`], resolve);
-          cObj['meta'] = new Object();
-          cObj.meta['title'] = item.perm_name;
-          cObj.meta['icon'] = item.resource_icon;
-          cObj.meta['expansioneMenu'] = [`/${item.resource_dir_path}`];
-          pObj.children[0] = cObj;
+        pObj['meta'] = new Object();
+        pObj.meta['title'] = item.title;
+        pObj.meta['icon'] = item.icon;
+        if (item.title !== '首页') {
+          recursionFn(pObj, item.path, item.children);
         }
+
+        // if (item.children && item.children.length) {
+        // } else {
+        //   let cObj = new Object();
+        //   cObj['path'] = '/';
+        //   cObj['component'] = resolve => require([`@/views${item.path}/index.vue`], resolve);
+        //   cObj['meta'] = new Object();
+        //   cObj.meta['title'] = item.title;
+        //   cObj.meta['icon'] = item.icon;
+        //   cObj.meta['expansioneMenu'] = [`/${item.path}`];
+        //   pObj.children[0] = cObj;
+        // }
         return pObj;
       });
       console.log(JSON.parse(JSON.stringify(routers)));

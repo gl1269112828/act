@@ -1,33 +1,23 @@
 <template>
   <div class="sidebar-container">
-    <div
-      class="sidebar-logo-container"
-      :style="{ width: isCollapse ? '64px' : siderbarStyObj.menuWidth  }"
-    >LOGO</div>
-    <el-menu
-      class="sidebar"
-      mode="vertical"
-      :collapse="isCollapse"
-      :collapse-transition="false"
-      :default-active="defaultActive"
-      @select="handleSelect"
-    >
-      <template v-for="(item,i) in menuList">
-        <el-submenu :index="item.path" :key="i" v-if="item.children.length>0">
+    <div class="sidebar-logo-container" :style="{ width: isCollapse ? '64px' : siderbarStyObj.menuWidth }">LOGO</div>
+    <el-menu class="sidebar" mode="vertical" :collapse="isCollapse" :collapse-transition="false" :default-active="defaultActive" @select="handleSelect">
+      <template v-for="(item, i) in menuList">
+        <el-submenu :index="item.path" :key="i" v-if="item.children.length > 0">
           <template slot="title">
-            <i :class="item.icon"></i>
-            <span slot="title">{{item.title}}</span>
+            <i :class="item.meta.icon"></i>
+            <span slot="title">{{ item.meta.title }}</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item :index="itemJ.path" v-for="(itemJ,j) in item.children" :key="j">
-              <i :class="itemJ.icon"></i>
-              {{itemJ.title}}
+            <el-menu-item :index="itemJ.path" v-for="(itemJ, j) in item.children" :key="j">
+              <i :class="itemJ.meta.icon"></i>
+              {{ itemJ.meta.title }}
             </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-menu-item :index="item.path" :key="i" v-else>
-          <i :class="item.icon"></i>
-          <span slot="title">{{item.title}}</span>
+          <i :class="item.meta.icon"></i>
+          <span slot="title">{{ item.meta.title }}</span>
         </el-menu-item>
       </template>
     </el-menu>
@@ -35,18 +25,18 @@
 </template>
 
 <script>
-import siderbarStyObj from "@/styles/sidebarConfig.scss";
-import { mapGetters } from "vuex";
+import siderbarStyObj from '@/styles/sidebarConfig.scss';
+import { mapGetters } from 'vuex';
 export default {
-  name: "sidebar",
+  name: 'sidebar',
   computed: {
-    ...mapGetters(["isCollapse"]),
+    ...mapGetters(['isCollapse'])
   },
   data() {
     return {
-      menuList: this.$store.getters.roleMenus,
-      defaultActive: "",
-    }
+      menuList: this.$store.getters.dynamicRouter,
+      defaultActive: ''
+    };
   },
   created() {
     this.getRouter();
@@ -54,7 +44,7 @@ export default {
   watch: {
     $route() {
       this.getRouter();
-    },
+    }
   },
   methods: {
     getRouter() {
@@ -62,15 +52,18 @@ export default {
       this.defaultActive = route.fullPath;
     },
     siderbarStyObj() {
-      return siderbarStyObj
+      return siderbarStyObj;
     },
     handleSelect(index, indexPath) {
       console.log(index)
       return
-      this.$router.push({ path: index })
-    },
+      const route = this.$route;
+      if (index !== route.path) {
+        this.$router.push({ path: index });
+      }
+    }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
