@@ -55,8 +55,8 @@ export default {
       return siderbarStyObj;
     },
     handleSelect(index, indexPath) {
-      console.log(index)
-      return
+      // console.log(index)
+      // return
       const route = this.$route;
       if (index !== route.path) {
         this.$router.push({ path: index });
