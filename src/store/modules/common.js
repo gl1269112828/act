@@ -36,69 +36,57 @@ const actions = {
   constructRouter({ dispatch, commit }) {
     return new Promise(async (resolve, reject) => {
       const menus = await this.dispatch('login/getMenu');
-      // console.log(JSON.parse(JSON.stringify(menus)));
+      let arr = new Array();
+      let brr = [{ path: '/configPage', component: Layout, children: [] }];
+      let index = 0;
       const recursionFn = (gObj, parentPath, array) => {
-        const brr = array.forEach((itemJ, index) => {
+        let crr = new Array();
+        for (let j = 0; j < array.length; j++) {
+          const itemJ = array[j];
           const pcPath = `${parentPath}${itemJ.path}`;
-          let obj = new Object();
-          obj['path'] = itemJ.path;
-          obj['children'] = new Array();
-          obj['meta'] = new Object();
-          obj.meta['title'] = itemJ.title;
-          obj.meta['icon'] = itemJ.icon;
-          obj.meta['expansioneMenu'] = [`/${parentPath}`];
-          gObj.children[index] = obj;
+          let cObj = new Object();
+          cObj['children'] = new Array();
+          cObj['path'] = itemJ.path;
+          cObj['meta'] = new Object();
+          cObj.meta['title'] = itemJ.title;
+          cObj.meta['icon'] = itemJ.icon;
+          cObj.meta['id'] = itemJ.id;
           if (itemJ.children && itemJ.children.length) {
-            obj['component'] = {
-              render(c) {
-                return c('router-view');
-              }
-            };
-            recursionFn(obj, pcPath, itemJ.children);
+            recursionFn(cObj, pcPath, itemJ.children);
           } else {
-            // console.log(parentPath);
-            // console.log(itemJ.path);
-            // console.log(itemJ.path.indexOf('key'));
-            if (itemJ.path.indexOf('key') > -1) {
-              console.log(pcPath);
-              obj['component'] = resolve => require(['@/components/configPage/pageChild/index.vue'], resolve);
+            if (!!itemJ.key) {
+              cObj.meta['key'] = itemJ.key;
+              cObj.meta['expansioneMenu'] = [`/configPage`];
+              cObj['component'] = resolve => require(['@/components/configPage/pageChild/index.vue'], resolve);
+              brr[0].children[index] = cObj;
+              index++;
             } else {
-              obj['component'] = resolve => require([`@/views${pcPath}/index.vue`], resolve);
+              cObj.meta['key'] = null;
+              cObj['component'] = resolve => require([`@/views${pcPath}/index.vue`], resolve);
+              crr.push(cObj);
             }
-            return obj;
           }
-        });
-        return brr;
+        }
+        return crr;
       };
 
-      const routers = menus.map(item => {
-        let pObj = new Object();
-        pObj['path'] = item.path;
-        pObj['component'] = Layout;
-        pObj['children'] = new Array();
-        pObj['meta'] = new Object();
-        pObj.meta['title'] = item.title;
-        pObj.meta['icon'] = item.icon;
-        if (item.title !== '首页') {
-          recursionFn(pObj, item.path, item.children);
+      for (let i = 0; i < menus.length; i++) {
+        const item = menus[i];
+        if (item.path !== '/home') {
+          let pObj = new Object();
+          pObj['path'] = item.path;
+          pObj['component'] = Layout;
+          pObj['children'] = new Array();
+          pObj['meta'] = new Object();
+          pObj.meta['title'] = item.title;
+          pObj.meta['icon'] = item.icon;
+          pObj.children = recursionFn(pObj, item.path, item.children);
+          arr.push(pObj);
         }
-
-        // if (item.children && item.children.length) {
-        // } else {
-        //   let cObj = new Object();
-        //   cObj['path'] = '/';
-        //   cObj['component'] = resolve => require([`@/views${item.path}/index.vue`], resolve);
-        //   cObj['meta'] = new Object();
-        //   cObj.meta['title'] = item.title;
-        //   cObj.meta['icon'] = item.icon;
-        //   cObj.meta['expansioneMenu'] = [`/${item.path}`];
-        //   pObj.children[0] = cObj;
-        // }
-        return pObj;
-      });
-      console.log(JSON.parse(JSON.stringify(routers)));
-      commit('SET_DYNANICROUTER', routers);
-      resolve(routers);
+      }
+      console.log(JSON.parse(JSON.stringify([...arr, ...brr])));
+      commit('SET_DYNANICROUTER', [...arr, ...brr]);
+      resolve([...arr, ...brr]);
     });
   }
 };

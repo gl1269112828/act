@@ -1,6 +1,7 @@
 <template>
   <div class="config-page-container">
-    <QueryModule class="config-page-header" :queryData="queryData" />
+    公共页面
+    <!-- <QueryModule class="config-page-header" :queryData="queryData" /> -->
     <LTable
       :isLoading="isLoading"
       :tableHeader="tableHeader"

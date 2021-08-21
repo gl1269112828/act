@@ -2,7 +2,9 @@ import { login, getRoleMenu, getOperateAuthority } from '@/api/login';
 import { resetRouter } from '@/router';
 
 const getDefaultState = () => {
-  return {};
+  return {
+    menus: []
+  };
 };
 
 const state = getDefaultState();
@@ -10,6 +12,9 @@ const state = getDefaultState();
 const mutations = {
   RESET_STATE: state => {
     Object.assign(state, getDefaultState());
+  },
+  SET_MENUS: (state, menus) => {
+    state.menus = menus;
   }
 };
 
@@ -33,9 +38,9 @@ const actions = {
   getMenu({ dispatch, commit }) {
     return new Promise((resolve, reject) => {
       const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
-      dispatch('getButtonAuthority');
       getRoleMenu({ roleId, roleId }).then(response => {
         const roleMenus = response.data;
+        commit('SET_MENUS', roleMenus);
         resolve(roleMenus);
       });
     });
@@ -46,6 +51,7 @@ const actions = {
       const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
       getOperateAuthority({ roleId: roleId, menuId: menuId }).then(response => {
         const { datas } = response.data;
+        sessionStorage.setItem('authoritys', JSON.stringify(datas));
         resolve(datas);
       });
     });
