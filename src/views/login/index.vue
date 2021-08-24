@@ -44,7 +44,7 @@ export default {
             .dispatch('login/login', this.form)
             .then(() => {
               this.$notify.success({ title: '登录成功' });
-              this.$router.push({ path: '/home' }).catch(() =>{});
+              this.$router.push({ path: '/home' }).catch(() => {});
               this.loading = false;
             })
             .catch(() => {
@@ -61,7 +61,7 @@ export default {
 .login-container {
   .login-title {
     padding: 30px 0;
-    font-size: 35px;
+    font-size: 26px;
     color: #666;
     font-weight: bold;
     text-align: center;
@@ -71,9 +71,9 @@ export default {
   }
   .login-form {
     margin: 12% auto 0 auto;
-    width: 30%;
-    min-width: 350px;
-    height: 300px;
+    width: 20%;
+    min-width: 250px;
+    height: 250px;
   }
   .login-explain {
     padding-top: 20px;

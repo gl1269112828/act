@@ -1,67 +1,13 @@
 <template>
   <div class="add">
-    <el-dialog
-      title="创建页面"
-      :visible="showAdd"
-      :close-on-click-modal="false"
-      width="800px"
-      top="10vh"
-      @close="hidePopups()"
-    >
-      <el-form ref="form" :model="form" :rules="rules" label-width="140px" size="small">
+    <el-dialog title="创建页面" :visible="showPageAdd" :close-on-click-modal="false" width="600px" top="10vh" @close="hidePopups()">
+      <el-form ref="form" :model="form" :rules="rules" label-width="90px" size="small">
         <el-form-item label="页面名称:" prop="name">
           <el-input v-model="form.name" placeholder="请输入页面名称" clearable />
         </el-form-item>
         <el-form-item label="页面标识:" prop="key">
           <el-input v-model="form.key" placeholder="请输入页面标识" clearable />
         </el-form-item>
-
-        <!-- <el-col :span="12">
-            <el-form-item label="接口地址:" prop="dataUrl">
-              <el-input v-model="form.dataUrl" placeholder="请输入接口地址" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="默认提取数据条件:" prop="password">
-              <el-select v-model="form.defaultQueryCondition" placeholder="-默认提取数据条件-" clearable>
-                <el-option
-                  v-for="(item,i) in conditionList"
-                  :key="i"
-                  :label="item.name"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="是否具备多选:" prop="isMultipe">
-              <el-select v-model="form.isMultipe" placeholder="-是否具备多选-" clearable>
-                <el-option
-                  v-for="item in roleList"
-                  :key="item.value"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="是否具备操作列:" prop="isRow">
-              <el-select v-model="form.isRow" placeholder="-是否具备操作列-" clearable>
-                <el-option
-                  v-for="item in roleList"
-                  :key="item.value"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="操作列宽度:" prop="rowWith">
-              <el-input v-model="form.rowWith" placeholder="请输入操作列宽度" clearable />
-            </el-form-item>
-        </el-col>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel()" size="small">取消</el-button>
@@ -71,10 +17,10 @@
   </div>
 </template>
 <script>
-import { addOrEditAutomatedConfiguration } from "@/api/configManage";
+import { addOrEditAutomatedConfiguration } from '@/api/configManage';
 export default {
   props: {
-    showAdd: {
+    showPageAdd: {
       type: Boolean,
       default: false
     }
@@ -82,43 +28,29 @@ export default {
   data() {
     return {
       btnLoading: false,
-      conditionList: this.$store.getters.conditionList,
-      roleList: [],
       form: {
         name: undefined,
-        key: undefined,
-        dataUrl: undefined,
-        defaultQueryCondition: [],
-        isMultipe: undefined,
-        isRow: undefined,
-        rowWith: undefined
-
+        key: undefined
       },
       rules: {
-        name: [{ required: true, message: "请输入页面名称", trigger: "blur" }],
-        key: [{ required: true, message: "请输入页面标识", trigger: "blur" }],
-        dataUrl: [{ required: true, message: "请输入接口地址", trigger: "blur" }],
-        defaultQueryCondition: [{ type: "array", required: true, message: "请输入接口地址", trigger: "change" }],
-        isMultipe: [{ required: true, message: "请选择是否具备多选", trigger: "change" }],
-        isRow: [{ required: true, message: "请选择是否具备操作列", trigger: "change" }],
-        rowWith: [{ required: true, message: "请输入操作列宽度", trigger: "blur" }]
+        name: [{ required: true, message: '请输入页面名称', trigger: 'blur' }],
+        key: [{ required: true, message: '请输入页面标识', trigger: 'blur' }]
       }
     };
   },
   watch: {
-    showAdd(val) {
+    showPageAdd(val) {
       if (val) {
         this.getData();
       }
     }
   },
   methods: {
-    async getData() {
-    },
+    async getData() {},
     // 添加
     confirm() {
       let form = this.form;
-      this.$refs["form"].validate(valid => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           this.btnLoading = true;
           addOrEditAutomatedConfiguration(form)
@@ -135,9 +67,9 @@ export default {
       });
     },
     hidePopups() {
-      this.$emit("hidePopups");
+      this.$emit('hidePopups');
       this.$refs.form.resetFields();
-      this.$store.dispatch("common/initObj", this.form);
+      this.$store.dispatch('common/initObj', this.form);
     },
     cancel() {
       this.hidePopups();
@@ -150,6 +82,3 @@ export default {
   display: block;
 }
 </style>
-
-
-

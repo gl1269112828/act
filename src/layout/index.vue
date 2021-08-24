@@ -1,11 +1,12 @@
 <template>
-  <div class="layout-container definition-flex">
+  <section class="definition-flex layout-container">
     <sidebar></sidebar>
-    <div class="layout-r" :style="{ width: dynamicWidth }">
+    <!-- :style="{ width: dynamicWidth }" -->
+    <section class="layout-r">
       <navBar></navBar>
       <appMain></appMain>
-    </div>
-  </div>
+    </section>
+  </section>
 </template>
 
 <script>
@@ -15,12 +16,7 @@ import navBar from './components/navBar';
 import siderbarStyObj from '@/styles/sidebarConfig.scss';
 export default {
   name: 'layout',
-  computed: {
-    dynamicWidth() {
-      const isCollapse = this.$store.getters.isCollapse;
-      return isCollapse ? 'calc(100% - 64px)' : `calc(100% - ${siderbarStyObj.menuWidth})`;
-    }
-  },
+  computed: {},
   components: {
     sidebar,
     navBar,
@@ -41,7 +37,10 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/sidebarConfig.scss';
 .layout-container {
+  flex: auto;
+  box-sizing: border-box;
   .layout-r {
+    width: 100%;
     overflow: hidden;
   }
 }

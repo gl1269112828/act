@@ -19,16 +19,16 @@
             <el-option v-for="(item, i) in levelList" :key="i" :label="item.name" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="父级菜单:" v-if="form.level === 2" prop="parentId">
-          <el-select v-model="form.parentId" placeholder="请选择父级菜单" clearable>
-            <el-option v-for="(item, i) in parentMenuDatas" :key="i" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="菜单按钮:" v-if="form.level === 2">
+        <el-form-item label="菜单按钮:">
           <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
           <el-checkbox-group v-model="operateList" @change="handleCheckedCitiesChange">
             <el-checkbox v-for="(item, i) in menuCheckOptions" :key="i" :label="item.id">{{ item.name }}</el-checkbox>
           </el-checkbox-group>
+        </el-form-item>
+        <el-form-item label="父级菜单:" v-if="form.level === 2" prop="parentId">
+          <el-select v-model="form.parentId" placeholder="请选择父级菜单" clearable>
+            <el-option v-for="(item, i) in parentMenuDatas" :key="i" :label="item.name" :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

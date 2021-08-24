@@ -17,12 +17,15 @@ router.beforeEach(async (to, from, next) => {
     if (isToken) {
       if (!store.getters.dynamicRouter.length) {
         const routers = await store.dispatch('common/constructRouter');
+        // await store.dispatch('login/getButtonAuthority', to.query.id);
         routers.forEach(item => {
           router.addRoute(item);
         });
         router.addRoute({ path: '*', redirect: '/404', hidden: true });
         next({ ...to }); // hack方法 确保addRoutes已完成
+        next();
       } else {
+        // await store.dispatch('login/getButtonAuthority', to.query.id);
         next();
       }
     } else {

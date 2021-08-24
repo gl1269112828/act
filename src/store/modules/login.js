@@ -39,7 +39,25 @@ const actions = {
     return new Promise((resolve, reject) => {
       const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
       getRoleMenu({ roleId, roleId }).then(response => {
-        const roleMenus = response.data;
+        const forFn = array => {
+          array.map(item => {
+            item.path = `${item.path}?id=${item.id}&key=${item.key}`;
+            return item;
+          });
+          return array;
+        };
+        const roleMenus = response.data.map(item => {
+          if (item.title !== '首页') {
+            if (item.children && item.children.length) {
+              forFn(item.children);
+            } else {
+              item.path = `${item.path}?id=${item.id}&key=${item.key}`;
+            }
+          }
+          return item;
+        });
+        console.log(JSON.parse(JSON.stringify(roleMenus)));
+
         commit('SET_MENUS', roleMenus);
         resolve(roleMenus);
       });

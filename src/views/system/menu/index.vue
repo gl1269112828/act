@@ -43,6 +43,7 @@ export default {
         { label: '图标', prop: 'icon' },
         { label: '级别', prop: 'level' },
         { label: '路由', prop: 'url' },
+        { label: 'key', prop: 'key' },
         { label: '创建时间', prop: 'createTime' },
         { label: '操作', prop: 'operate', width: '100', render: true }
       ],

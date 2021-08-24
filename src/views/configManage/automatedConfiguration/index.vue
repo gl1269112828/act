@@ -14,14 +14,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <LTable
-      :isLoading="isLoading"
-      :tableHeader="tableHeader"
-      :tableData="tableData"
-      :total="total"
-      :pageData="pageData"
-      :getTableList="getTableList"
-    >
+    <LTable :isLoading="isLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :pageData="pageData" :getTableList="getTableList">
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
           <el-button type="text" size="mini" @click="handleTableConfig(scope.data)" v-hasBtn="1006">表格配置</el-button>
@@ -31,19 +24,22 @@
         </div>
       </template>
     </LTable>
-    <AddPopups :showAdd="isAdd" v-on:hidePopups="isAdd = false" />
-    <EditPopups :showEdit="isEdit" v-on:hidePopups="isEdit = false" :itemObj="itemObj" />
+    <AddPopups :showPageAdd="isPageAdd" v-on:hidePopups="isPageAdd = false" />
+    <ConfigTablePopups :showConfigTable="isTableConfig" v-on:hidePopups="isTableConfig = false" :itemObj="itemObj" />
+    <EditPopups :showPageEdit="isPageEdit" v-on:hidePopups="isPageEdit = false" :itemObj="itemObj" />
   </div>
 </template>
 
 <script>
 import AddPopups from './components/add';
+import ConfigTablePopups from './components/configTable';
 import EditPopups from './components/edit';
 import { getAutomatedConfiguration } from '@/api/configManage';
 export default {
   name: 'sysUser',
   components: {
     AddPopups,
+    ConfigTablePopups,
     EditPopups
   },
   data() {
@@ -72,8 +68,9 @@ export default {
           { field: 'key', operate: 'Like', value: '' }
         ]
       }, //分页查询数据
-      isAdd: false,
-      isEdit: false,
+      isPageAdd: false,
+      isTableConfig: false,
+      isPageEdit: false,
       itemObj: {}
     };
   },
@@ -101,18 +98,19 @@ export default {
     handleSearch() {
       this.getTableList();
     },
-    //添加
     handleAdd() {
-      this.isAdd = true;
+      this.isPageAdd = true;
     },
-    //编辑
     handleEdit(data) {
       this.itemObj = data;
-      this.isEdit = true;
+      this.isPageEdit = true;
     },
-    handleTableConfig(){},
-    handleBtnConfig(){},
-    handleFieldConfig(){},
+    handleTableConfig(data) {
+      this.itemObj = data;
+      this.isTableConfig = true;
+    },
+    handleBtnConfig() {},
+    handleFieldConfig() {},
 
     //删除
     handleDelete(data) {
@@ -130,7 +128,7 @@ export default {
             this.getTableList();
           });
         })
-        .catch(() => { });
+        .catch(() => {});
     }
   }
 };

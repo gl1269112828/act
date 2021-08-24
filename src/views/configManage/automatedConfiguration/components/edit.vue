@@ -2,7 +2,7 @@
   <div class="edit">
     <el-dialog
       title="编辑页面"
-      :visible="showEdit"
+      :visible="showPageEdit"
       :close-on-click-modal="false"
       width="1200px"
       top="10vh"
@@ -92,7 +92,7 @@
 import { addOrEditUser, getRole } from "@/api/system";
 export default {
   props: {
-    showEdit: {
+    showPageEdit: {
       type: Boolean,
       default: false
     },
@@ -121,7 +121,7 @@ export default {
     };
   },
   watch: {
-    showEdit(val) {
+    showPageEdit(val) {
       if (val) {
         this.getData();
       }

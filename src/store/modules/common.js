@@ -11,6 +11,11 @@ const getDefaultState = () => {
       { name: '大于等于', value: 'GreaterThanOrEqual' },
       { name: '小于', value: 'LessThan' },
       { name: '小于等于', value: 'LessThanOrEqual' }
+    ],
+    configQueryList: [
+      { name: '输入框', value: 'input' },
+      { name: '选择框', value: 'select' },
+      { name: '日期框', value: 'date' }
     ]
   };
 };
@@ -43,25 +48,27 @@ const actions = {
         let crr = new Array();
         for (let j = 0; j < array.length; j++) {
           const itemJ = array[j];
-          const pcPath = `${parentPath}${itemJ.path}`;
+          const purePath = itemJ.path.substring(0, itemJ.path.indexOf('?'));
+          const pcPath = `${parentPath}${purePath}`;
           let cObj = new Object();
-          cObj['children'] = new Array();
-          cObj['path'] = itemJ.path;
+          cObj['path'] = '';
           cObj['meta'] = new Object();
           cObj.meta['title'] = itemJ.title;
           cObj.meta['icon'] = itemJ.icon;
-          cObj.meta['id'] = itemJ.id;
+          cObj['children'] = new Array();
+          // cObj.meta['id'] = itemJ.id;
+          // cObj.meta['key'] = itemJ.key || '';
           if (itemJ.children && itemJ.children.length) {
             recursionFn(cObj, pcPath, itemJ.children);
           } else {
             if (!!itemJ.key) {
-              cObj.meta['key'] = itemJ.key;
-              cObj.meta['expansioneMenu'] = [`/configPage`];
-              cObj['component'] = resolve => require(['@/components/configPage/pageChild/index.vue'], resolve);
+              cObj.path = purePath;
+              cObj['component'] = resolve => require(['@/components/configPage/pages/index.vue'], resolve);
               brr[0].children[index] = cObj;
               index++;
             } else {
-              cObj.meta['key'] = null;
+              cObj.path = purePath;
+              // cObj.meta['key'] = "";
               cObj['component'] = resolve => require([`@/views${pcPath}/index.vue`], resolve);
               crr.push(cObj);
             }
@@ -74,14 +81,25 @@ const actions = {
         const item = menus[i];
         if (item.path !== '/home') {
           let pObj = new Object();
-          pObj['path'] = item.path;
-          pObj['component'] = Layout;
-          pObj['children'] = new Array();
+          const purePath = item.path.indexOf('?') > -1 ? item.path.substring(0, item.path.indexOf('?')) : item.path;
+          pObj['path'] = purePath;
           pObj['meta'] = new Object();
           pObj.meta['title'] = item.title;
           pObj.meta['icon'] = item.icon;
-          pObj.children = recursionFn(pObj, item.path, item.children);
-          arr.push(pObj);
+          pObj['children'] = new Array();
+          // pObj.meta['id'] = item.id;
+          // pObj.meta['key'] = item.key || '';
+          if (!!item.key) {
+            pObj['component'] = resolve => require(['@/components/configPage/pages/index.vue'], resolve);
+            brr[0].children[index] = pObj;
+            index++;
+          } else {
+            pObj['component'] = Layout;
+            pObj.children = recursionFn(pObj, item.path, item.children);
+          }
+          if (item.children && item.children.length) {
+            arr.push(pObj);
+          }
         }
       }
       console.log(JSON.parse(JSON.stringify([...arr, ...brr])));

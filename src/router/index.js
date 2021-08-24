@@ -22,7 +22,7 @@ const routes = [
         meta: { title: '首页' }
       }
     ]
-  }
+  },
   // {
   //   path: '/system',
   //   component: Layout,
@@ -52,12 +52,6 @@ const routes = [
   //       component: () => import('@/views/system/operate/index'),
   //       meta: { title: '按钮管理' }
   //     }
-  //     // {
-  //     //   path: '/pageChild',
-  //     //   name: 'pageChild',
-  //     //   component: () => import('@/components/configPage/pageChild/index'),
-  //     //   meta: { title: '公共配置模板页' }
-  //     // }
   //   ]
   // },
   // {
@@ -71,17 +65,22 @@ const routes = [
   //       meta: { title: '配置页面' }
   //     }
   //   ]
-  // }
+  // },
   // {
   //   path: '/configPage',
   //   component: Layout,
   //   children: [
-  //
-  // {
-  //       path: '/pageChild',
-  //       name: 'automatedConfiguration',
-  //       component: () => import('@/components/configPage/pageChild/index'),
-  //       meta: { title: '公共配置模板页' }
+  //     {
+  //       path: '/pages',
+  //       name: 'pages',
+  //       component: () => import('@/components/configPage/pages/index'),
+  //       meta: { title: '测试配置页' }
+  //     },
+  //     {
+  //       path: '/pages',
+  //       name: 'pages',
+  //       component: () => import('@/components/configPage/pages/index'),
+  //       meta: { title: '数据字典' }
   //     }
   //   ]
   // }
