@@ -1,22 +1,7 @@
 <template>
   <div class="edit">
-    <el-dialog
-      title="编辑权限按钮"
-      :visible="showEdit"
-      :close-on-click-modal="false"
-      width="800px"
-      top="10vh"
-      @close="hidePopups()"
-    >
-      <el-form
-        ref="form"
-        :model="form"
-        :rules="rules"
-        label-width="100px"
-        size="small"
-        v-loading="boxLoading"
-        element-loading-text="拼命加载中"
-      >
+    <el-dialog title="编辑权限按钮" :visible="showEdit" :close-on-click-modal="false" width="800px" top="10vh" @close="hidePopups()">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="small" v-loading="boxLoading" element-loading-text="拼命加载中">
         <el-form-item label="权限名称:" prop="name">
           <el-input v-model="form.name" placeholder="请输入权限名称" clearable />
         </el-form-item>
@@ -32,7 +17,7 @@
   </div>
 </template>
 <script>
-import { addOrEditOperate } from "@/api/system";
+import { addOrEditOperate } from '@/api/system';
 export default {
   props: {
     showEdit: {
@@ -54,7 +39,7 @@ export default {
         remark: undefined //备注
       },
       rules: {
-        name: [{ required: true, message: "请输入权限名称", trigger: "blur" }] //权限名称
+        name: [{ required: true, message: '请输入权限名称', trigger: 'blur' }] //权限名称
       }
     };
   },
@@ -80,24 +65,26 @@ export default {
     // 添加
     confirm() {
       let form = this.form;
-      this.$refs["form"].validate(valid => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           this.btnLoading = true;
-          addOrEditOperate(form).then(response => {
-            this.hidePopups();
-            this.$notify.success({ title: '修改成功' });
-            this.$parent.getTableList();
-            this.btnLoading = false;
-          }).catch(err => {
-            this.btnLoading = false;
-          });
+          addOrEditOperate(form)
+            .then(response => {
+              this.hidePopups();
+              this.$notify.success({ title: '修改成功' });
+              this.$parent.getTableList();
+              this.btnLoading = false;
+            })
+            .catch(err => {
+              this.btnLoading = false;
+            });
         }
       });
     },
     hidePopups() {
-      this.$emit("hidePopups");
+      this.$emit('hidePopups');
       this.$refs.form.resetFields();
-      this.$store.dispatch("common/initObj", this.form);
+      this.$store.dispatch('common/initObj', this.form);
     },
     cancel() {
       this.hidePopups();
@@ -106,6 +93,3 @@ export default {
 };
 </script>
 <style lang="scss" scoped></style>
-
-
-

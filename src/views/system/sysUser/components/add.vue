@@ -1,13 +1,6 @@
 <template>
   <div class="add">
-    <el-dialog
-      title="添加用户"
-      :visible="showAdd"
-      :close-on-click-modal="false"
-      width="800px"
-      top="10vh"
-      @close="hidePopups()"
-    >
+    <el-dialog title="添加用户" :visible="showAdd" :close-on-click-modal="false" width="800px" top="10vh" @close="hidePopups()">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="small">
         <el-form-item label="用户名称:" prop="userName">
           <el-input v-model="form.userName" placeholder="请输入用户名称" clearable />
@@ -17,12 +10,7 @@
         </el-form-item>
         <el-form-item label="角色:" prop="roleId">
           <el-select v-model="form.roleId" placeholder="请选择角色" clearable>
-            <el-option
-              v-for="item in roleList"
-              :key="item.value"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
+            <el-option v-for="item in roleList" :key="item.value" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -34,7 +22,7 @@
   </div>
 </template>
 <script>
-import { addOrEditUser, getRole } from "@/api/system";
+import { addOrEditUser, getRole } from '@/api/system';
 export default {
   props: {
     showAdd: {
@@ -52,9 +40,9 @@ export default {
         roleId: undefined //角色id
       },
       rules: {
-        userName: [{ required: true, message: "请输入用户名称", trigger: "blur" }], //用户名称
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }], //密码
-        roleId: [{ required: true, message: "请选择角色", trigger: "change" }] //角色
+        userName: [{ required: true, message: '请输入用户名称', trigger: 'blur' }], //用户名称
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }], //密码
+        roleId: [{ required: true, message: '请选择角色', trigger: 'change' }] //角色
       }
     };
   },
@@ -73,24 +61,26 @@ export default {
     // 添加
     confirm() {
       let form = this.form;
-      this.$refs["form"].validate(valid => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           this.btnLoading = true;
-          addOrEditUser(form).then(response => {
-            this.hidePopups();
-            this.$notify.success({ title: '添加成功' });
-            this.$parent.getTableList();
-            this.btnLoading = false;
-          }).catch(err => {
-            this.btnLoading = false;
-          });
+          addOrEditUser(form)
+            .then(response => {
+              this.hidePopups();
+              this.$notify.success({ title: '添加成功' });
+              this.$parent.getTableList();
+              this.btnLoading = false;
+            })
+            .catch(err => {
+              this.btnLoading = false;
+            });
         }
       });
     },
     hidePopups() {
-      this.$emit("hidePopups");
+      this.$emit('hidePopups');
       this.$refs.form.resetFields();
-      this.$store.dispatch("common/initObj", this.form);
+      this.$store.dispatch('common/initObj', this.form);
     },
     cancel() {
       this.hidePopups();
@@ -99,6 +89,3 @@ export default {
 };
 </script>
 <style lang="scss" scoped></style>
-
-
-

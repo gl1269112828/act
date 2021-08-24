@@ -43,9 +43,10 @@ const actions = {
       const menus = await this.dispatch('login/getMenu');
       let arr = new Array();
       let brr = [{ path: '/configPage', component: Layout, children: [] }];
+      const crr = [{ path: '*', redirect: '/404' }];
       let index = 0;
       const recursionFn = (gObj, parentPath, array) => {
-        let crr = new Array();
+        let drr = new Array();
         for (let j = 0; j < array.length; j++) {
           const itemJ = array[j];
           const purePath = itemJ.path.substring(0, itemJ.path.indexOf('?'));
@@ -70,11 +71,11 @@ const actions = {
               cObj.path = purePath;
               // cObj.meta['key'] = "";
               cObj['component'] = resolve => require([`@/views${pcPath}/index.vue`], resolve);
-              crr.push(cObj);
+              drr.push(cObj);
             }
           }
         }
-        return crr;
+        return drr;
       };
 
       for (let i = 0; i < menus.length; i++) {
@@ -102,9 +103,9 @@ const actions = {
           }
         }
       }
-      console.log(JSON.parse(JSON.stringify([...arr, ...brr])));
-      commit('SET_DYNANICROUTER', [...arr, ...brr]);
-      resolve([...arr, ...brr]);
+      console.log(JSON.parse(JSON.stringify([...arr, ...brr, ...crr])));
+      commit('SET_DYNANICROUTER', [...arr, ...brr, ...crr]);
+      resolve([...arr, ...brr, ...crr]);
     });
   }
 };

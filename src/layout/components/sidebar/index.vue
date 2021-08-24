@@ -49,56 +49,17 @@ export default {
   methods: {
     getRouter() {
       const route = this.$route;
-      this.defaultActive = route.fullPath;
+      if (route.meta.title === '首页') {
+        this.defaultActive = route.fullPath.substring(0, route.fullPath.length - 1);
+      } else {
+        this.defaultActive = route.fullPath;
+      }
     },
     siderbarStyObj() {
       return siderbarStyObj;
     },
     handleSelect(index, indexPath) {
-      const purePath = index.substring(0, index.indexOf('?'));
       this.$router.push({ path: index });
-      return;
-      const route = this.$route;
-      const dynamicRouter = this.$store.getters.dynamicRouter;
-      let meta = new Object();
-      const verPath = (children, pPath) => {
-        children.forEach(itemJ => {
-          if (pPath === itemJ.path || (itemJ.meta && itemJ.path + '?key=' + itemJ.meta.key === pPath)) {
-            meta = itemJ.meta;
-          } else {
-            if (itemJ.children && itemJ.children.length) {
-              verPath(itemJ.children, itemJ.path);
-            }
-          }
-        });
-      };
-      dynamicRouter.forEach(item => {
-        if (item.path === index) {
-          meta = item.meta;
-        } else {
-          if (item.children && item.children.length) {
-            verPath(item.children, index);
-          }
-        }
-      });
-      if (index !== route.fullPath) {
-        if (index === '/home') {
-          this.$router.push({ path: index });
-        } else {
-          this.$store.dispatch('login/getButtonAuthority', meta.id).then(() => {
-            if (!!meta.key) {
-              this.$router.push({ path: index, query: { key: meta.key } });
-              // if (route.path === '/pages') {
-              //   console.log('当前是配置页面');
-              // } else {
-              //   this.$router.push({ path: index, query: { key: meta.key } });
-              // }
-            } else {
-              this.$router.push({ path: index });
-            }
-          });
-        }
-      }
     }
   }
 };

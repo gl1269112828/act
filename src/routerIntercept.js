@@ -16,16 +16,20 @@ router.beforeEach(async (to, from, next) => {
   } else {
     if (isToken) {
       if (!store.getters.dynamicRouter.length) {
-        const routers = await store.dispatch('common/constructRouter');
-        // await store.dispatch('login/getButtonAuthority', to.query.id);
-        routers.forEach(item => {
-          router.addRoute(item);
+        const routers = await store.dispatch('common/constructRouter').then(async data => {
+          data.forEach(item => {
+            router.addRoute(item);
+          });
+          if (to.meta.title !== '首页') {
+            await store.dispatch('login/getButtonAuthority', to.query.id);
+          }
+          next({ ...to }); // hack方法 确保addRoutes已完成
         });
-        router.addRoute({ path: '*', redirect: '/404', hidden: true });
-        next({ ...to }); // hack方法 确保addRoutes已完成
         next();
       } else {
-        // await store.dispatch('login/getButtonAuthority', to.query.id);
+        if (to.meta.title !== '首页') {
+          await store.dispatch('login/getButtonAuthority', to.query.id);
+        }
         next();
       }
     } else {

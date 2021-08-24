@@ -1,7 +1,7 @@
 <template>
   <div class="configTable">
     <el-dialog title="配置表格" :visible="showConfigTable" :close-on-click-modal="false" width="1200px" top="5vh" @close="hidePopups()">
-      <el-form ref="form" :model="form" v-loading="boxLoading" label-width="140px" size="small">
+      <el-form ref="form" :model="form" label-width="140px" size="small" v-loading="boxLoading" element-loading-text="拼命加载中">
         <el-row>
           <el-col :span="12">
             <el-form-item label="数据地址:" prop="dataUrl" :rules="[{ required: true, message: '请输入数据地址', trigger: 'blur' }]">

@@ -1,7 +1,7 @@
 <template>
-  <div class="config-page-container">
+  <div class="config-page-container" v-loading="isLoading">
     <QueryModule class="config-page-header" :queryData.sync="queryData" @handleSearch="handleSearch" />
-    <LTable :isLoading="isLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :pageData="pageData" :getTableList="getTableList">
+    <LTable :tableHeader="tableHeader" :tableData="tableData" :total="total" :pageData="pageData" :getTableList="getTableList">
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
           <el-button type="text" size="small" @click="handleEdit(scope.data)">编辑</el-button>
@@ -15,6 +15,7 @@
 <script>
 import request from '@/utils/request';
 import { getPageDetail } from '@/api/configManage';
+import { getOperate } from '@/api/system';
 import QueryModule from '../components/queryModule';
 export default {
   components: {
@@ -67,11 +68,17 @@ export default {
         this.tableHeader = headers;
         this.queryData = queries;
 
+        this.getBtns();
         this.getTableList();
+
         this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
       }
+    },
+    async getBtns() {
+      const { data } = await getOperate({ dynamicFilters: [] });
+      console.log(data);
     },
     async getTableList() {
       let pageQuery = [];
@@ -89,6 +96,7 @@ export default {
       this.total = resTable.data.totalCount;
       this.tableData = resTable.data.datas;
     },
+
     handleSearch() {
       this.getTableList();
     }
