@@ -1,6 +1,6 @@
 <template>
-  <div class="edit">
-    <el-dialog title="编辑页面" :visible="showPageEdit" :close-on-click-modal="false" width="600px" top="20vh" @close="hidePopups()">
+  <div class="config-btn-container">
+    <el-dialog title="配置按钮" :visible="showConfigBtn" :close-on-click-modal="false" width="600px" top="10vh" @close="hidePopups()">
       <el-form ref="form" :model="form" :rules="rules" label-width="90px" size="small">
         <el-form-item label="页面名称:" prop="name">
           <el-input v-model="form.name" placeholder="请输入页面名称" clearable />
@@ -17,21 +17,16 @@
   </div>
 </template>
 <script>
-import { addOrEditAutomatedConfiguration } from '@/api/system';
+import { addOrEditAutomatedConfiguration } from '@/api/configManage';
 export default {
   props: {
-    showPageEdit: {
+    showConfigBtn: {
       type: Boolean,
       default: false
-    },
-    itemObj: {
-      type: Object,
-      defalut: () => ({})
     }
   },
   data() {
     return {
-      boxLoading: false,
       btnLoading: false,
       form: {
         name: undefined,
@@ -44,36 +39,24 @@ export default {
     };
   },
   watch: {
-    showPageEdit(val) {
+    showConfigBtn(val) {
       if (val) {
         this.getData();
       }
     }
   },
   methods: {
-    async getData() {
-      try {
-        this.boxLoading = true;
-        Object.keys(this.form).forEach(key => {
-          if (key !== 'password') {
-            this.form[key] = this.itemObj[key];
-          }
-        });
-        this.boxLoading = false;
-      } catch (error) {
-        this.boxLoading = false;
-      }
-    },
+    async getData() {},
     // 添加
     confirm() {
       let form = this.form;
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.btnLoading = true;
-          addOrEditUser(form)
+          addOrEditAutomatedConfiguration(form)
             .then(response => {
               this.hidePopups();
-              this.$notify.success({ title: '修改成功' });
+              this.$notify.success({ title: '添加成功' });
               this.$parent.getTableList();
               this.btnLoading = false;
             })

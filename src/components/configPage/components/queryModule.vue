@@ -1,6 +1,6 @@
 <template>
   <el-form class="search-module-container" :inline="true" ref="elForm" size="small" :model="form" :rules="rules">
-    <el-form-item :label="item.name + ':'" v-for="(item, i) in queryData" :key="i">
+    <el-form-item :label="item.name + ':'" v-for="(item, i) in queryData" :key="i" v-cloak>
       <el-input v-model="item.value" :placeholder="'请输入' + item.name" v-if="item.queryType === 'input'" clearable></el-input>
       <!-- <el-select v-model="item.field" :placeholder="'请选择' + item.name" v-else-if="item.queryType === 'select'">
         <el-option v-for="(items, i) in conditionList" :key="i" :label="items.name" :value="items.value"></el-option>
@@ -34,9 +34,7 @@ export default {
     };
   },
   watch: {
-    queryData(val) {
-      console.log(val);
-    }
+    queryData(val) {}
   },
   methods: {
     handleSearch() {
@@ -47,4 +45,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+[v-cloak] {
+  display: none;
+}
+</style>

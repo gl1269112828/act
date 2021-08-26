@@ -11,40 +11,18 @@
         </el-form-item>
       </el-form>
     </div>
-    <LTable
-      :isLoading="isLoading"
-      :tableHeader="tableHeader"
-      :tableData="tableData"
-      :total="total"
-      :pageData="pageData"
-      :getTableList="getTableList"
-    >
+    <LTable :isLoading="isLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :pageData="pageData" :getTableList="getTableList">
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
-          <el-button
-            type="text"
-            size="mini"
-            @click="handlePermission(scope.data)"
-            v-hasBtn="1005"
-          >配置权限</el-button>
+          <el-button type="text" size="mini" @click="handlePermission(scope.data)" v-hasBtn="1005">配置权限</el-button>
           <el-button type="text" size="mini" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
-          <el-button
-            type="text"
-            size="mini"
-            @click="handleDelete(scope.data)"
-            :disabled="scope.data.id === 1 ? true : false"
-            v-hasBtn="1004"
-          >删除</el-button>
+          <el-button type="text" size="mini" @click="handleDelete(scope.data)" :disabled="scope.data.id === 1 ? true : false" v-hasBtn="1004">删除</el-button>
         </div>
       </template>
     </LTable>
     <AddPopups :showAdd="isAdd" v-on:hidePopups="isAdd = false" />
     <EditPopups :showEdit="isEdit" v-on:hidePopups="isEdit = false" :itemObj="itemObj" />
-    <PermissionPopups
-      :showPermission="isPermission"
-      v-on:hidePopups="isPermission = false"
-      :itemObj="itemObj"
-    />
+    <PermissionPopups :showPermission="isPermission" v-on:hidePopups="isPermission = false" :itemObj="itemObj" />
   </div>
 </template>
 
@@ -68,12 +46,7 @@ export default {
         { label: '角色名称', prop: 'name' },
         { label: '创建时间', prop: 'createTime' },
         { label: '备注', prop: 'remark' },
-        {
-          label: '操作',
-          prop: 'operate',
-          width: '180',
-          render: true
-        }
+        { label: '操作', prop: 'operate', width: '180', render: true }
       ],
       tableData: [], //表格数据
       total: 0, //表格总数
@@ -101,7 +74,7 @@ export default {
           query.dynamicFilters = [];
         }
         const { data } = await getRole(query);
-        this.total = data.total;
+        this.total = data.totalCount;
         this.tableData = data.datas || [];
         this.isLoading = false;
       } catch (error) {
@@ -142,7 +115,7 @@ export default {
             this.getTableList();
           });
         })
-        .catch(() => { });
+        .catch(() => {});
     }
   }
 };

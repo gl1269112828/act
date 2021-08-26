@@ -1,6 +1,6 @@
 <template>
   <div class="add">
-    <el-dialog title="创建页面" :visible="showPageAdd" :close-on-click-modal="false" width="600px" top="10vh" @close="hidePopups()">
+    <el-dialog title="创建页面" :visible="showPageAdd" :close-on-click-modal="false" width="600px" top="20vh" @close="hidePopups()">
       <el-form ref="form" :model="form" :rules="rules" label-width="90px" size="small">
         <el-form-item label="页面名称:" prop="name">
           <el-input v-model="form.name" placeholder="请输入页面名称" clearable />

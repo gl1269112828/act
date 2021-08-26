@@ -17,6 +17,7 @@
     <LTable :isLoading="isLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :pageData="pageData" :getTableList="getTableList">
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
+          <el-button type="text" size="mini" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
           <el-button type="text" size="mini" @click="handleTableConfig(scope.data)" v-hasBtn="1006">表格配置</el-button>
           <el-button type="text" size="mini" @click="handleBtnConfig(scope.data)" v-hasBtn="1007">按钮配置</el-button>
           <el-button type="text" size="mini" @click="handleFieldConfig(scope.data)" v-hasBtn="1008">字段配置</el-button>
@@ -25,22 +26,26 @@
       </template>
     </LTable>
     <AddPopups :showPageAdd="isPageAdd" v-on:hidePopups="isPageAdd = false" />
-    <ConfigTablePopups :showConfigTable="isTableConfig" v-on:hidePopups="isTableConfig = false" :itemObj="itemObj" />
     <EditPopups :showPageEdit="isPageEdit" v-on:hidePopups="isPageEdit = false" :itemObj="itemObj" />
+    <ConfigTablePopups :showConfigTable="isConfigTable" v-on:hidePopups="isConfigTable = false" :itemObj="itemObj" />
+    <ConfigBtnPopups :showConfigBtn="isConfigBtn" v-on:hidePopups="isConfigBtn = false" :itemObj="itemObj" />
   </div>
 </template>
 
 <script>
 import AddPopups from './components/add';
-import ConfigTablePopups from './components/configTable';
 import EditPopups from './components/edit';
+import ConfigTablePopups from './components/configTable';
+import ConfigBtnPopups from './components/configBtn';
+
 import { getAutomatedConfiguration } from '@/api/configManage';
 export default {
   name: 'sysUser',
   components: {
     AddPopups,
+    EditPopups,
     ConfigTablePopups,
-    EditPopups
+    ConfigBtnPopups
   },
   data() {
     return {
@@ -49,14 +54,7 @@ export default {
         { label: '序号', width: '60' },
         { label: '页面名称', prop: 'name' },
         { label: '页面标识', prop: 'key' },
-        // { label: '配置类型', prop: 'createTime', width: '150' },
-        // { label: '数据提取地址', prop: 'createTime', width: '300' },
-        // { label: '默认提取数据条件', prop: 'createTime', width: '150' },
-        // { label: '是否具备多选', prop: 'createTime', width: '150' },
-        // { label: '是否具备操作列', prop: 'createTime', width: '150' },
-        // { label: '操作列宽度', prop: 'createTime', width: '150' },
-        // { label: '创建时间', prop: 'createTime' },
-        { label: '操作', prop: 'operate', width: '260', render: true }
+        { label: '操作', prop: 'operate', width: '280', render: true }
       ],
       tableData: [], //表格数据
       total: 0, //表格总数
@@ -69,8 +67,9 @@ export default {
         ]
       }, //分页查询数据
       isPageAdd: false,
-      isTableConfig: false,
       isPageEdit: false,
+      isConfigTable: false,
+      isConfigBtn: false,
       itemObj: {}
     };
   },
@@ -101,26 +100,29 @@ export default {
     handleAdd() {
       this.isPageAdd = true;
     },
-    handleEdit(data) {
-      this.itemObj = data;
+    handleEdit(scope) {
+      this.itemObj = scope;
       this.isPageEdit = true;
     },
-    handleTableConfig(data) {
-      this.itemObj = data;
-      this.isTableConfig = true;
+    handleTableConfig(scope) {
+      this.itemObj = scope;
+      this.isConfigTable = true;
     },
-    handleBtnConfig() {},
+    handleBtnConfig(scope) {
+      this.itemObj = scope;
+      this.isConfigBtn = true;
+    },
     handleFieldConfig() {},
 
     //删除
-    handleDelete(data) {
+    handleDelete(scope) {
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          deleteUser({ id: data.id }).then(response => {
+          deleteUser({ id: scope.id }).then(response => {
             this.$message({
               type: 'success',
               message: '删除成功'

@@ -72,7 +72,7 @@ export default {
           query.dynamicFilters = [];
         }
         const { data } = await getMenus(query);
-        this.total = data.total;
+        this.total = data.totalCount;
         this.tableData = data.datas || [];
         this.isLoading = false;
       } catch (error) {

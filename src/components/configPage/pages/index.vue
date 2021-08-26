@@ -1,12 +1,12 @@
 <template>
-  <div class="config-page-container" v-loading="isLoading">
+  <div class="config-page-container">
     <QueryModule class="config-page-header" :queryData.sync="queryData" @handleSearch="handleSearch" />
-    <OperateBtns />
-    <LTable :tableHeader="tableHeader" :tableData="tableData" :total="total" :pageData="pageData" :getTableList="getTableList">
+    <OperateBtns :operates="operates" />
+    <LTable :isLoading="isLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :pageData="pageData" :getTableList="getTableList">
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
           <el-button type="text" size="small" @click="handleEdit(scope.data)">编辑</el-button>
-          <el-button type="text" size="small" @click="handleDelete(scope.data)" :disabled="scope.data.id === 1 ? true : false">删除</el-button>
+          <el-button type="text" size="small" @click="handleDelete(scope.data)">删除</el-button>
         </div>
       </template>
     </LTable>
@@ -16,8 +16,10 @@
 <script>
 import request from '@/utils/request';
 import { getPageDetail } from '@/api/configManage';
+import { getOperate } from '@/api/system';
 import QueryModule from '../components/queryModule';
 import OperateBtns from '../components/operateBtns';
+
 export default {
   components: {
     QueryModule,
@@ -33,7 +35,9 @@ export default {
       tableHeader: [],
       tableData: [],
       total: 0,
-      pageData: {}
+      pageData: {},
+
+      operates: []
     };
   },
   created() {
@@ -70,8 +74,8 @@ export default {
         this.tableHeader = headers;
         this.queryData = queries;
 
-        this.getBtns();
-        this.getTableList();
+        await this.getOperateBtns();
+        await this.getTableList();
 
         this.isLoading = false;
       } catch (error) {
@@ -94,12 +98,18 @@ export default {
       this.total = resTable.data.totalCount;
       this.tableData = resTable.data.datas;
     },
-
+    async getOperateBtns() {
+      const authoritys = JSON.parse(sessionStorage.getItem('authoritys')) || [];
+      const { data } = await getOperate({ dynamicFilters: [] });
+      this.operates = data.datas.filter(itemI => authoritys.indexOf(itemI.unique.toString()) > -1);
+    },
     handleSearch() {
       this.getTableList();
-    }
+    },
+    handleEdit(scope) {},
+    handleDelete(scope) {}
   }
 };
 </script>
 
-<style lang="sass" scoped></style>
+<style lang="scss" scoped></style>
