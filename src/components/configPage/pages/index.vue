@@ -1,6 +1,7 @@
 <template>
   <div class="config-page-container" v-loading="isLoading">
     <QueryModule class="config-page-header" :queryData.sync="queryData" @handleSearch="handleSearch" />
+    <OperateBtns />
     <LTable :tableHeader="tableHeader" :tableData="tableData" :total="total" :pageData="pageData" :getTableList="getTableList">
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
@@ -15,11 +16,12 @@
 <script>
 import request from '@/utils/request';
 import { getPageDetail } from '@/api/configManage';
-import { getOperate } from '@/api/system';
 import QueryModule from '../components/queryModule';
+import OperateBtns from '../components/operateBtns';
 export default {
   components: {
-    QueryModule
+    QueryModule,
+    OperateBtns
   },
   data() {
     return {
@@ -75,10 +77,6 @@ export default {
       } catch (error) {
         this.isLoading = false;
       }
-    },
-    async getBtns() {
-      const { data } = await getOperate({ dynamicFilters: [] });
-      console.log(data);
     },
     async getTableList() {
       let pageQuery = [];

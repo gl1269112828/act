@@ -16,7 +16,7 @@ router.beforeEach(async (to, from, next) => {
   } else {
     if (isToken) {
       if (!store.getters.dynamicRouter.length) {
-        const routers = await store.dispatch('common/constructRouter').then(async data => {
+        await store.dispatch('common/constructRouter').then(async data => {
           data.forEach(item => {
             router.addRoute(item);
           });
@@ -27,7 +27,7 @@ router.beforeEach(async (to, from, next) => {
         });
         next();
       } else {
-        if (to.meta.title !== '首页') {
+        if (to.meta.title !== '首页' && store.getters.dynamicRouter.length) {
           await store.dispatch('login/getButtonAuthority', to.query.id);
         }
         next();
