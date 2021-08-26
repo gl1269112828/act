@@ -24,7 +24,11 @@
             </el-form-item>
           </el-col>
           <el-col class="config-table-list" :span="24" v-for="(item, i) in form.fields" :key="i" v-cloak>
-            <img class="config-list-close" :src="require('@/static/listClose.png')" alt="" @click="handerListLess(item, i)" v-if="form.fields.length > 1" />
+            <el-col class="config-list-close" :span="24">
+              <img :src="require('@/static/moveUp.png')" alt="" @click="handerMoveUp(item, i)" v-show="form.fields.length > 1" />
+              <img :src="require('@/static/moveDown.png')" alt="" @click="handeMoveDown(item, i)" v-show="form.fields.length > 1" />
+              <img :src="require('@/static/listClose.png')" alt="" @click="handerListLess(item, i)" v-show="form.fields.length > 1" />
+            </el-col>
             <el-col :span="6">
               <el-form-item label="名称:" label-width="90px" :rules="[{ required: true, message: '请输入名称', trigger: 'blur' }]" :prop="'fields.' + i + '.name'">
                 <el-input v-model="item.name" placeholder="请输入名称" clearable />
@@ -108,6 +112,8 @@ export default {
       configQueryList: this.$store.state.common.configQueryList,
       form: {
         id: 0,
+        buttons: undefined,
+        functions: undefined,
         dataUrl: undefined,
         isMultipe: undefined,
         isRow: undefined,
@@ -146,8 +152,26 @@ export default {
     handleAddList() {
       this.form.fields.push({ name: '', field: '', url: '', width: 0, isAdd: 0, isEdit: 0, isQuery: 0, queryType: 'input', condition: 'Like' });
     },
-    handerListLess(item, i) {
-      this.form.fields.splice(i, 1);
+    handerListLess(item, index) {
+      this.form.fields.splice(index, 1);
+    },
+    moveFn(index, index1, array) {
+      array[index] = array.splice(index1, 1, array[index])[0];
+      return array;
+    },
+    handerMoveUp(item, index) {
+      if (index === 0) {
+        this.$message.warning('已到最顶部');
+        return;
+      }
+      this.form.fields = this.moveFn(index, index - 1, this.form.fields);
+    },
+    handeMoveDown(item, index) {
+      if (index === this.form.fields.length - 1) {
+        this.$message.warning('已到最底部');
+        return;
+      }
+      this.form.fields = this.moveFn(index, index + 1, this.form.fields);
     },
     confirm() {
       this.$refs['form'].validate(valid => {
@@ -174,6 +198,8 @@ export default {
       this.$refs.form.resetFields();
       this.form = {
         id: 0,
+        buttons: undefined,
+        functions: undefined,
         dataUrl: undefined,
         isMultipe: undefined,
         isRow: undefined,
@@ -195,16 +221,19 @@ export default {
   display: block;
 }
 .config-table-list {
-  position: relative;
-  padding: 30px 0 12px 0;
+  padding: 0 0 20px 0;
   border-top: 1px solid #b8d7f7;
   .config-list-close {
-    cursor: pointer;
-    position: absolute;
-    top: 5px;
-    right: 0;
-    width: 18px;
-    height: 18px;
+    min-height: 38px;
+    padding: 10px 0;
+    text-align: right;
+    img {
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
   }
 }
 .config-table-operate {

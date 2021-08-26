@@ -54,7 +54,7 @@ export default {
         { label: '序号', width: '60' },
         { label: '页面名称', prop: 'name' },
         { label: '页面标识', prop: 'key' },
-        { label: '操作', prop: 'operate', width: '280', render: true }
+        { label: '操作', prop: 'operate', width: '220', render: true }
       ],
       tableData: [], //表格数据
       total: 0, //表格总数

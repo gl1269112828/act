@@ -58,6 +58,7 @@ export default {
         });
         this.treeData = data.list;
         this.defaultChecked = data.menuIds;
+        this.form.menuIds = data.menuIds;
         this.form.roleId = this.itemObj.id;
         this.boxLoading = false;
       } catch (error) {

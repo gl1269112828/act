@@ -59,7 +59,10 @@ export default {
       return siderbarStyObj;
     },
     handleSelect(index, indexPath) {
-      this.$router.push({ path: index });
+      const route = this.$route;
+      if (index !== route.fullPath) {
+        this.$router.push({ path: index });
+      }
     }
   }
 };

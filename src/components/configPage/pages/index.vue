@@ -54,8 +54,8 @@ export default {
         this.isLoading = true;
 
         const { data } = await getPageDetail(key);
-        this.pageData = data.pageTable;
-        const fields = JSON.parse(data.pageTable.fields);
+        this.pageData = data.pageConfigs;
+        const fields = JSON.parse(data.pageConfigs.fields);
 
         let headers = [];
         let queries = [];
@@ -67,8 +67,8 @@ export default {
           }
         });
 
-        if (data.pageTable.isRow) {
-          headers.push({ label: '操作', prop: 'operate', width: data.pageTable.rowWith, render: true });
+        if (data.pageConfigs.isRow) {
+          headers.push({ label: '操作', prop: 'operate', width: data.pageConfigs.rowWith, render: true });
         }
 
         this.tableHeader = headers;

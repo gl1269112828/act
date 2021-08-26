@@ -71,7 +71,7 @@ export default {
   }
   .login-form {
     margin: 12% auto 0 auto;
-    width: 20%;
+    width: 24%;
     min-width: 250px;
     height: 250px;
   }
