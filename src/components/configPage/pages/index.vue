@@ -1,17 +1,12 @@
 <template>
   <div class="config-page-container">
     <QueryModule class="config-page-header" :queryData.sync="queryData" @handleSearch="handleSearch" />
-    <OperateBtns :operates="operates" />
-    <LTable :isLoading="isLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :pageData="pageData" :getTableList="getTableList">
-      <template slot="operate" slot-scope="scope">
-        <div class="table-btn">
-          <el-button type="text" size="small" @click="handleEdit(scope.data)">编辑</el-button>
-          <el-button type="text" size="small" @click="handleDelete(scope.data)">删除</el-button>
-        </div>
-      </template>
-    </LTable>
+    <OperateBtns :operateButtons="operateButtons" @handleOperate="handleOperate" />
+    <LTable :isLoading="isLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :pageData="pageData" :selectTableData.sync="selectTableData" :getTableList="getTableList"></LTable>
+    <PublicPopups :showOperate="isOperate" :operateObj="operateObj" :operateFields="operateFields" v-on:hidePopups="isOperate = false" />
   </div>
 </template>
+A
 
 <script>
 import request from '@/utils/request';
@@ -19,11 +14,13 @@ import { getPageDetail } from '@/api/configManage';
 import { getOperate } from '@/api/system';
 import QueryModule from '../components/queryModule';
 import OperateBtns from '../components/operateBtns';
+import PublicPopups from '../components/publicPopups';
 
 export default {
   components: {
     QueryModule,
-    OperateBtns
+    OperateBtns,
+    PublicPopups
   },
   data() {
     return {
@@ -34,10 +31,14 @@ export default {
 
       tableHeader: [],
       tableData: [],
+      selectTableData: [],
       total: 0,
       pageData: {},
 
-      operates: []
+      operateButtons: [],
+      operateFields: [],
+      isOperate: false,
+      operateObj: {}
     };
   },
   created() {
@@ -56,8 +57,9 @@ export default {
         const { data } = await getPageDetail(key);
         this.pageData = data.pageConfigs;
         const fields = JSON.parse(data.pageConfigs.fields);
+        this.operateButtons = JSON.parse(data.pageConfigs.buttons);
 
-        let headers = [];
+        let headers = [{ label: 'selection', width: 60 }];
         let queries = [];
 
         fields.forEach(item => {
@@ -67,14 +69,10 @@ export default {
           }
         });
 
-        if (data.pageConfigs.isRow) {
-          headers.push({ label: '操作', prop: 'operate', width: data.pageConfigs.rowWith, render: true });
-        }
-
+        this.operateFields = fields;
         this.tableHeader = headers;
         this.queryData = queries;
 
-        await this.getOperateBtns();
         await this.getTableList();
 
         this.isLoading = false;
@@ -98,16 +96,28 @@ export default {
       this.total = resTable.data.totalCount;
       this.tableData = resTable.data.datas;
     },
-    async getOperateBtns() {
-      const authoritys = JSON.parse(sessionStorage.getItem('authoritys')) || [];
-      const { data } = await getOperate({ dynamicFilters: [] });
-      this.operates = data.datas.filter(itemI => authoritys.indexOf(itemI.unique.toString()) > -1);
-    },
     handleSearch() {
       this.getTableList();
     },
-    handleEdit(scope) {},
-    handleDelete(scope) {}
+    handleOperate(item) {
+      if (item.name === '添加') {
+        this.operateObj = item;
+        this.isOperate = true;
+      } else {
+        if (!this.selectTableData.length) {
+          this.$message.warning('请选择一条数据');
+          return;
+        }
+        if (!item.isBatch && this.selectTableData.length > 1) {
+          this.$message.warning('最多选择一条数据');
+          return;
+        }
+        console.log(this.selectTableData);
+        console.log(item);
+        this.operateObj = item;
+        this.isOperate = true;
+      }
+    }
   }
 };
 </script>

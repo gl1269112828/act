@@ -46,7 +46,6 @@ export default {
   components: {
     Pagination
   },
-  computed: {},
   props: {
     isLoading: {
       type: Boolean,
@@ -79,7 +78,7 @@ export default {
       type: Function,
       defalut: null
     },
-    select_table_data: {
+    selectTableData: {
       type: Array,
       defalut: () => []
     },
@@ -112,7 +111,7 @@ export default {
       this.getTableList();
     },
     mirChange(selection) {
-      this.$emit('update:select_table_data', selection);
+      this.$emit('update:selectTableData', selection);
     }
   }
 };

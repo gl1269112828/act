@@ -1,92 +1,59 @@
 <template>
   <div class="config-btn-container">
     <el-dialog title="配置按钮" :visible="showConfigBtn" :close-on-click-modal="false" width="1400px" top="4vh" @close="hidePopups()">
-      <el-table v-loading="boxLoading" :data="tableData" :span-method="tableMethod" border size="mini">
-        <el-table-column label="按钮名称" align="center" width="80px">
-          <template slot-scope="scope">
-            <el-tag size="mini">{{ scope.row.btnName }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="请求地址" align="center">
-          <template slot-scope="scope">
-            <el-input v-model="scope.row.requestUrl" placeholder="请输入请求地址" size="mini" clearable />
-          </template>
-        </el-table-column>
-        <el-table-column prop="address" label="是否批量操作" align="center" width="80px">
-          <template slot-scope="scope">
-            <el-switch v-model="scope.row.isBatch" :active-value="1" :inactive-value="0"></el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column label="字段配置" align="center">
-          <el-table-column label="类型" align="center">
-            <template slot-scope="scope">
-              <el-select v-model="scope.row.fieldsType" placeholder="请选择类型" size="mini">
-                <el-option v-for="(items, i) in configQueryList" :key="i" :label="items.name" :value="items.value"></el-option>
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column label="提交字段名" align="center">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.submitFieldsName" placeholder="请输入提交字段名" size="mini" clearable />
-            </template>
-          </el-table-column>
-          <el-table-column label="匹配字段名" align="center">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.matchFiledsName" placeholder="请输入匹配字段名" size="mini" clearable />
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" align="center" width="80px">
-            <template slot-scope="scope">
-              <el-button style="color:red" type="text" size="mini" @click="handleDeleteFiled(scope.row, scope.$index)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table-column>
-        <el-table-column label="操作" align="center">
-          <template slot-scope="scope">
-            <el-button type="text" size="mini" @click="handleAddFiled(scope.row, scope.$index)">添加字段</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <!-- <el-form ref="form" :model="form" size="small" v-loading="boxLoading" element-loading-text="拼命加载中">
+      <el-form ref="form" :model="form" size="mini" label-width="120px" v-loading="boxLoading" element-loading-text="拼命加载中">
         <el-row>
           <el-col class="config-table-list" :span="24" v-for="(item, i) in form.buttons" :key="i" v-cloak>
-            <el-col class="config-list-close" :span="24">
-              <img :src="require('@/static/moveUp.png')" alt="" @click="handerMoveUp(item, i)" v-show="form.buttons.length > 1" />
-              <img :src="require('@/static/moveDown.png')" alt="" @click="handeMoveDown(item, i)" v-show="form.buttons.length > 1" />
+            <el-col :span="24">
+              <el-col :span="4" v-if="item.name !== '添加' && item.name !== '编辑'">
+                <el-form-item label="是否批量操作:">
+                  <el-switch v-model="item.isBatch" :active-value="1" :inactive-value="0"></el-switch>
+                </el-form-item>
+              </el-col>
+              <el-col class="config-list-close" :span="item.name !== '添加' && item.name !== '编辑' ? 20 : 24">
+                <img :src="require('@/static/moveUp.png')" alt="" @click="handerMoveUp(item, i)" />
+                <img :src="require('@/static/moveDown.png')" alt="" @click="handeMoveDown(item, i)" />
+              </el-col>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="按钮名称:" label-width="120px">
-                <el-input v-model="item.btnName" placeholder="请输入按钮名称" disabled />
+              <el-form-item label="按钮名称:">
+                <el-input v-model="item.name" placeholder="请输入按钮名称" disabled />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="请求地址:" label-width="120px">
+              <el-form-item label="请求地址:" :rules="[{ required: true, message: '请输入请求地址', trigger: 'blur' }]" :prop="'buttons.' + i + '.requestUrl'">
                 <el-input v-model="item.requestUrl" placeholder="请输入请求地址" clearable />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="是否批量操作:" label-width="120px">
-                <el-switch v-model="item.isBatch" :active-value="1" :inactive-value="0"></el-switch>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6" v-show="item.isBatch">
-              <el-form-item label="ids字段:" label-width="120px">
-                <el-input v-model="item.batchId" placeholder="请输入ids字段" clearable />
-              </el-form-item>
-            </el-col>
-            <el-col :span="24">
-              <h4 class="">操作字段:</h4>
-              <el-col :span="6">
-                <el-form-item label="类型:" label-width="120px">
-                  <el-select v-model="item.queryType" placeholder="请选择类型">
-                    <el-option v-for="(items, i) in configQueryList" :key="i" :label="items.name" :value="items.value"></el-option>
-                  </el-select>
-                </el-form-item>
+            <el-col :span="24" v-if="item.name !== '添加' && item.name !== '编辑'">
+              <div class="config-list-title">字段配置</div>
+              <el-col :span="24" v-for="(itemJ, j) in item.fields" :key="j">
+                <el-col :span="6">
+                  <el-form-item label="类型:">
+                    <el-select v-model="itemJ.fieldsType" placeholder="请选择类型">
+                      <el-option v-for="(itemS, s) in configQueryList" :key="s" :label="itemS.name" :value="itemS.value"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="提交字段名:" :rules="[{ required: true, message: '请输入提交字段名', trigger: 'blur' }]" :prop="'buttons.' + i + '.fields.' + j + '.submitFieldsName'">
+                    <el-input v-model="itemJ.submitFieldsName" placeholder="请输入提交字段名" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="匹配字段名:" :rules="[{ required: true, message: '请输入匹配字段名', trigger: 'blur' }]" :prop="'buttons.' + i + '.fields.' + j + '.matchFiledsName'">
+                    <el-input v-model="itemJ.matchFiledsName" placeholder="请输入匹配字段名" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <img class="list-operate-img" :src="require('@/static/listAdd.png')" alt="" @click="handleAddFiled(item, i, j)" v-if="j === 0" />
+                  <img class="list-operate-img" :src="require('@/static/listLess.png')" alt="" @click="handleLessFiled(item, i, j)" v-if="j > 0" />
+                </el-col>
               </el-col>
             </el-col>
           </el-col>
         </el-row>
-      </el-form> -->
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel()" size="small">取消</el-button>
         <el-button type="primary" :loading="btnLoading" @click="confirm()" size="small">确定</el-button>
@@ -111,20 +78,11 @@ export default {
   data() {
     return {
       boxLoading: false,
-
       btnLoading: false,
       configQueryList: this.$store.state.common.configQueryList,
-      operateChecks: [],
-      tableData: [
-        { btnName: '测试', requestUrl: '', isBatch: 0, fieldsType: 'input', fieldsName: '', mergeRowNum: 1 },
-        { btnName: '测试', requestUrl: '', isBatch: 0, fieldsType: 'input', fieldsName: '', mergeRowNum: 2 },
-        { btnName: '测试', requestUrl: '', isBatch: 0, fieldsType: 'input', fieldsName: '', mergeRowNum: 3 },
-        { btnName: '测试', requestUrl: '', isBatch: 0, fieldsType: 'select', fieldsName: '', mergeRowNum: 4 }
-      ],
-      mergeColumnIndexs: [0, 1, 2, 7],
       form: {
         id: 0,
-        buttons: [{ btnName: '', requestUrl: '', isBatch: 0, batchId: '', operateFields: [] }],
+        buttons: [],
         functions: undefined,
         dataUrl: undefined,
         isMultipe: undefined,
@@ -145,60 +103,83 @@ export default {
     async getData() {
       try {
         this.boxLoading = true;
-        const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
-        const buttons = await getMenuButtons({ roleId: roleId, key: this.itemObj.key });
+        const configTableData = await getConfigTable({ dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }] });
 
-        // this.tableData = buttons.data.datas
-        //   .filter(item => item.unique !== '1003')
-        //   .map(items => {
-        //     {
-        //       return {
-        //         btnName: items.name,
-        //         requestUrl: '',
-        //         isBatch: 0,
-        //         fieldsType: 'input',
-        //         submitFieldsName: '',
-        //         matchFiledsName: '',
-        //         mergeRowNum: 1
-        //       };
-        //     }
-        //   });
+        Object.keys(configTableData.data.datas[0]).forEach(async key => {
+          if (key === 'buttons') {
+            if (!configTableData.data.datas[0][key]) {
+              const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
+              const buttons = await getMenuButtons({ roleId: roleId, key: this.itemObj.key });
+              this.form.buttons = buttons.data.datas
+                .filter(item => item.unique !== '1003')
+                .map(items => {
+                  {
+                    return {
+                      name: items.name,
+                      requestUrl: '',
+                      isBatch: 0,
+                      fields: [
+                        {
+                          fieldsType: 'input',
+                          submitFieldsName: '',
+                          matchFiledsName: ''
+                        }
+                      ]
+                    };
+                  }
+                });
+            } else {
+              this.form[key] = JSON.parse(configTableData.data.datas[0][key]);
+            }
+          } else {
+            this.form[key] = configTableData.data.datas[0][key];
+          }
+        });
 
         this.boxLoading = false;
       } catch (error) {
         this.boxLoading = false;
       }
     },
-    tableMethod({ row, column, rowIndex, columnIndex }) {
-      // if (this.mergeColumnIndexs.indexOf(columnIndex) > -1) {
-      //   return {
-      //     rowspan: row.mergeRowNum,
-      //     colspan: 1
-      //   };
-      // } else {
-      //   return {
-      //     rowspan: 0,
-      //     colspan: 0
-      //   };
-      // }
+    handleAddFiled(item, index) {
+      item.fields.push({ fieldsType: 'input', submitFieldsName: '', matchFiledsName: '' });
     },
-    handleAddFiled(row, index) {
-      const rowNumber = row.mergeRowNum;
-      this.tableData[index].mergeRowNum++;
-      const itemObj = { btnName: row.btnName, requestUrl: '', isBatch: 0, fieldsType: '', fieldsName: '' };
-      this.tableData.splice(index + rowNumber, 0, itemObj);
+    handleLessFiled(item, pIndex, cIndex) {
+      item.fields.splice(cIndex, 1);
     },
     handleDeleteFiled(row, index) {
-      console.log(row);
-      console.log(index);
-      // this.tableData.splice(index, 1);
+      for (let i = index; i >= 0; i--) {
+        let item = this.tableData[i];
+        console.log(item);
+        if (item.mergeRowNum) {
+          item.mergeRowNum--;
+          break;
+        }
+      }
+      this.tableData.splice(index, 1);
     },
-
+    moveFn(index, index1, array) {
+      array[index] = array.splice(index1, 1, array[index])[0];
+      return array;
+    },
+    handerMoveUp(item, index) {
+      if (index === 0) {
+        this.$message.warning('已到最顶部');
+        return;
+      }
+      this.form.buttons = this.moveFn(index, index - 1, this.form.buttons);
+    },
+    handeMoveDown(item, index) {
+      if (index === this.form.buttons.length - 1) {
+        this.$message.warning('已到最底部');
+        return;
+      }
+      this.form.buttons = this.moveFn(index, index + 1, this.form.buttons);
+    },
     // 添加
     confirm() {
-      let form = this.form;
-      console.log(JSON.parse(JSON.stringify(this.tableData)));
-      return;
+      let form = JSON.parse(JSON.stringify(this.form));
+      form.buttons = JSON.stringify(form.buttons);
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.btnLoading = true;
@@ -220,7 +201,7 @@ export default {
       // this.$refs.form.resetFields();
       this.form = {
         id: 0,
-        buttons: [{ btnName: '', requestUrl: '', isBatch: 0, batchId: '', operateFields: [] }],
+        buttons: [],
         functions: undefined,
         dataUrl: undefined,
         isMultipe: undefined,
@@ -239,23 +220,28 @@ export default {
 [v-cloak] {
   display: none;
 }
-/deep/ .el-select {
-  display: block;
-}
-.checkbox-item {
-  margin-bottom: 10px;
-}
 .config-table-list {
-  padding: 0 0 20px 0;
-  border-top: 1px solid #b8d7f7;
+  padding: 20px 0 2px 0;
+  border-bottom: 1px solid #b8d7f7;
+  .list-operate-img {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    margin: 6px 0 0 10px;
+  }
+  .config-list-title {
+    width: 108px;
+    margin-bottom: 10px;
+    text-align: right;
+    color: #409eff;
+    font-size: 14px;
+  }
   .config-list-close {
-    min-height: 38px;
-    padding: 10px 0;
     text-align: right;
     img {
       cursor: pointer;
-      width: 18px;
-      height: 18px;
+      width: 28px;
+      height: 28px;
       margin-left: 10px;
       vertical-align: middle;
     }
@@ -264,6 +250,9 @@ export default {
 .config-table-operate {
   padding: 10px 0;
   text-align: right;
-  border-top: 1px solid #b8d7f7;
+  border-bottom: 1px solid #b8d7f7;
+}
+/deep/ .el-select {
+  display: block;
 }
 </style>

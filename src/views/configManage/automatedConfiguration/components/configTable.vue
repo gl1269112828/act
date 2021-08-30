@@ -1,7 +1,7 @@
 <template>
   <div class="config-table-container">
     <el-dialog title="配置表格" :visible="showConfigTable" :close-on-click-modal="false" width="1200px" top="4vh" @close="hidePopups()">
-      <el-form ref="form" :model="form" label-width="140px" size="small" v-loading="boxLoading" element-loading-text="拼命加载中">
+      <el-form ref="form" :model="form" label-width="140px" size="mini" v-loading="boxLoading" element-loading-text="拼命加载中">
         <el-row>
           <el-col :span="12">
             <el-form-item label="数据地址:" prop="dataUrl" :rules="[{ required: true, message: '请输入数据地址', trigger: 'blur' }]">
@@ -9,25 +9,47 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="是否具备多选:">
-              <el-switch v-model="form.isMultipe" :active-value="true" :inactive-value="false"></el-switch>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="是否具备操作列:">
-              <el-switch v-model="form.isRow" :active-value="true" :inactive-value="false"></el-switch>
-            </el-form-item>
+            <el-col :span="12">
+              <el-form-item label="是否具备多选:">
+                <el-switch v-model="form.isMultipe" :active-value="true" :inactive-value="false"></el-switch>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="是否具备操作列:">
+                <el-switch v-model="form.isRow" :active-value="true" :inactive-value="false"></el-switch>
+              </el-form-item>
+            </el-col>
           </el-col>
           <el-col :span="12" v-show="form.isRow">
             <el-form-item label="操作列宽度:" prop="rowWith">
               <el-input v-model="form.rowWith" placeholder="请输入操作列宽度" clearable />
             </el-form-item>
           </el-col>
+          <el-col :span="24" class="config-table-operate">
+            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddList">添加</el-button>
+          </el-col>
           <el-col class="config-table-list" :span="24" v-for="(item, i) in form.fields" :key="i" v-cloak>
-            <el-col class="config-list-close" :span="24">
-              <img :src="require('@/static/moveUp.png')" alt="" @click="handerMoveUp(item, i)" v-show="form.fields.length > 1" />
-              <img :src="require('@/static/moveDown.png')" alt="" @click="handeMoveDown(item, i)" v-show="form.fields.length > 1" />
-              <img :src="require('@/static/listClose.png')" alt="" @click="handerListLess(item, i)" v-show="form.fields.length > 1" />
+            <el-col :span="24">
+              <el-col :span="4">
+                <el-form-item label="是否添加:" label-width="90px">
+                  <el-switch v-model="item.isAdd" :active-value="1" :inactive-value="0"></el-switch>
+                </el-form-item>
+              </el-col>
+              <el-col :span="4">
+                <el-form-item label="是否编辑:" label-width="90px">
+                  <el-switch v-model="item.isEdit" :active-value="1" :inactive-value="0"></el-switch>
+                </el-form-item>
+              </el-col>
+              <el-col :span="4">
+                <el-form-item label="是否查询:" label-width="90px">
+                  <el-switch v-model="item.isQuery" :active-value="1" :inactive-value="0"></el-switch>
+                </el-form-item>
+              </el-col>
+              <el-col class="config-list-close" :span="12">
+                <img :src="require('@/static/moveUp.png')" alt="" @click="handerMoveUp(item, i)" v-show="form.fields.length > 1" />
+                <img :src="require('@/static/moveDown.png')" alt="" @click="handeMoveDown(item, i)" v-show="form.fields.length > 1" />
+                <img :src="require('@/static/listClose.png')" alt="" @click="handerListLess(item, i)" v-show="form.fields.length > 1" />
+              </el-col>
             </el-col>
             <el-col :span="6">
               <el-form-item label="名称:" label-width="90px" :rules="[{ required: true, message: '请输入名称', trigger: 'blur' }]" :prop="'fields.' + i + '.name'">
@@ -49,21 +71,6 @@
                 <el-input v-model="item.width" placeholder="请输入列宽" clearable />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="是否添加:" label-width="90px">
-                <el-switch v-model="item.isAdd" :active-value="1" :inactive-value="0"></el-switch>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="是否编辑:" label-width="90px">
-                <el-switch v-model="item.isEdit" :active-value="1" :inactive-value="0"></el-switch>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="是否查询:" label-width="90px">
-                <el-switch v-model="item.isQuery" :active-value="1" :inactive-value="0"></el-switch>
-              </el-form-item>
-            </el-col>
             <el-col :span="6" v-if="item.isQuery">
               <el-form-item label="查询类型:" label-width="90px">
                 <el-select v-model="item.queryType" placeholder="请选择查询条件">
@@ -79,7 +86,7 @@
               </el-form-item>
             </el-col>
           </el-col>
-          <el-col :span="24" class="config-table-operate">
+          <el-col :span="24" class="config-table-operate" style="border:none" v-if="form.fields.length > 3">
             <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddList">添加</el-button>
           </el-col>
         </el-row>
@@ -217,20 +224,16 @@ export default {
 [v-cloak] {
   display: none;
 }
-/deep/ .el-select {
-  display: block;
-}
+
 .config-table-list {
-  padding: 0 0 20px 0;
-  border-top: 1px solid #b8d7f7;
+  padding: 20px 0 2px 0;
+  border-bottom: 1px solid #b8d7f7;
   .config-list-close {
-    min-height: 38px;
-    padding: 10px 0;
     text-align: right;
     img {
       cursor: pointer;
-      width: 18px;
-      height: 18px;
+      width: 28px;
+      height: 28px;
       margin-left: 10px;
       vertical-align: middle;
     }
@@ -239,6 +242,9 @@ export default {
 .config-table-operate {
   padding: 10px 0;
   text-align: right;
-  border-top: 1px solid #b8d7f7;
+  border-bottom: 1px solid #b8d7f7;
+}
+/deep/ .el-select {
+  display: block;
 }
 </style>
