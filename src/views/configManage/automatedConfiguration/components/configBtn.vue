@@ -1,10 +1,8 @@
 <template>
   <div class="config-btn-container">
     <el-dialog title="配置按钮" :visible="showConfigBtn" :close-on-click-modal="false" width="1400px" top="4vh" @close="hidePopups()">
-      <!-- <el-checkbox-group ></el-checkbox-group> -->
-      <el-checkbox class="checkbox-item" v-for="(item, i) in operateChecks" :label="item.name" :key="i" @change="handleChecked($event, item.name)">{{ item.name }}</el-checkbox>
-      <el-table :data="tableData" :span-method="tableMethod" border size="mini">
-        <el-table-column label="按钮名称" align="center">
+      <el-table v-loading="boxLoading" :data="tableData" :span-method="tableMethod" border size="mini">
+        <el-table-column label="按钮名称" align="center" width="80px">
           <template slot-scope="scope">
             <el-tag size="mini">{{ scope.row.btnName }}</el-tag>
           </template>
@@ -14,7 +12,7 @@
             <el-input v-model="scope.row.requestUrl" placeholder="请输入请求地址" size="mini" clearable />
           </template>
         </el-table-column>
-        <el-table-column prop="address" label="是否批量操作" align="center">
+        <el-table-column prop="address" label="是否批量操作" align="center" width="80px">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.isBatch" :active-value="1" :inactive-value="0"></el-switch>
           </template>
@@ -27,9 +25,14 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column label="字段名" align="center">
+          <el-table-column label="提交字段名" align="center">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.fieldsName" placeholder="请输入字段名" size="mini" clearable />
+              <el-input v-model="scope.row.submitFieldsName" placeholder="请输入提交字段名" size="mini" clearable />
+            </template>
+          </el-table-column>
+          <el-table-column label="匹配字段名" align="center">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.matchFiledsName" placeholder="请输入匹配字段名" size="mini" clearable />
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="80px">
@@ -41,8 +44,6 @@
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button type="text" size="mini" @click="handleAddFiled(scope.row, scope.$index)">添加字段</el-button>
-            <el-button type="text" size="mini" @click="handerMoveUp(scope.row)">上移</el-button>
-            <el-button type="text" size="mini" @click="handeMoveDown(scope.row)">下移</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -95,7 +96,7 @@
 </template>
 <script>
 import { getOperate } from '@/api/system';
-import { getConfigTable, addOrEditAutomatedConfigTable } from '@/api/configManage';
+import { getConfigTable, getMenuButtons, addOrEditAutomatedConfigTable } from '@/api/configManage';
 export default {
   props: {
     showConfigBtn: {
@@ -110,16 +111,17 @@ export default {
   data() {
     return {
       boxLoading: false,
+
       btnLoading: false,
       configQueryList: this.$store.state.common.configQueryList,
       operateChecks: [],
       tableData: [
-        { btnName: '测试', requestUrl: '', isBatch: 0, fieldsType: 'input', fieldsName: '', mergeRowNum: 4 },
-        { btnName: '', requestUrl: '', isBatch: 0, fieldsType: 'input', fieldsName: '' },
-        { btnName: '', requestUrl: '', isBatch: 0, fieldsType: 'input', fieldsName: '' },
-        { btnName: '', requestUrl: '', isBatch: 0, fieldsType: 'select', fieldsName: '' }
+        { btnName: '测试', requestUrl: '', isBatch: 0, fieldsType: 'input', fieldsName: '', mergeRowNum: 1 },
+        { btnName: '测试', requestUrl: '', isBatch: 0, fieldsType: 'input', fieldsName: '', mergeRowNum: 2 },
+        { btnName: '测试', requestUrl: '', isBatch: 0, fieldsType: 'input', fieldsName: '', mergeRowNum: 3 },
+        { btnName: '测试', requestUrl: '', isBatch: 0, fieldsType: 'select', fieldsName: '', mergeRowNum: 4 }
       ],
-
+      mergeColumnIndexs: [0, 1, 2, 7],
       form: {
         id: 0,
         buttons: [{ btnName: '', requestUrl: '', isBatch: 0, batchId: '', operateFields: [] }],
@@ -143,35 +145,24 @@ export default {
     async getData() {
       try {
         this.boxLoading = true;
+        const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
+        const buttons = await getMenuButtons({ roleId: roleId, key: this.itemObj.key });
 
-        // const authoritys = JSON.parse(sessionStorage.getItem('authoritys')).filter(item => item !== '1003');
-
-        const opreateRes = await getOperate({ dynamicFilters: [] });
-
-        this.operateChecks = opreateRes.data.datas.filter(item => item.unique !== 1003);
-
-        // const operates = opreateRes.data.datas.filter(itemI => authoritys.indexOf(itemI.unique.toString()) > -1);
-
-        console.log(JSON.parse(JSON.stringify(operates)));
-
-        // this.form.buttons = operates.map(item => {
-        //   let obj = { btnName: item.name, requestUrl: '', isBatch: 0, batchId: '', operateFields: [] };
-        //   return obj;
-        // });
-
-        const configRes = await getConfigTable({
-          dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }]
-        });
-        console.log(JSON.parse(JSON.stringify(configRes)));
-
-        // if (data.datas.length > 0) {
-        //   data.datas[0].fields = JSON.parse(data.datas[0].fields);
-        //   Object.keys(this.form).forEach(key => {
-        //     this.form[key] = data.datas[0][key];
+        // this.tableData = buttons.data.datas
+        //   .filter(item => item.unique !== '1003')
+        //   .map(items => {
+        //     {
+        //       return {
+        //         btnName: items.name,
+        //         requestUrl: '',
+        //         isBatch: 0,
+        //         fieldsType: 'input',
+        //         submitFieldsName: '',
+        //         matchFiledsName: '',
+        //         mergeRowNum: 1
+        //       };
+        //     }
         //   });
-        // } else {
-        //   this.form.id = 0;
-        // }
 
         this.boxLoading = false;
       } catch (error) {
@@ -179,27 +170,17 @@ export default {
       }
     },
     tableMethod({ row, column, rowIndex, columnIndex }) {
-      if (columnIndex === 0 || columnIndex === 1 || columnIndex === 2 || columnIndex === 6) {
-        if (row.btnName) {
-          return {
-            rowspan: row.mergeRowNum,
-            colspan: 1
-          };
-        } else {
-          return {
-            rowspan: 0,
-            colspan: 0
-          };
-        }
-      }
-    },
-    handleChecked(value, name) {
-      if (value) {
-        const itemObj = { btnName: name, requestUrl: '', isBatch: 0, fieldsType: '', fieldsName: '', mergeRowNum: 1 };
-        this.tableData.push(itemObj);
-      } else {
-        this.tableData = this.tableData.filter(item => item.btnName !== name);
-      }
+      // if (this.mergeColumnIndexs.indexOf(columnIndex) > -1) {
+      //   return {
+      //     rowspan: row.mergeRowNum,
+      //     colspan: 1
+      //   };
+      // } else {
+      //   return {
+      //     rowspan: 0,
+      //     colspan: 0
+      //   };
+      // }
     },
     handleAddFiled(row, index) {
       const rowNumber = row.mergeRowNum;
@@ -210,24 +191,7 @@ export default {
     handleDeleteFiled(row, index) {
       console.log(row);
       console.log(index);
-    },
-    moveFn(index, index1, array) {
-      array[index] = array.splice(index1, 1, array[index])[0];
-      return array;
-    },
-    handerMoveUp(item, index) {
-      // if (index === 0) {
-      //   this.$message.warning('已到最顶部');
-      //   return;
-      // }
-      // this.form.buttons = this.moveFn(index, index - 1, this.form.buttons);
-    },
-    handeMoveDown(item, index) {
-      // if (index === this.form.buttons.length - 1) {
-      //   this.$message.warning('已到最底部');
-      //   return;
-      // }
-      // this.form.buttons = this.moveFn(index, index + 1, this.form.buttons);
+      // this.tableData.splice(index, 1);
     },
 
     // 添加

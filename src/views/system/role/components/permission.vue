@@ -53,11 +53,24 @@ export default {
     async getData() {
       this.boxLoading = true;
       try {
-        const { data } = await permissionRoleTree({
-          roleId: this.itemObj.id
-        });
+        const { data } = await permissionRoleTree({ roleId: this.itemObj.id });
         this.treeData = data.list;
-        this.defaultChecked = data.menuIds;
+        let childrenIds = [];
+        const recursionFn = function(array) {
+          array.forEach(item => {
+            if (item.children && item.children.length) {
+              recursionFn(item.children);
+            } else {
+              childrenIds.push(item.id);
+            }
+          });
+        };
+        recursionFn(data.list);
+        this.defaultChecked = data.menuIds.filter(item => {
+          if (childrenIds.indexOf(item) > -1) {
+            return item;
+          }
+        });
         this.form.menuIds = data.menuIds;
         this.form.roleId = this.itemObj.id;
         this.boxLoading = false;
@@ -74,6 +87,7 @@ export default {
     // 添加
     confirm() {
       let form = this.form;
+      console.log(JSON.parse(JSON.stringify(form)));
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.btnLoading = true;
@@ -94,6 +108,7 @@ export default {
       this.$emit('hidePopups');
       this.$refs.form.resetFields();
       this.treeData = [];
+      this.defaultChecked = [];
     },
     cancel() {
       this.hidePopups();

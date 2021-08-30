@@ -7,3 +7,4 @@ export function addOrEditAutomatedConfigTable(data) { return request({ url: '/ap
 
 export function getPageDetail(data) { return request({ url: `/api/v1/pages/getPageDetail?key=${data}`, method: 'get' }) }
 
+export function getMenuButtons(data) { return request({ url: '/api/v1/sysOperate/getMenuOfOperateByRole', method: 'post', data }) }
