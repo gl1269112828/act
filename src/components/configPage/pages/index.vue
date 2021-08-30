@@ -3,7 +3,7 @@
     <QueryModule class="config-page-header" :queryData.sync="queryData" @handleSearch="handleSearch" />
     <OperateBtns :operateButtons="operateButtons" @handleOperate="handleOperate" />
     <LTable :isLoading="isLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :pageData="pageData" :selectTableData.sync="selectTableData" :getTableList="getTableList"></LTable>
-    <PublicPopups :showOperate="isOperate" :operateObj="operateObj" :operateFields="operateFields" v-on:hidePopups="isOperate = false" />
+    <PublicPopups :showOperate="isOperate" :operateObj="operateObj" :operateFields="operateFields" :selectTableData="selectTableData" v-on:hidePopups="isOperate = false" />
   </div>
 </template>
 A
@@ -11,7 +11,6 @@ A
 <script>
 import request from '@/utils/request';
 import { getPageDetail } from '@/api/configManage';
-import { getOperate } from '@/api/system';
 import QueryModule from '../components/queryModule';
 import OperateBtns from '../components/operateBtns';
 import PublicPopups from '../components/publicPopups';
@@ -112,10 +111,27 @@ export default {
           this.$message.warning('最多选择一条数据');
           return;
         }
-        console.log(this.selectTableData);
-        console.log(item);
-        this.operateObj = item;
-        this.isOperate = true;
+
+        if (item.fields.length === 1 && item.fields[0].fieldsType === 'submit') {
+          this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          })
+            .then(() => {
+              let delData = {
+                [item.fields[0].submitFieldsName]: this.selectTableData.map(items => items[item.fields[0].matchFiledsName])
+              };
+              request({ url: item.requestUrl, method: 'post', data: delData }).then(response => {
+                this.$notify.success({ title: `${item.name}成功` });
+                this.getTableList();
+              });
+            })
+            .catch(err => {});
+        } else {
+          this.operateObj = item;
+          this.isOperate = true;
+        }
       }
     }
   }

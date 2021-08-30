@@ -14,13 +14,14 @@ module.exports = {
     lintOnSave: false,
     productionSourceMap: false,
     devServer: {
-        // host: '10.10.10.224',
-        port: 8029,//端口号
+        host: '127.0.0.1',
+        port: 80,//端口号
         open: true,//配置自动启动浏览器
         overlay: {
             warnings: true,
             errors: true
         },
+        disableHostCheck:true,
         proxy: {
             '/': {
                 target: 'http://chebb.top:8099',

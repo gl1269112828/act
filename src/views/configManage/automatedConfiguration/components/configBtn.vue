@@ -62,7 +62,6 @@
   </div>
 </template>
 <script>
-import { getOperate } from '@/api/system';
 import { getConfigTable, getMenuButtons, addOrEditAutomatedConfigTable } from '@/api/configManage';
 export default {
   props: {
@@ -107,29 +106,47 @@ export default {
 
         Object.keys(configTableData.data.datas[0]).forEach(async key => {
           if (key === 'buttons') {
+            const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
+            let buttons = await getMenuButtons({ roleId: roleId, key: this.itemObj.key });
+            buttons = buttons.data.datas.filter(item => item.unique !== '1003');
             if (!configTableData.data.datas[0][key]) {
-              const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
-              const buttons = await getMenuButtons({ roleId: roleId, key: this.itemObj.key });
-              this.form.buttons = buttons.data.datas
-                .filter(item => item.unique !== '1003')
-                .map(items => {
-                  {
-                    return {
-                      name: items.name,
-                      requestUrl: '',
-                      isBatch: 0,
-                      fields: [
-                        {
-                          fieldsType: 'input',
-                          submitFieldsName: '',
-                          matchFiledsName: ''
-                        }
-                      ]
-                    };
-                  }
-                });
+              this.form.buttons = buttons.map(items => {
+                {
+                  return {
+                    name: items.name,
+                    requestUrl: '',
+                    isBatch: 0,
+                    fields: [
+                      {
+                        fieldsType: 'input',
+                        submitFieldsName: '',
+                        matchFiledsName: ''
+                      }
+                    ]
+                  };
+                }
+              });
             } else {
-              this.form[key] = JSON.parse(configTableData.data.datas[0][key]);
+              this.form.buttons = buttons.map((itemK, index) => {
+                let obj = new Object();
+                if (JSON.parse(configTableData.data.datas[0][key])[index]) {
+                  obj = Object.assign(itemK, JSON.parse(configTableData.data.datas[0][key])[index]);
+                } else {
+                  obj = {
+                    name: itemK.name,
+                    requestUrl: '',
+                    isBatch: 0,
+                    fields: [
+                      {
+                        fieldsType: 'input',
+                        submitFieldsName: '',
+                        matchFiledsName: ''
+                      }
+                    ]
+                  };
+                }
+                return obj;
+              });
             }
           } else {
             this.form[key] = configTableData.data.datas[0][key];

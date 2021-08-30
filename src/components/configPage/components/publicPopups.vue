@@ -2,7 +2,13 @@
   <div class="publicPopups">
     <el-dialog :title="operateObj.name" :visible="showOperate" :close-on-click-modal="false" width="800px" top="10vh" @close="hidePopups()">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="small">
-        <el-form-item :label="item.name + ':'" v-for="(item, i) in formList" :key="i" prop="userName">
+        <el-form-item
+          :label="item.name + ':'"
+          v-for="(item, i) in formList"
+          :key="i"
+          prop="userName"
+          v-show="(operateObj.name === '添加' && item.isAdd) || (operateObj.name === '编辑' && item.isEdit)"
+        >
           <el-input v-model="form[item.field]" :placeholder="'请输入' + item.name" clearable v-if="item.queryType === 'input'" />
         </el-form-item>
         <!--<el-form-item label="角色:" prop="roleId">
@@ -34,6 +40,10 @@ export default {
     operateFields: {
       type: Array,
       default: () => []
+    },
+    selectTableData: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -58,17 +68,14 @@ export default {
   methods: {
     async getData() {
       let form = this.form;
-      this.formList = JSON.parse(JSON.stringify(this.operateFields)).filter(item => {
-        if (this.operateObj.name === '添加' && item.isAdd) {
-          return item;
-        }
-        if (this.operateObj.name === '编辑' && item.isEdit) {
-          return item;
-        }
-      });
+      this.formList = JSON.parse(JSON.stringify(this.operateFields)).map(item => item);
       this.formList.forEach(item => {
         this.$set(form, item.field, undefined);
       });
+      if (this.operateObj.name === '编辑') {
+        Object.assign(this.form, this.selectTableData[0]);
+      }
+      console.log(this.form);
     },
     // 添加
     confirm() {

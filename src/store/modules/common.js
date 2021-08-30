@@ -15,7 +15,8 @@ const getDefaultState = () => {
     configQueryList: [
       { name: '输入框', value: 'input' },
       { name: '选择框', value: 'select' },
-      { name: '日期框', value: 'date' }
+      { name: '日期框', value: 'date' },
+      { name: '纯提交', value: 'submit' }
     ]
   };
 };
