@@ -9,7 +9,7 @@ function resolve(dir) {
 module.exports = {
     runtimeCompiler: true,
     publicPath: '/',
-    outputDir: 'autonomous-configuration-template',//打包名
+    outputDir: 'dist',//打包名
     // assetsDir: 'static',//静态资源目录
     lintOnSave: false,
     productionSourceMap: false,

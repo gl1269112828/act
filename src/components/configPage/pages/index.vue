@@ -111,7 +111,6 @@ export default {
           this.$message.warning('最多选择一条数据');
           return;
         }
-
         if (item.fields.length === 1 && item.fields[0].fieldsType === 'submit') {
           this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
             confirmButtonText: '确定',

@@ -6,7 +6,7 @@
           :label="item.name + ':'"
           v-for="(item, i) in formList"
           :key="i"
-          prop="userName"
+          :prop="item.field"
           v-show="(operateObj.name === '添加' && item.isAdd) || (operateObj.name === '编辑' && item.isEdit)"
         >
           <el-input v-model="form[item.field]" :placeholder="'请输入' + item.name" clearable v-if="item.queryType === 'input'" />
@@ -51,11 +51,7 @@ export default {
       btnLoading: false,
       formList: [],
       form: {},
-      rules: {
-        // userName: [{ required: true, message: '请输入用户名称', trigger: 'blur' }], //用户名称
-        // password: [{ required: true, message: '请输入密码', trigger: 'blur' }], //密码
-        // roleId: [{ required: true, message: '请选择角色', trigger: 'change' }] //角色
-      }
+      rules: {}
     };
   },
   watch: {
@@ -70,12 +66,14 @@ export default {
       let form = this.form;
       this.formList = JSON.parse(JSON.stringify(this.operateFields)).map(item => item);
       this.formList.forEach(item => {
+        if (item.isRequired) {
+          this.rules[item.field] = [{ required: true, message: `请输入${item.name}`, trigger: 'blur' }];
+        }
         this.$set(form, item.field, undefined);
       });
       if (this.operateObj.name === '编辑') {
         Object.assign(this.form, this.selectTableData[0]);
       }
-      console.log(this.form);
     },
     // 添加
     confirm() {

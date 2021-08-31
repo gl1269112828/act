@@ -45,6 +45,11 @@
                   <el-switch v-model="item.isQuery" :active-value="1" :inactive-value="0"></el-switch>
                 </el-form-item>
               </el-col>
+              <el-col :span="4">
+                <el-form-item label="是否必填:" label-width="90px">
+                  <el-switch v-model="item.isRequired" :active-value="1" :inactive-value="0"></el-switch>
+                </el-form-item>
+              </el-col>
               <el-col class="config-list-close" :span="12">
                 <img :src="require('@/static/moveUp.png')" alt="" @click="handerMoveUp(item, i)" v-show="form.fields.length > 1" />
                 <img :src="require('@/static/moveDown.png')" alt="" @click="handeMoveDown(item, i)" v-show="form.fields.length > 1" />
@@ -125,7 +130,7 @@ export default {
         isMultipe: undefined,
         isRow: undefined,
         rowWith: 180,
-        fields: [{ name: '', field: '', url: '', width: 0, isAdd: 0, isEdit: 0, isQuery: 0, queryType: 'input', condition: 'Like' }]
+        fields: [{ name: '', field: '', url: '', width: 0, isAdd: 0, isEdit: 0, isQuery: 0, isRequired: 0, queryType: 'input', condition: 'Like' }]
       }
     };
   },
@@ -157,7 +162,7 @@ export default {
       }
     },
     handleAddList() {
-      this.form.fields.push({ name: '', field: '', url: '', width: 0, isAdd: 0, isEdit: 0, isQuery: 0, queryType: 'input', condition: 'Like' });
+      this.form.fields.push({ name: '', field: '', url: '', width: 0, isAdd: 0, isEdit: 0, isQuery: 0, isRequired: 0, queryType: 'input', condition: 'Like' });
     },
     handerListLess(item, index) {
       this.form.fields.splice(index, 1);
@@ -211,7 +216,7 @@ export default {
         isMultipe: undefined,
         isRow: undefined,
         rowWith: 180,
-        fields: [{ name: '', field: '', url: '', width: 0, isAdd: 0, isEdit: 0, isQuery: 0, queryType: 'input', condition: 'Like' }]
+        fields: [{ name: '', field: '', url: '', width: 0, isAdd: 0, isEdit: 0, isQuery: 0, isRequired: 0, queryType: 'input', condition: 'Like' }]
       };
     },
     cancel() {
