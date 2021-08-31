@@ -50,7 +50,7 @@
                   <el-switch v-model="item.isRequired" :active-value="1" :inactive-value="0"></el-switch>
                 </el-form-item>
               </el-col>
-              <el-col class="config-list-close" :span="12">
+              <el-col class="config-list-close" :span="8">
                 <img :src="require('@/static/moveUp.png')" alt="" @click="handerMoveUp(item, i)" v-show="form.fields.length > 1" />
                 <img :src="require('@/static/moveDown.png')" alt="" @click="handeMoveDown(item, i)" v-show="form.fields.length > 1" />
                 <img :src="require('@/static/listClose.png')" alt="" @click="handerListLess(item, i)" v-show="form.fields.length > 1" />
