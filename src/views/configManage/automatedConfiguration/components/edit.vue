@@ -17,7 +17,7 @@
   </div>
 </template>
 <script>
-import { addOrEditAutomatedConfiguration } from '@/api/system';
+import { addOrEditAutomatedConfiguration } from '@/api/configManage';
 export default {
   props: {
     showPageEdit: {
@@ -70,7 +70,7 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.btnLoading = true;
-          addOrEditUser(form)
+          addOrEditAutomatedConfiguration(form)
             .then(response => {
               this.hidePopups();
               this.$notify.success({ title: '修改成功' });

@@ -14,16 +14,6 @@
                 <el-switch v-model="form.isMultipe" :active-value="true" :inactive-value="false"></el-switch>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-form-item label="是否具备操作列:">
-                <el-switch v-model="form.isRow" :active-value="true" :inactive-value="false"></el-switch>
-              </el-form-item>
-            </el-col>
-          </el-col>
-          <el-col :span="12" v-show="form.isRow">
-            <el-form-item label="操作列宽度:" prop="rowWith">
-              <el-input v-model="form.rowWith" placeholder="请输入操作列宽度" clearable />
-            </el-form-item>
           </el-col>
           <el-col :span="24" class="config-table-operate">
             <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddList">添加</el-button>
@@ -128,8 +118,6 @@ export default {
         functions: undefined,
         dataUrl: undefined,
         isMultipe: undefined,
-        isRow: undefined,
-        rowWith: 180,
         fields: [{ name: '', field: '', url: '', width: 0, isAdd: 0, isEdit: 0, isQuery: 0, isRequired: 0, queryType: 'input', condition: 'Like' }]
       }
     };
@@ -214,8 +202,6 @@ export default {
         functions: undefined,
         dataUrl: undefined,
         isMultipe: undefined,
-        isRow: undefined,
-        rowWith: 180,
         fields: [{ name: '', field: '', url: '', width: 0, isAdd: 0, isEdit: 0, isQuery: 0, isRequired: 0, queryType: 'input', condition: 'Like' }]
       };
     },

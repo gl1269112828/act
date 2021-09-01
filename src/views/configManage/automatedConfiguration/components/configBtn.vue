@@ -20,7 +20,7 @@
                 <el-input v-model="item.name" placeholder="请输入按钮名称" disabled />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="12">
               <el-form-item label="请求地址:" :rules="[{ required: true, message: '请输入请求地址', trigger: 'blur' }]" :prop="'buttons.' + i + '.requestUrl'">
                 <el-input v-model="item.requestUrl" placeholder="请输入请求地址" clearable />
               </el-form-item>

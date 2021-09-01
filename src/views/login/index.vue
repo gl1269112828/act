@@ -26,8 +26,8 @@ export default {
     return {
       loading: false,
       form: {
-        userName: 'admin', //账号
-        password: '123qwe' //密码
+        userName: '', //账号
+        password: '' //密码
       },
       rules: {
         userName: [{ required: true, message: '请输入账号', trigger: 'blur' }],
