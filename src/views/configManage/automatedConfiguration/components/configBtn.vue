@@ -31,7 +31,7 @@
                 <el-col :span="6">
                   <el-form-item label="类型:">
                     <el-select v-model="itemJ.fieldsType" placeholder="请选择类型">
-                      <el-option v-for="(itemS, s) in configQueryList" :key="s" :label="itemS.name" :value="itemS.value"></el-option>
+                      <el-option v-for="(itemS, s) in configQueryList" :key="s" :label="itemS.key" :value="itemS.value"></el-option>
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -62,7 +62,7 @@
   </div>
 </template>
 <script>
-import { getConfigTable, getMenuButtons, addOrEditAutomatedConfigTable } from '@/api/configManage';
+import { getDictionaryByGroup, getConfigTable, getMenuButtons, addOrEditAutomatedConfigTable } from '@/api/configManage';
 export default {
   props: {
     showConfigBtn: {
@@ -78,7 +78,7 @@ export default {
     return {
       boxLoading: false,
       btnLoading: false,
-      configQueryList: this.$store.state.common.configQueryList,
+      configQueryList: [],
       form: {
         id: 0,
         buttons: [],
@@ -102,6 +102,8 @@ export default {
     async getData() {
       try {
         this.boxLoading = true;
+        this.configQueryList = (await getDictionaryByGroup('FieldType')).data;
+
         const configTableData = await getConfigTable({ dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }] });
 
         Object.keys(configTableData.data.datas[0]).forEach(async key => {

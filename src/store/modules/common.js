@@ -2,22 +2,7 @@ import Layout from '@/layout/index';
 
 const getDefaultState = () => {
   return {
-    dynamicRouter: [],
-    conditionList: [
-      { name: '等于', value: 'Equal' },
-      { name: '不等于', value: 'NotEqual' },
-      { name: '包含', value: 'Like' },
-      { name: '大于', value: 'GreaterThan' },
-      { name: '大于等于', value: 'GreaterThanOrEqual' },
-      { name: '小于', value: 'LessThan' },
-      { name: '小于等于', value: 'LessThanOrEqual' }
-    ],
-    configQueryList: [
-      { name: '输入框', value: 'input' },
-      { name: '选择框', value: 'select' },
-      { name: '日期框', value: 'date' },
-      { name: '纯提交', value: 'submit' }
-    ]
+    dynamicRouter: []
   };
 };
 const state = getDefaultState();
@@ -58,12 +43,12 @@ const actions = {
           cObj.meta['title'] = itemJ.title;
           cObj.meta['icon'] = itemJ.icon;
           cObj['children'] = new Array();
-          // cObj.meta['id'] = itemJ.id;
-          // cObj.meta['key'] = itemJ.key || '';
           if (itemJ.children && itemJ.children.length) {
             recursionFn(cObj, pcPath, itemJ.children);
           } else {
             if (!!itemJ.key) {
+              cObj.meta['key'] = itemJ.key || '';
+              cObj.meta['id'] = itemJ.id || '';
               cObj.path = purePath;
               cObj['component'] = resolve => require(['@/components/configPage/pages/index.vue'], resolve);
               brr[0].children[index] = cObj;
@@ -89,9 +74,9 @@ const actions = {
           pObj.meta['title'] = item.title;
           pObj.meta['icon'] = item.icon;
           pObj['children'] = new Array();
-          // pObj.meta['id'] = item.id;
-          // pObj.meta['key'] = item.key || '';
           if (!!item.key) {
+            pObj.meta['key'] = item.key || '';
+            pObj.meta['id'] = item.id || '';
             pObj['component'] = resolve => require(['@/components/configPage/pages/index.vue'], resolve);
             brr[0].children[index] = pObj;
             index++;

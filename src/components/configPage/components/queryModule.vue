@@ -49,4 +49,7 @@ export default {
 [v-cloak] {
   display: none;
 }
+/deep/ .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item{
+  margin-bottom: 10px;
+}
 </style>

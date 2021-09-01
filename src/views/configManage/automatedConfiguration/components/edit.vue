@@ -34,6 +34,7 @@ export default {
       boxLoading: false,
       btnLoading: false,
       form: {
+        id: undefined,
         name: undefined,
         key: undefined
       },

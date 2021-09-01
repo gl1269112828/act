@@ -9,7 +9,7 @@
             <span slot="title">{{ item.title }}</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item :index="!!itemJ.key ? itemJ.path : itemJ.path" v-for="(itemJ, j) in item.children" :key="j">
+            <el-menu-item :index="itemJ.path" v-for="(itemJ, j) in item.children" :key="j">
               <i :class="itemJ.icon"></i>
               {{ itemJ.title }}
             </el-menu-item>
@@ -34,7 +34,6 @@ export default {
   },
   data() {
     return {
-      // menuList: this.$store.getters.menus,
       defaultActive: ''
     };
   },

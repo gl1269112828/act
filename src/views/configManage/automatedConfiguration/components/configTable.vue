@@ -69,14 +69,14 @@
             <el-col :span="6" v-if="item.isQuery">
               <el-form-item label="查询类型:" label-width="90px">
                 <el-select v-model="item.queryType" placeholder="请选择查询条件">
-                  <el-option v-for="(items, i) in configQueryList" :key="i" :label="items.name" :value="items.value"></el-option>
+                  <el-option v-for="(items, i) in configQueryList" :key="i" :label="items.key" :value="items.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6" v-if="item.isQuery">
               <el-form-item label="查询条件:" label-width="90px">
                 <el-select v-model="item.condition" placeholder="请选择查询条件">
-                  <el-option v-for="(items, i) in conditionList" :key="i" :label="items.name" :value="items.value"></el-option>
+                  <el-option v-for="(items, i) in conditionList" :key="i" :label="items.key" :value="items.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -94,7 +94,7 @@
   </div>
 </template>
 <script>
-import { getConfigTable, addOrEditAutomatedConfigTable } from '@/api/configManage';
+import { getDictionaryByGroup, getConfigTable, addOrEditAutomatedConfigTable } from '@/api/configManage';
 export default {
   props: {
     showConfigTable: {
@@ -110,8 +110,8 @@ export default {
     return {
       boxLoading: false,
       btnLoading: false,
-      conditionList: this.$store.state.common.conditionList,
-      configQueryList: this.$store.state.common.configQueryList,
+      conditionList: [],
+      configQueryList: [],
       form: {
         id: 0,
         buttons: undefined,
@@ -133,13 +133,16 @@ export default {
     async getData() {
       try {
         this.boxLoading = true;
-        const { data } = await getConfigTable({
+        this.conditionList = (await getDictionaryByGroup('Condition')).data;
+        this.configQueryList = (await getDictionaryByGroup('FieldType')).data;
+
+        const configTableData = await getConfigTable({
           dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }]
         });
-        if (data.datas.length > 0) {
-          data.datas[0].fields = JSON.parse(data.datas[0].fields);
+        if (configTableData.data.datas.length > 0) {
+          configTableData.data.datas[0].fields = JSON.parse(configTableData.data.datas[0].fields);
           Object.keys(this.form).forEach(key => {
-            this.form[key] = data.datas[0][key];
+            this.form[key] = configTableData.data.datas[0][key];
           });
         } else {
           this.form.id = 0;

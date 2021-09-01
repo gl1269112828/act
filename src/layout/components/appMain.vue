@@ -7,17 +7,18 @@
 <script>
 export default {
   data() {
-    return {}
+    return {};
   },
-  methods: {
-
-  }
-}
+  methods: {}
+};
 </script>
 
 <style lang="scss" scoped>
 .app-main-container {
-  height: calc(100vh - 80px);
+  height: calc(100vh - 114px);
+  margin: 2px;
   padding: 10px;
+  background-color: #fff;
+  box-sizing: border-box;
 }
 </style>

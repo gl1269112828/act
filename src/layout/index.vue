@@ -1,7 +1,6 @@
 <template>
   <section class="definition-flex layout-container">
     <sidebar></sidebar>
-    <!-- :style="{ width: dynamicWidth }" -->
     <section class="layout-r">
       <navBar></navBar>
       <appMain></appMain>
@@ -37,6 +36,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/sidebarConfig.scss';
 .layout-container {
+  background-color: #f5f5f5;
   flex: auto;
   box-sizing: border-box;
   .layout-r {

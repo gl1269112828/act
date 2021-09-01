@@ -28,7 +28,4 @@ export default {
 [v-cloak] {
   display: none;
 }
-.operate-btns-container {
-  margin-bottom: 18px;
-}
 </style>

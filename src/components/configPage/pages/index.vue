@@ -1,12 +1,21 @@
 <template>
-  <div class="config-page-container">
+  <div class="config-page-container" v-if="showPage === 1">
     <QueryModule class="config-page-header" :queryData.sync="queryData" @handleSearch="handleSearch" />
     <OperateBtns :operateButtons="operateButtons" @handleOperate="handleOperate" />
-    <LTable :isLoading="isLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :pageData="pageData" :selectTableData.sync="selectTableData" :getTableList="getTableList"></LTable>
+    <LTable
+      class="l-table"
+      :isLoading="isLoading"
+      :tableHeader="tableHeader"
+      :tableData="tableData"
+      :total="total"
+      :pageData="pageData"
+      :selectTableData.sync="selectTableData"
+      :getTableList="getTableList"
+    ></LTable>
     <PublicPopups :showOperate="isOperate" :operateObj="operateObj" :operateFields="operateFields" :selectTableData="selectTableData" v-on:hidePopups="isOperate = false" />
   </div>
+  <el-empty description="暂无配置信息" v-else-if="showPage === 2"></el-empty>
 </template>
-A
 
 <script>
 import request from '@/utils/request';
@@ -24,6 +33,7 @@ export default {
   data() {
     return {
       isLoading: false,
+      showPage: 0,
       pageData: {},
 
       queryData: [],
@@ -44,7 +54,8 @@ export default {
     this.getData(this.$route.query.key);
   },
   watch: {
-    $route(to, from) {
+    $route(to, form) {
+      Object.assign(this.$data, this.$options.data());
       this.getData(to.query.key);
     }
   },
@@ -52,27 +63,34 @@ export default {
     async getData(key) {
       try {
         this.isLoading = true;
-
         const { data } = await getPageDetail(key);
-        this.pageData = data.pageConfigs;
-        const fields = JSON.parse(data.pageConfigs.fields);
-        this.operateButtons = JSON.parse(data.pageConfigs.buttons);
+        if (data.pageConfigs) {
+          this.showPage = 1;
+          
+          this.pageData = data.pageConfigs;
+          const fields = JSON.parse(data.pageConfigs.fields);
 
-        let headers = [{ label: 'selection', width: 60 }];
-        let queries = [];
-
-        fields.forEach(item => {
-          headers.push({ label: item.name, prop: item.field, width: item.width });
-          if (item.isQuery) {
-            queries.push({ name: item.name, queryType: item.queryType, field: item.field, operate: item.condition, value: '' });
+          if (!!data.pageConfigs.buttons) {
+            this.operateButtons = JSON.parse(data.pageConfigs.buttons);
           }
-        });
 
-        this.operateFields = fields;
-        this.tableHeader = headers;
-        this.queryData = queries;
+          let headers = [{ label: 'selection', width: 60 }];
+          let queries = [];
 
-        await this.getTableList();
+          fields.forEach(item => {
+            headers.push({ label: item.name, prop: item.field, width: item.width });
+            if (item.isQuery) {
+              queries.push({ name: item.name, queryType: item.queryType, field: item.field, operate: item.condition, value: '' });
+            }
+          });
+
+          this.operateFields = fields;
+          this.tableHeader = headers;
+          this.queryData = queries;
+          await this.getTableList();
+        } else {
+          this.showPage = 2;
+        }
 
         this.isLoading = false;
       } catch (error) {
@@ -137,4 +155,14 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.l-table {
+  margin-top: 10px;
+}
+.config-page-prompt {
+  margin-top: 100px;
+  text-align: center;
+  font-size: 20px;
+  color: #999;
+}
+</style>

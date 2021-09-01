@@ -95,7 +95,6 @@ export default {
             .then(response => {
               this.hidePopups();
               this.$notify.success({ title: '配置权限成功' });
-              this.$parent.getTableList();
               this.btnLoading = false;
             })
             .catch(err => {

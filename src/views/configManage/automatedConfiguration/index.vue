@@ -38,7 +38,7 @@ import EditPopups from './components/edit';
 import ConfigTablePopups from './components/configTable';
 import ConfigBtnPopups from './components/configBtn';
 
-import { getAutomatedConfiguration } from '@/api/configManage';
+import { getAutomatedConfiguration, deleteConfiguration } from '@/api/configManage';
 export default {
   name: 'sysUser',
   components: {
@@ -122,11 +122,8 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          deleteUser({ id: scope.id }).then(response => {
-            this.$message({
-              type: 'success',
-              message: '删除成功'
-            });
+          deleteConfiguration({ id: scope.id }).then(response => {
+            this.$notify.success({ title: '删除成功' });
             this.getTableList();
           });
         })

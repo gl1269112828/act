@@ -18,7 +18,7 @@
           :prop="item.prop"
           :label="item.label == 'expand' ? '' : item.label"
           :align="item.align || 'center'"
-          :width="item.width || ''"
+          :width="item.width && item.width !== '0' ? item.width : ''"
           :min-width="item.minWidth || ''"
           :fixed="item.fixed || false"
           :sortable="item.sortable || false"

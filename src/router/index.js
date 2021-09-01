@@ -66,24 +66,6 @@ const routes = [
   //     }
   //   ]
   // },
-  // {
-  //   path: '/configPage',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: '/pages',
-  //       name: 'pages',
-  //       component: () => import('@/components/configPage/pages/index'),
-  //       meta: { title: '测试配置页' }
-  //     },
-  //     {
-  //       path: '/pages',
-  //       name: 'pages',
-  //       component: () => import('@/components/configPage/pages/index'),
-  //       meta: { title: '数据字典' }
-  //     }
-  //   ]
-  // }
 ];
 
 const createRouter = () =>

@@ -100,10 +100,7 @@ export default {
       })
         .then(() => {
           resetPassword({ userId: data.id }).then(response => {
-            this.$message({
-              type: 'success',
-              message: '重置密码成功!'
-            });
+            this.$notify.success({ title: '重置密码成功' });
           });
         })
         .catch(() => {});
@@ -117,10 +114,7 @@ export default {
       })
         .then(() => {
           deleteUser({ id: data.id }).then(response => {
-            this.$message({
-              type: 'success',
-              message: '删除成功'
-            });
+            this.$notify.success({ title: '删除成功' });
             this.getTableList();
           });
         })
