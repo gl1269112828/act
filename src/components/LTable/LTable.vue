@@ -1,6 +1,6 @@
 <template>
   <div class="l-table">
-    <el-table v-loading="isLoading" :data="tableData" size="medium" :row-key="rowKey" @selection-change="mirChange" :row-style="rowStyle">
+    <el-table v-loading="isLoading" :data="tableData" size="medium" :row-key="rowKey" @selection-change="mirChange" :row-style="rowStyle" :max-height="tableHeight">
       <template v-for="(item, i) in tableHeader">
         <el-table-column :key="i" type="selection" :width="item.width || ''" align="center" v-if="item.label == 'selection'"></el-table-column>
         <el-table-column
@@ -96,7 +96,23 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      tableHeight: 0
+    };
+  },
+  created() {
+    this.$nextTick(() => {
+      let searchFromHeight = 0;
+      let batchOperatorHeight = 0;
+      if (this.$slots.searchFrom) {
+        searchFromHeight = this.$slots.searchFrom[0].componentInstance.$el.clientHeight;
+      }
+      if (this.$slots.batchOperator) {
+        batchOperatorHeight = this.$slots.batchOperator[0].componentInstance.$el.clientHeight;
+      }
+      console.log()
+      this.tableHeight = window.innerHeight - 134 - 172;
+    });
   },
   methods: {
     //计算序号

@@ -1,6 +1,6 @@
 import { login, getRoleMenu, getOperateAuthority } from '@/api/login';
 import { resetRouter } from '@/router';
-
+let Base64 = require('js-base64').Base64;
 const getDefaultState = () => {
   return {
     menus: []
@@ -25,8 +25,14 @@ const actions = {
       login({ name: userName, password: password })
         .then(response => {
           const { data } = response;
+          const userObj = JSON.parse(Base64.decode(data.accessToken.split('.')[1]));
+          let userInfo = {
+            userName: userObj['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
+            userId: parseInt(userObj['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid']),
+            roleId: parseInt(userObj['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'])
+          };
           sessionStorage.setItem('accessToken', data.accessToken);
-          sessionStorage.setItem('userInfo', JSON.stringify(data));
+          sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
           resolve();
         })
         .catch(error => {
@@ -39,27 +45,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
       getRoleMenu({ roleId, roleId }).then(response => {
-        const forFn = array => {
-          array.map(item => {
-            item.path = `${item.path}?id=${item.id}&key=${item.key}`;
-            return item;
-          });
-          return array;
-        };
-        const roleMenus = response.data.map(item => {
-          if (item.title !== '首页') {
-            if (item.children && item.children.length) {
-              forFn(item.children);
-            } else {
-              item.path = `${item.path}?id=${item.id}&key=${item.key}`;
-            }
-          }
-          return item;
-        });
-        console.log(JSON.parse(JSON.stringify(roleMenus)));
-
-        commit('SET_MENUS', roleMenus);
-        resolve(roleMenus);
+        const { data } = response;
+        console.log(JSON.parse(JSON.stringify(data)));
+        commit('SET_MENUS', data);
+        resolve(data);
       });
     });
   },
