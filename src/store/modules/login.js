@@ -26,7 +26,7 @@ const actions = {
         .then(response => {
           const { data } = response;
           const userObj = JSON.parse(Base64.decode(data.accessToken.split('.')[1]));
-          let userInfo = {
+          const userInfo = {
             userName: userObj['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
             userId: parseInt(userObj['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid']),
             roleId: parseInt(userObj['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'])

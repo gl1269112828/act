@@ -8,25 +8,25 @@ NProgress.configure({ showSpinner: false });
 
 const whiteList = ['/']; //白名单列表
 
-const isToken = sessionStorage.getItem('accessToken');
-
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
 
   if (whiteList.indexOf(to.path) !== -1) {
     next();
   } else {
+    const isToken = sessionStorage.getItem('accessToken');
+
     if (isToken) {
       console.log(store.getters.dynamicRouter.length);
       if (!store.getters.dynamicRouter.length) {
         const routers = await store.dispatch('common/constructRouter');
         router.addRoutes([...routers]);
-        if (to.meta.title !== '首页') {
+        next({ ...to, replace: true });
+        // next();
+      } else {
+        if (to.meta.title !== '首页' && !to.query.key) {
           await store.dispatch('login/getButtonAuthority', to.query.id);
         }
-        next({ ...to, replace: true });
-        next();
-      } else {
         next();
       }
     } else {
