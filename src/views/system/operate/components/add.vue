@@ -1,9 +1,9 @@
 <template>
   <div class="add">
-    <el-dialog title="添加权限按钮" :visible="showAdd" :close-on-click-modal="false" width="800px" top="10vh" @close="hidePopups()">
+    <el-dialog title="添加" :visible="showAdd" :close-on-click-modal="false" width="800px" top="10vh" @close="hidePopups()">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="small">
-        <el-form-item label="权限名称:" prop="name">
-          <el-input v-model="form.name" placeholder="请输入权限名称" clearable />
+        <el-form-item label="按钮名称:" prop="name">
+          <el-input v-model="form.name" placeholder="请输入按钮名称" clearable />
         </el-form-item>
         <el-form-item label="备注:">
           <el-input type="textarea" :rows="4" v-model="form.remark" placeholder="请输入备注" />
@@ -29,11 +29,11 @@ export default {
     return {
       btnLoading: false,
       form: {
-        name: undefined, //权限名称
-        remark: undefined //备注
+        name: undefined,
+        remark: undefined
       },
       rules: {
-        name: [{ required: true, message: '请输入权限名称', trigger: 'blur' }] //权限名称
+        name: [{ required: true, message: '请输入按钮名称', trigger: 'blur' }]
       }
     };
   },

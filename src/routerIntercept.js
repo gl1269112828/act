@@ -17,7 +17,6 @@ router.beforeEach(async (to, from, next) => {
     const isToken = sessionStorage.getItem('accessToken');
 
     if (isToken) {
-      console.log(store.getters.dynamicRouter.length);
       if (!store.getters.dynamicRouter.length) {
         const routers = await store.dispatch('common/constructRouter');
         router.addRoutes([...routers]);

@@ -66,9 +66,11 @@ export default {
         const { data } = await getPageDetail(key);
         if (data.pageConfigs) {
           this.showPage = 1;
-          
+
           this.pageData = data.pageConfigs;
           const fields = JSON.parse(data.pageConfigs.fields);
+
+          console.log(JSON.parse(JSON.stringify(fields)));
 
           if (!!data.pageConfigs.buttons) {
             this.operateButtons = JSON.parse(data.pageConfigs.buttons);
@@ -77,12 +79,24 @@ export default {
           let headers = [{ label: 'selection', width: 60 }];
           let queries = [];
 
-          fields.forEach(item => {
+          fields.forEach(async (item, i) => {
             headers.push({ label: item.name, prop: item.field, width: item.width });
             if (item.isQuery) {
-              queries.push({ name: item.name, queryType: item.queryType, field: item.field, operate: item.condition, value: '' });
+              if (!!item.url) {
+                queries.push({
+                  name: item.name,
+                  queryType: item.queryType,
+                  field: item.field,
+                  operate: item.condition,
+                  selectArray: (await request({ url: item.url, method: 'GET' })).data,
+                  value: ''
+                });
+              } else {
+                queries.push({ name: item.name, queryType: item.queryType, field: item.field, operate: item.condition, value: '' });
+              }
             }
           });
+          console.log(queries);
 
           this.operateFields = fields;
           this.tableHeader = headers;
