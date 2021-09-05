@@ -1,24 +1,25 @@
 <template>
-  <el-form class="search-module-container" :inline="true" ref="elForm" size="small">
-    <el-form-item :label="item.name + ':'" v-for="(item, i) in queryData" :key="i" v-cloak>
+  <el-form class="search-module-container" :inline="true" ref="elForm" size="mini" v-cloak>
+    <el-form-item :label="item.name + ':'" v-for="(item, i) in queryData" :key="i">
       <el-input v-model="item.value" :placeholder="'请输入' + item.name" v-if="item.queryType === 'input'" clearable></el-input>
       <el-select v-model="item.value" :placeholder="'请选择' + item.name" v-else-if="item.queryType === 'select'">
         <el-option v-for="(items, i) in item.selectArray" :key="i" :label="items.key" :value="items.value"></el-option>
       </el-select>
+      <DateRange :value.sync="item.value" v-else-if="item.queryType === 'date'" />
     </el-form-item>
-
-    <!-- <el-form-item>
-      <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-      <el-button @click="resetForm('ruleForm')">重置</el-button>
-    </el-form-item> -->
     <el-form-item>
-      <el-button type="primary" size="mini" @click="handleSearch()" v-hasBtn="1003">查询</el-button>
+      <el-button type="primary" size="mini" @click="handleSearch()">查询</el-button>
+      <el-button type="primary" size="mini" @click="handleReset()">重置</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script>
+import DateRange from '@/components/dateRange';
 export default {
+  components: {
+    DateRange
+  },
   props: {
     queryData: {
       type: Array,
@@ -32,6 +33,11 @@ export default {
     handleSearch() {
       this.$emit('update:queryData', this.queryData);
       this.$emit('handleSearch');
+    },
+    handleReset() {
+      this.queryData.map(item => (item.value = ''));
+      this.$emit('update:queryData', this.queryData);
+      this.$emit('handleReset');
     }
   }
 };

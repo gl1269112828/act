@@ -97,22 +97,21 @@ export default {
   },
   data() {
     return {
-      tableHeight: 0
+      tableHeight: 800
     };
   },
   created() {
-    this.$nextTick(() => {
-      let searchFromHeight = 0;
-      let batchOperatorHeight = 0;
-      if (this.$slots.searchFrom) {
-        searchFromHeight = this.$slots.searchFrom[0].componentInstance.$el.clientHeight;
-      }
-      if (this.$slots.batchOperator) {
-        batchOperatorHeight = this.$slots.batchOperator[0].componentInstance.$el.clientHeight;
-      }
-      console.log()
-      this.tableHeight = window.innerHeight - 134 - 172;
-    });
+    // this.$nextTick(() => {
+    //   let searchFromHeight = 0;
+    //   let batchOperatorHeight = 0;
+    //   if (this.$slots.searchFrom) {
+    //     searchFromHeight = this.$slots.searchFrom[0].componentInstance.$el.clientHeight;
+    //   }
+    //   if (this.$slots.batchOperator) {
+    //     batchOperatorHeight = this.$slots.batchOperator[0].componentInstance.$el.clientHeight;
+    //   }
+    //   window.innerHeight - 134 - 172 < 500 ? (this.tableHeight =  500) : (this.tableHeight = window.innerHeight);
+    // });
   },
   methods: {
     //计算序号

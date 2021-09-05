@@ -46,7 +46,6 @@ const actions = {
       const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
       getRoleMenu({ roleId, roleId }).then(response => {
         const { data } = response;
-        console.log(JSON.parse(JSON.stringify(data)));
         commit('SET_MENUS', data);
         resolve(data);
       });

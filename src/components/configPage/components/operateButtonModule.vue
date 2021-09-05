@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import { getOperate } from '@/api/system';
 export default {
   props: {
     operateButtons: {

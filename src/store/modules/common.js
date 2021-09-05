@@ -89,7 +89,7 @@ const actions = {
           }
         }
       }
-      console.log(JSON.parse(JSON.stringify([...arr, ...brr, ...crr])));
+      // console.log(JSON.parse(JSON.stringify([...arr, ...brr, ...crr])));
       commit('SET_DYNANICROUTER', [...arr, ...brr, ...crr]);
       resolve([...arr, ...brr, ...crr]);
     });

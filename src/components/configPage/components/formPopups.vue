@@ -10,12 +10,10 @@
           v-show="(operateObj.name === '添加' && item.isAdd) || (operateObj.name === '编辑' && item.isEdit)"
         >
           <el-input v-model="form[item.field]" :placeholder="'请输入' + item.name" clearable v-if="item.queryType === 'input'" />
-        </el-form-item>
-        <!--<el-form-item label="角色:" prop="roleId">
-          <el-select v-model="form.roleId" placeholder="请选择角色" clearable>
-            <el-option v-for="item in roleList" :key="item.value" :label="item.name" :value="item.id"></el-option>
+          <el-select v-model="form[item.field]" :placeholder="'请选择' + item.name" clearable v-else-if="item.queryType === 'select'">
+            <el-option v-for="(items, i) in item.selectArray" :key="i" :label="items.key" :value="items.value"></el-option>
           </el-select>
-        </el-form-item> -->
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel()" size="small">取消</el-button>
@@ -26,7 +24,6 @@
 </template>
 <script>
 import request from '@/utils/request';
-import { addOrEditUser, getRole } from '@/api/system';
 export default {
   props: {
     showOperate: {
@@ -64,18 +61,31 @@ export default {
   methods: {
     async getData() {
       let form = this.form;
-      this.formList = JSON.parse(JSON.stringify(this.operateFields)).map(item => item);
-      this.formList.forEach(item => {
+      const selectTableData = this.selectTableData[0];
+      const arrs = JSON.parse(JSON.stringify(this.operateFields));
+      for (let i = 0; i < arrs.length; i++) {
+        const item = arrs[i];
+
         if (item.isRequired) {
           this.rules[item.field] = [{ required: true, message: `请输入${item.name}`, trigger: 'blur' }];
         }
+        if (!!item.url) {
+          item['selectArray'] = (await request({ url: item.url, method: 'GET' })).data.map(item => {
+            item.value = JSON.parse(item.value);
+            return item;
+          });
+        }
         this.$set(form, item.field, undefined);
-      });
-      if (this.operateObj.name === '编辑') {
-        Object.assign(this.form, this.selectTableData[0]);
       }
+
+      this.formList = arrs;
+
+      if (this.operateObj.name === '编辑') {
+        Object.assign(this.form, selectTableData);
+      }
+      
     },
-    // 添加
+
     confirm() {
       let form = JSON.parse(JSON.stringify(this.form));
       this.$refs['form'].validate(valid => {

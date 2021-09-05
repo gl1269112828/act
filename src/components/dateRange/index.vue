@@ -1,0 +1,58 @@
+<template>
+  <div class="date-range">
+    <el-date-picker v-model="startDate" value-format="yyyy-MM-dd" type="date" placeholder="请选择开始日期" size="mini" @change="mirStartDate"></el-date-picker>
+    -
+    <el-date-picker v-model="endDate" value-format="yyyy-MM-dd" type="date" placeholder="请选择结束日期" size="mini" @change="mirEndDate"></el-date-picker>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    value: {
+      type: String,
+      default: ''
+    }
+  },
+  data() {
+    return {
+      startDate: '',
+      endDate: ''
+    };
+  },
+  created() {},
+  methods: {
+    mirStartDate(val) {
+      const startTimestamp = this.conversionTimestamp(val);
+      const endTimestamp = this.conversionTimestamp(this.endDate);
+      if (startTimestamp && endTimestamp && startTimestamp > endTimestamp) {
+        this.startDate = '';
+        this.$message.error('开始日期不能大于结束日期');
+        return;
+      }
+      !!this.endDate ? this.$emit('update:value', `${val},${this.endDate}`) : this.$emit('update:value', val);
+    },
+    mirEndDate(val) {
+      const startTimestamp = this.conversionTimestamp(this.startDate);
+      const endTimestamp = this.conversionTimestamp(val);
+      if (startTimestamp && endTimestamp && endTimestamp < startTimestamp) {
+        this.endDate = '';
+        this.$message.error('结束日期不能小于开始日期');
+        return;
+      }
+      !!this.startDate ? this.$emit('update:value', `${val},${this.startDate}`) : this.$emit('update:value', val);
+    },
+    conversionTimestamp(str) {
+      if (!str) {
+        return;
+      }
+      let newDataStr = str.replace(/\.|\-/g, '/');
+      let date = new Date(newDataStr);
+      let timestamp = date.getTime();
+      return timestamp;
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped></style>
