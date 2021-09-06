@@ -1,8 +1,8 @@
 <template>
   <el-form class="search-module-container" :inline="true" ref="elForm" size="mini" v-cloak>
-    <el-form-item :label="item.name + ':'" v-for="(item, i) in queryData" :key="i">
-      <el-input v-model="item.value" :placeholder="'请输入' + item.name" v-if="item.queryType === 'input'" clearable></el-input>
-      <el-select v-model="item.value" :placeholder="'请选择' + item.name" v-else-if="item.queryType === 'select'">
+    <el-form-item :label="item.name + ':'" v-for="(item, i) in queryModuleData" :key="i">
+      <el-input v-model="item.value" :placeholder="`请输入${item.name}`" v-if="item.queryType === 'input'" clearable></el-input>
+      <el-select v-model="item.value" :placeholder="`请选择${item.name}`" v-else-if="item.queryType === 'select'">
         <el-option v-for="(items, i) in item.selectArray" :key="i" :label="items.key" :value="items.value"></el-option>
       </el-select>
       <DateRange :value.sync="item.value" v-else-if="item.queryType === 'date'" />
@@ -21,7 +21,7 @@ export default {
     DateRange
   },
   props: {
-    queryData: {
+    queryModuleData: {
       type: Array,
       default: () => []
     }
@@ -31,12 +31,12 @@ export default {
   },
   methods: {
     handleSearch() {
-      this.$emit('update:queryData', this.queryData);
+      this.$emit('update:queryModuleData', this.queryModuleData);
       this.$emit('handleSearch');
     },
     handleReset() {
-      this.queryData.map(item => (item.value = ''));
-      this.$emit('update:queryData', this.queryData);
+      this.queryModuleData.map(item => (item.value = ''));
+      this.$emit('update:queryModuleData', this.queryModuleData);
       this.$emit('handleReset');
     }
   }
@@ -49,6 +49,9 @@ export default {
 }
 /deep/ .el-form-item--mini.el-form-item,
 .el-form-item--small.el-form-item {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+}
+/deep/ .el-button + .el-button {
+  margin-left: 5px;
 }
 </style>

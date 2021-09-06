@@ -15,7 +15,7 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div slot="footer" class="dialog-footer" v-if="formList.length > 0">
         <el-button @click="cancel()" size="small">取消</el-button>
         <el-button type="primary" :loading="btnLoading" @click="confirm()" size="small">确定</el-button>
       </div>
@@ -83,7 +83,6 @@ export default {
       if (this.operateObj.name === '编辑') {
         Object.assign(this.form, selectTableData);
       }
-      
     },
 
     confirm() {

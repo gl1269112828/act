@@ -17,7 +17,7 @@ export default {
 .app-main-container {
   height: calc(100vh - 114px);
   margin: 2px;
-  padding: 10px;
+  padding: 5px;
   background-color: #fff;
   box-sizing: border-box;
 }

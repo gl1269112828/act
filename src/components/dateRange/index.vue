@@ -1,8 +1,8 @@
 <template>
   <div class="date-range">
-    <el-date-picker v-model="startDate" value-format="yyyy-MM-dd" type="date" placeholder="请选择开始日期" size="mini" @change="mirStartDate"></el-date-picker>
+    <el-date-picker v-model="startDate" value-format="yyyy-MM-dd hh:mm:ss" type="datetime" placeholder="请选择开始时间" size="mini" @change="mirStartDate"></el-date-picker>
     -
-    <el-date-picker v-model="endDate" value-format="yyyy-MM-dd" type="date" placeholder="请选择结束日期" size="mini" @change="mirEndDate"></el-date-picker>
+    <el-date-picker v-model="endDate" value-format="yyyy-MM-dd hh:mm:ss" type="datetime" placeholder="请选择结束时间" size="mini" @change="mirEndDate"></el-date-picker>
   </div>
 </template>
 
@@ -40,7 +40,7 @@ export default {
         this.$message.error('结束日期不能小于开始日期');
         return;
       }
-      !!this.startDate ? this.$emit('update:value', `${val},${this.startDate}`) : this.$emit('update:value', val);
+      !!this.startDate ? this.$emit('update:value', `${this.startDate},${val}`) : this.$emit('update:value', val);
     },
     conversionTimestamp(str) {
       if (!str) {

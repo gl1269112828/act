@@ -1,6 +1,6 @@
 <template>
   <div class="config-page-container" v-if="showPage === 1">
-    <QueryModule class="config-page-header" :queryData.sync="queryData" @handleSearch="handleSearch" @handleReset="handleReset" />
+    <QueryModule class="config-page-header" :queryModuleData.sync="queryModuleData" @handleSearch="handleSearch" @handleReset="handleReset" />
     <OperateButtonModule :operateButtons="operateButtons" @handleOperate="handleOperate" />
     <LTable
       class="l-table"
@@ -8,7 +8,7 @@
       :tableHeader="tableHeader"
       :tableData="tableData"
       :total="total"
-      :pageData="pageData"
+      :tableQueryData.sync="tableQueryData"
       :selectTableData.sync="selectTableData"
       :getTableList="getTableList"
     >
@@ -46,14 +46,14 @@ export default {
       showPage: 0,
       pageData: {},
 
-      queryData: [],
+      queryModuleData: [],
 
       slotData: [],
       tableHeader: [],
       tableData: [],
       selectTableData: [],
       total: 0,
-      pageData: {},
+      tableQueryData: {},
 
       operateButtons: [],
       operateFields: [],
@@ -121,7 +121,7 @@ export default {
           this.operateFields = fields;
           this.slotData = slots;
           this.tableHeader = headers;
-          this.queryData = queries;
+          this.queryModuleData = queries;
 
           await this.getTableList();
         } else {
@@ -135,28 +135,29 @@ export default {
     },
     async getTableList() {
       let pageQuery = [];
-      this.queryData.forEach(item => {
+      this.queryModuleData.forEach(item => {
         if (!!item.value) {
           if (item.queryType === 'date') {
             const dates = item.value.split(',');
-            dates.forEach(itemJ => {
-              item.value = itemJ;
-              pageQuery.push(item);
+            dates.forEach((itemJ, index) => {
+              if (index === 0) {
+                pageQuery.push({ field: item.field, operate: 'GreaterThanOrEqual', value: itemJ });
+              } else if (index === 1) {
+                pageQuery.push({ field: item.field, operate: 'LessThanOrEqual', value: itemJ });
+              }
             });
           } else {
             pageQuery.push(item);
           }
         }
       });
-      const pageData = {
-        pageIndex: 1,
-        pageMax: 10,
+      const tableQueryData = {
+        pageIndex: this.tableQueryData.pageIndex || 1,
+        pageMax: this.tableQueryData.pageMax || 10,
         dynamicFilters: pageQuery
       };
-      // console.log(this.queryData);
-      // console.log(pageData);
-      // return;
-      const resTable = await request({ url: this.pageData.dataUrl, method: 'post', data: pageData });
+      this.tableQueryData = tableQueryData;
+      const resTable = await request({ url: this.pageData.dataUrl, method: 'post', data: tableQueryData });
       this.total = resTable.data.totalCount;
       this.tableData = resTable.data.datas;
     },
@@ -179,8 +180,9 @@ export default {
           this.$message.warning('最多选择一条数据');
           return;
         }
+        console.log(item.fields);
         if (item.fields.length === 1 && item.fields[0].fieldsType === 'submit') {
-          this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+          this.$confirm('是否确认执行此操作?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -207,7 +209,7 @@ export default {
 
 <style lang="scss" scoped>
 .l-table {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 .config-page-prompt {
   margin-top: 100px;

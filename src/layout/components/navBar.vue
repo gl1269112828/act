@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <l-tagsView v-show="$route.meta.title !== '首页'" />
+    <l-tagsView />
   </div>
 </template>
 

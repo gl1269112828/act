@@ -27,4 +27,7 @@ export default {
 [v-cloak] {
   display: none;
 }
+/deep/ .el-button + .el-button {
+  margin-left: 5px;
+}
 </style>
