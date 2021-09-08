@@ -54,14 +54,14 @@ export default {
         { label: '序号', width: '60' },
         { label: '页面名称', prop: 'name' },
         { label: '页面标识', prop: 'key' },
-        {
-          label: '页面标识1',
-          prop: 'key',
-          children: [
-            { label: '页面标识2', prop: 'key' },
-            { label: '页面标识3', prop: 'key' }
-          ]
-        },
+        // {
+        //   label: '页面标识1',
+        //   prop: 'key',
+        //   children: [
+        //     { label: '页面标识2', prop: 'key' },
+        //     { label: '页面标识3', prop: 'key' }
+        //   ]
+        // },
         { label: '操作', prop: 'operate', width: '220', render: true }
       ],
       tableData: [], //表格数据

@@ -8,13 +8,6 @@
               <el-input v-model="form.dataUrl" placeholder="请输入数据地址" clearable />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-col :span="12">
-              <el-form-item label="是否具备多选:">
-                <el-switch v-model="form.isMultipe" :active-value="true" :inactive-value="false"></el-switch>
-              </el-form-item>
-            </el-col>
-          </el-col>
           <el-col :span="24" class="config-table-operate">
             <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddList">添加</el-button>
           </el-col>
@@ -117,7 +110,6 @@ export default {
         buttons: undefined,
         functions: undefined,
         dataUrl: undefined,
-        isMultipe: undefined,
         fields: [{ name: '', field: '', url: '', width: 0, isAdd: 0, isEdit: 0, isQuery: 0, isRequired: 0, queryType: 'input', condition: 'Like' }]
       }
     };
@@ -204,7 +196,6 @@ export default {
         buttons: undefined,
         functions: undefined,
         dataUrl: undefined,
-        isMultipe: undefined,
         fields: [{ name: '', field: '', url: '', width: 0, isAdd: 0, isEdit: 0, isQuery: 0, isRequired: 0, queryType: 'input', condition: 'Like' }]
       };
     },
