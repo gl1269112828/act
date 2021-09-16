@@ -1,6 +1,6 @@
 <template>
   <div class="tagsview-container">
-    <i class="el-icon-arrow-left tagsview-l" @click="handleScrollLeft()" />
+    <!-- <i class="el-icon-arrow-left tagsview-l" @click="handleScrollLeft()" /> -->
     <div class="tagsview-c" ref="tagview">
       <div
         class="tagsview-item"
@@ -17,7 +17,7 @@
     </div>
 
     <div class="tagsview-r">
-      <i class="right-icon el-icon-arrow-right" @click="handleScrollRight()" />
+      <!-- <i class="right-icon el-icon-arrow-right" @click="handleScrollRight()" /> -->
       <el-dropdown class="down-icon">
         <span class="el-dropdown-link">
           <i class="el-icon-arrow-down el-icon--right"></i>
@@ -133,13 +133,6 @@ export default {
   height: 50px;
   background-color: #fff;
   font-size: 14px;
-  .tagsview-l {
-    cursor: pointer;
-    width: 40px;
-    min-width: 40px;
-    text-align: center;
-    border-right: 1px solid #eee;
-  }
   .tagsview-c {
     width: 100%;
     height: 50px;

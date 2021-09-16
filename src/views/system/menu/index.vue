@@ -11,7 +11,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <LTable :isLoading="isLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :tableQueryData.sync="tableQueryData" :getTableList="getTableList">
+    <LTable :tableLoading="tableLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :tableQueryData.sync="tableQueryData" :getTableList="getTableList">
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
           <el-button type="text" size="mini" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
@@ -36,9 +36,9 @@ export default {
   },
   data() {
     return {
-      isLoading: false, //加载表格
+      tableLoading: false, //加载表格
       tableHeader: [
-        { label: '序号', width: '60' },
+        { label: '序号', prop: 'serialNumber' },
         { label: '名称', prop: 'name' },
         { label: '图标', prop: 'icon' },
         { label: '级别', prop: 'level' },
@@ -65,7 +65,7 @@ export default {
   methods: {
     //获取表格数据
     async getTableList() {
-      this.isLoading = true;
+      this.tableLoading = true;
       try {
         let query = JSON.parse(JSON.stringify(this.tableQueryData));
         if (!query.dynamicFilters[0].value) {
@@ -74,9 +74,9 @@ export default {
         const { data } = await getMenus(query);
         this.total = data.totalCount;
         this.tableData = data.datas || [];
-        this.isLoading = false;
+        this.tableLoading = false;
       } catch (error) {
-        this.isLoading = false;
+        this.tableLoading = false;
       }
     },
     //搜索

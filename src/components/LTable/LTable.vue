@@ -1,31 +1,44 @@
 <template>
   <div class="l-table">
-    <el-table v-loading="isLoading" :data="tableData" size="medium" @selection-change="mirChange" :max-height="tableHeight">
+    <el-table v-loading="tableLoading" :data="tableData" size="medium" @selection-change="mirChange" :max-height="tableHeight">
       <template v-for="(item, i) in tableHeader">
-        <el-table-column :key="i + item.label" type="selection" :width="item.width || ''" align="center" v-if="item.label == 'selection'"></el-table-column>
-        <el-table-column :key="i + item.label" type="index" :index="indexMethod" :label="'序号'" :width="item.width || ''" align="center" v-else-if="item.label == '序号'"></el-table-column>
+        <template v-if="item.customize">
+          <slot :name="item.prop" :data="item"></slot>
+        </template>
         <template v-else>
-          <el-table-column :key="i + item.label" :prop="item.prop" :label="item.label" :width="item.width || ''" align="center" v-if="item.children && item.children.length > 0">
+          <el-table-column :key="i" type="selection" width="80" align="center" v-if="item.prop === 'selection'"></el-table-column>
+          <el-table-column :key="i" type="index" :index="indexMethod" :label="'序号'" width="60" align="center" v-else-if="item.prop === 'serialNumber'"></el-table-column>
+          <!-- <el-table-column :key="i + item.label" :prop="item.prop" :label="item.label" :width="item.width || ''" align="center" v-if="item.children && item.children.length > 0">
             <el-table-column :prop="itemJ.prop" :label="itemJ.label" :width="itemJ.width || ''" align="center" v-for="(itemJ, j) in item.children" :key="j + itemJ.prop"></el-table-column>
-          </el-table-column>
-          <el-table-column
-            :key="i + item.label"
-            :label="item.label"
-            :align="item.align || 'center'"
-            :width="item.width && item.width !== '0' ? item.width : ''"
-            :min-width="item.minWidth || ''"
-            :fixed="item.fixed || false"
-            :sortable="item.sortable || false"
-            v-else
-          >
-            <template slot-scope="scope">
-              <slot :name="item.prop" :data="scope.row" v-if="item.render"></slot>
-              <el-tooltip class="item" effect="dark" :content="scope.row[item.prop]" placement="top" v-else-if="item.tooltip">
-                <div class="toltip-content" :style="{ width: item.width + 'px' }">{{ scope.row[item.prop] }}</div>
-              </el-tooltip>
-              <span v-else>{{ scope.row[item.prop] }}</span>
-            </template>
-          </el-table-column>
+          </el-table-column> -->
+          <template v-else>
+            <el-table-column
+              :key="i"
+              :prop="item.prop"
+              :label="item.label"
+              :align="item.align || 'center'"
+              :width="item.width || ''"
+              :min-width="item.minWidth || ''"
+              :fixed="item.fixed || false"
+              v-if="item.render"
+            >
+              <template slot-scope="scope">
+                <slot :name="item.prop" :data="scope.row" v-if="item.render"></slot>
+                <span v-else>{{ scope.row[item.prop] }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              :key="i"
+              :prop="item.prop"
+              :label="item.label"
+              :align="item.align || 'center'"
+              :width="item.width || ''"
+              :min-width="item.minWidth || ''"
+              :fixed="item.fixed || false"
+              :sortable="item.sortable || false"
+              v-else
+            ></el-table-column>
+          </template>
         </template>
       </template>
     </el-table>
@@ -41,7 +54,7 @@ export default {
     Pagination
   },
   props: {
-    isLoading: {
+    tableLoading: {
       type: Boolean,
       defalut: false
     },

@@ -1,28 +1,18 @@
 <template>
   <div class="config-page-container" v-if="showPage === 1">
-    <QueryModule class="config-page-header" :queryModuleData.sync="queryModuleData" @handleSearch="handleSearch" @handleReset="handleReset" />
-    <OperateButtonModule :operateButtons="operateButtons" @handleOperate="handleOperate" />
-    <LTable
-      class="l-table"
-      :isLoading="isLoading"
+    <ConfigTableQuery class="config-page-header" :queryModuleData.sync="queryModuleData" @handleSearch="handleSearch" @handleReset="handleReset" />
+    <ConfigOperateButtons :operateButtons="operateButtons" @handleOperate="handleOperate" />
+    <ConfigTable
+      :tableLoading="tableLoading"
       :tableHeader="tableHeader"
+      :tableSlotData="tableSlotData"
       :tableData="tableData"
       :total="total"
       :tableQueryData.sync="tableQueryData"
       :selectTableData.sync="selectTableData"
       :getTableList="getTableList"
-    >
-      <template :slot="item.prop" slot-scope="scope" v-for="(item, i) in slotData">
-        <span :key="i">
-          <template v-for="(itemJ, j) in item.selectArray">
-            <el-tag :key="j" v-if="itemJ.value.indexOf(scope.data[item.prop]) > -1">
-              {{ itemJ.key }}
-            </el-tag>
-          </template>
-        </span>
-      </template>
-    </LTable>
-    <FormPopups :showOperate="isOperate" :operateObj="operateObj" :operateFields="operateFields" :selectTableData="selectTableData" v-on:hidePopups="isOperate = false" />
+    />
+    <ConfigTableForm :showOperate="isOperate" :operateObj="operateObj" :operateFields="operateFields" :selectTableData="selectTableData" v-on:hidePopups="isOperate = false" />
   </div>
   <el-empty description="暂无配置信息" v-else-if="showPage === 2"></el-empty>
 </template>
@@ -30,26 +20,28 @@
 <script>
 import request from '@/utils/request';
 import { getPageDetail } from '@/api/configManage';
-import QueryModule from '../components/queryModule';
-import OperateButtonModule from '../components/operateButtonModule';
-import FormPopups from '../components/formPopups';
+import ConfigTableQuery from '../components/configTableQuery';
+import ConfigOperateButtons from '../components/configOperateButtons';
+import ConfigTableForm from '../components/configTableForm';
+import ConfigTable from '../components/configTable';
 
 export default {
   components: {
-    QueryModule,
-    OperateButtonModule,
-    FormPopups
+    ConfigTableQuery,
+    ConfigOperateButtons,
+    ConfigTableForm,
+    ConfigTable
   },
   data() {
     return {
-      isLoading: false,
+      tableLoading: false,
       showPage: 0,
       pageData: {},
 
       queryModuleData: [],
 
-      slotData: [],
       tableHeader: [],
+      tableSlotData: [],
       tableData: [],
       selectTableData: [],
       total: 0,
@@ -73,32 +65,32 @@ export default {
   methods: {
     async getData(key) {
       try {
-        this.isLoading = true;
+        this.tableLoading = true;
         const { data } = await getPageDetail(key);
         if (data.pageConfigs) {
           this.showPage = 1;
 
           this.pageData = data.pageConfigs;
+
           const fields = JSON.parse(data.pageConfigs.fields);
 
           if (!!data.pageConfigs.buttons) {
             this.operateButtons = JSON.parse(data.pageConfigs.buttons);
           }
-
-          let headers = [{ label: 'selection', width: 60 }];
+          let headers = [];
           let queries = [];
           let slots = [];
 
           for (let i = 0; i < fields.length; i++) {
             const item = fields[i];
-
+            headers.push({ label: item.name, prop: item.field, width: item.width });
             if (!!item.url) {
               item['selectArray'] = (await request({ url: item.url, method: 'GET' })).data;
-
               slots.push({ selectArray: item.selectArray, prop: item.field });
-              headers.push({ label: item.name, prop: item.field, width: item.width, render: true });
-            } else {
-              headers.push({ label: item.name, prop: item.field, width: item.width });
+              headers[i]['render'] = true;
+            }
+            if (item.isCustomize) {
+              headers[i]['customize'] = true;
             }
 
             if (item.isQuery) {
@@ -115,22 +107,26 @@ export default {
             }
           }
 
+          headers.unshift({ prop: 'selection' });
+          headers.unshift({ prop: 'serialNumber' });
           // console.log(JSON.parse(JSON.stringify(queries)));
+          // console.log(JSON.parse(JSON.stringify(fields)));
+          // console.log(JSON.parse(JSON.stringify(slots)));
           // console.log(JSON.parse(JSON.stringify(headers)));
 
-          this.operateFields = fields;
-          this.slotData = slots;
-          this.tableHeader = headers;
           this.queryModuleData = queries;
+          this.operateFields = fields;
+          this.tableSlotData = slots;
+          this.tableHeader = headers;
 
           await this.getTableList();
         } else {
           this.showPage = 2;
         }
 
-        this.isLoading = false;
+        this.tableLoading = false;
       } catch (error) {
-        this.isLoading = false;
+        this.tableLoading = false;
       }
     },
     async getTableList() {
