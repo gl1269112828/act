@@ -104,14 +104,13 @@ export default {
         this.boxLoading = true;
         this.configQueryList = (await getDictionaryByGroup('FieldType')).data;
 
-        const configTableData = await getConfigTable({ dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }] });
+        const configTableData = (await getConfigTable({ dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }] })).data.datas[0];
 
-        Object.keys(configTableData.data.datas[0]).forEach(async key => {
+        Object.keys(configTableData).forEach(async key => {
           if (key === 'buttons') {
             const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
-            let buttons = await getMenuButtons({ roleId: roleId, key: this.itemObj.key });
-            buttons = buttons.data.datas.filter(item => item.unique !== '1003');
-            if (!configTableData.data.datas[0][key]) {
+            let buttons = (await getMenuButtons({ roleId: roleId, key: this.itemObj.key })).data.datas.filter(item => item.unique !== '1003');
+            if (!configTableData[key]) {
               this.form.buttons = buttons.map(items => {
                 {
                   return {
@@ -129,29 +128,18 @@ export default {
                 }
               });
             } else {
-              this.form.buttons = buttons.map((itemK, index) => {
+              this.form.buttons = buttons.map(itemK => {
                 let obj = new Object();
-                if (JSON.parse(configTableData.data.datas[0][key])[index]) {
-                  obj = Object.assign(itemK, JSON.parse(configTableData.data.datas[0][key])[index]);
-                } else {
-                  obj = {
-                    name: itemK.name,
-                    requestUrl: '',
-                    isBatch: 0,
-                    fields: [
-                      {
-                        fieldsType: 'input',
-                        submitFieldsName: '',
-                        matchFiledsName: ''
-                      }
-                    ]
-                  };
-                }
+                JSON.parse(configTableData[key]).forEach(itemP => {
+                  if (itemK.name === itemP.name) {
+                    obj = itemP;
+                  }
+                });
                 return obj;
               });
             }
           } else {
-            this.form[key] = configTableData.data.datas[0][key];
+            this.form[key] = configTableData[key];
           }
         });
 
@@ -169,7 +157,6 @@ export default {
     handleDeleteFiled(row, index) {
       for (let i = index; i >= 0; i--) {
         let item = this.tableData[i];
-        console.log(item);
         if (item.mergeRowNum) {
           item.mergeRowNum--;
           break;

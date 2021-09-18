@@ -10,6 +10,7 @@
     :getTableList="getTableList"
   >
     <template :slot="'priceJson'" slot-scope="scope">
+      <!-- <slot :name="item.prop" :data="scope.row" v-if="item.render"></slot> -->
       <el-table-column :prop="scope.data.prop" :label="scope.data.label"></el-table-column>
     </template>
     <template :slot="item.prop" slot-scope="scope" v-for="(item, i) in tableSlotData">

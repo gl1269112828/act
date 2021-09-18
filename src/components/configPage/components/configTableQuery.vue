@@ -35,7 +35,7 @@ export default {
       this.$emit('handleSearch');
     },
     handleReset() {
-      this.queryModuleData.map(item => (item.value = ''));
+      this.queryModuleData.forEach(item => (item.value = ''));
       this.$emit('update:queryModuleData', this.queryModuleData);
       this.$emit('handleReset');
     }

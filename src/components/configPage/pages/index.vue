@@ -24,13 +24,15 @@ import ConfigTableQuery from '../components/configTableQuery';
 import ConfigOperateButtons from '../components/configOperateButtons';
 import ConfigTableForm from '../components/configTableForm';
 import ConfigTable from '../components/configTable';
+import PriceJson from '../oil/priceJson';
 
 export default {
   components: {
     ConfigTableQuery,
     ConfigOperateButtons,
     ConfigTableForm,
-    ConfigTable
+    ConfigTable,
+    PriceJson
   },
   data() {
     return {
