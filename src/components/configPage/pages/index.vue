@@ -1,18 +1,30 @@
 <template>
   <div class="config-page-container" v-if="showPage === 1">
-    <ConfigTableQuery class="config-page-header" :queryModuleData.sync="queryModuleData" @handleSearch="handleSearch" @handleReset="handleReset" />
+    <ConfigTableQuery class="config-page-header" :queryModuleData.sync="queryModuleData" @handleSearch="handleSearch" />
     <ConfigOperateButtons :operateButtons="operateButtons" @handleOperate="handleOperate" />
-    <ConfigTable
+    <LTable
+      class="l-table"
       :tableLoading="tableLoading"
       :tableHeader="tableHeader"
-      :tableSlotData="tableSlotData"
       :tableData="tableData"
       :total="total"
       :tableQueryData.sync="tableQueryData"
       :selectTableData.sync="selectTableData"
       :getTableList="getTableList"
-    />
-    <ConfigTableForm :showOperate="isOperate" :operateObj="operateObj" :operateFields="operateFields" :selectTableData="selectTableData" v-on:hidePopups="isOperate = false" />
+    >
+      <template :slot="item" slot-scope="scope" v-for="(item, h) in tableComponentNames">
+        <component :is="item" :key="h + item" :tableHeaderData="scope.data"></component>
+      </template>
+      <template :slot="item.prop" slot-scope="scope" v-for="item in tableSlotData">
+        <template v-for="(itemJ, j) in item.selectArray">
+          <span :key="j" v-if="itemJ.value.indexOf(scope.data[item.prop]) > -1">
+            {{ itemJ.key }}
+          </span>
+        </template>
+      </template>
+    </LTable>
+    <ConfigTableForm :showOperate="isOperate" :selectObj="selectObjs" :operateFields="operateFields" :selectTableData="selectTableData" v-on:hidePopups="isOperate = false" />
+    <ConfigAssociatedChildTable :showAssociatedChildTable="isAssociatedChildTable" :selectObj="selectObjs" :selectTableData="selectTableData" v-on:hidePopups="isAssociatedChildTable = false" />
   </div>
   <el-empty description="暂无配置信息" v-else-if="showPage === 2"></el-empty>
 </template>
@@ -23,20 +35,27 @@ import { getPageDetail } from '@/api/configManage';
 import ConfigTableQuery from '../components/configTableQuery';
 import ConfigOperateButtons from '../components/configOperateButtons';
 import ConfigTableForm from '../components/configTableForm';
-import ConfigTable from '../components/configTable';
-import PriceJson from '../oil/priceJson';
+import ConfigAssociatedChildTable from '../components/configAssociatedChildTable';
+
+import { tableComponentObj } from '@/utils/configPageCustomize';
+
+let tableComponentNames = [];
+Object.keys(tableComponentObj).forEach(key => {
+  tableComponentNames.push(key);
+});
 
 export default {
   components: {
     ConfigTableQuery,
     ConfigOperateButtons,
     ConfigTableForm,
-    ConfigTable,
-    PriceJson
+    ConfigAssociatedChildTable,
+    ...tableComponentObj
   },
   data() {
     return {
       tableLoading: false,
+      tableComponentNames: tableComponentNames,
       showPage: 0,
       pageData: {},
 
@@ -52,7 +71,8 @@ export default {
       operateButtons: [],
       operateFields: [],
       isOperate: false,
-      operateObj: {}
+      isAssociatedChildTable: false,
+      selectObjs: {}
     };
   },
   created() {
@@ -79,6 +99,7 @@ export default {
           if (!!data.pageConfigs.buttons) {
             this.operateButtons = JSON.parse(data.pageConfigs.buttons);
           }
+
           let headers = [];
           let queries = [];
           let slots = [];
@@ -111,6 +132,7 @@ export default {
 
           headers.unshift({ prop: 'selection' });
           headers.unshift({ prop: 'serialNumber' });
+
           // console.log(JSON.parse(JSON.stringify(queries)));
           // console.log(JSON.parse(JSON.stringify(fields)));
           // console.log(JSON.parse(JSON.stringify(slots)));
@@ -138,9 +160,9 @@ export default {
           if (item.queryType === 'date') {
             const dates = item.value.split(',');
             dates.forEach((itemJ, index) => {
-              if (index === 0) {
+              if (index === 0 && !!itemJ) {
                 pageQuery.push({ field: item.field, operate: 'GreaterThanOrEqual', value: itemJ });
-              } else if (index === 1) {
+              } else if (index === 1 && !!itemJ) {
                 pageQuery.push({ field: item.field, operate: 'LessThanOrEqual', value: itemJ });
               }
             });
@@ -162,12 +184,8 @@ export default {
     handleSearch() {
       this.getTableList();
     },
-    handleReset() {
-      this.getTableList();
-    },
     handleOperate(item) {
       if (item.name === '添加') {
-        this.operateObj = item;
         this.isOperate = true;
       } else {
         if (!this.selectTableData.length) {
@@ -178,7 +196,6 @@ export default {
           this.$message.warning('最多选择一条数据');
           return;
         }
-        console.log(item.fields);
         if (item.fields.length === 1 && item.fields[0].fieldsType === 'submit') {
           this.$confirm('是否确认执行此操作?', '提示', {
             confirmButtonText: '确定',
@@ -195,8 +212,11 @@ export default {
               });
             })
             .catch(err => {});
+        } else if (item.fields.length === 1 && item.fields[0].fieldsType === 'associatedChildTable') {
+          this.selectObjs = item;
+          this.isAssociatedChildTable = true;
         } else {
-          this.operateObj = item;
+          this.selectObjs = item;
           this.isOperate = true;
         }
       }

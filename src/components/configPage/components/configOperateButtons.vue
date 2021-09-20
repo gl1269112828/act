@@ -1,6 +1,6 @@
 <template>
   <div class="operate-btns-container">
-    <el-button type="primary" size="mini" v-for="(item, i) in operateButtons" :key="i" @click="handleOperate(item, i)" v-cloak>{{ item.name }}</el-button>
+    <el-button type="primary" size="mini" v-for="(item, i) in operateButtons" :key="i" @click="handleOperate(item, i)" v-hasBtn="item.unique" v-cloak>{{ item.name }}</el-button>
   </div>
 </template>
 

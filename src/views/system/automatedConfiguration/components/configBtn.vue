@@ -103,6 +103,7 @@ export default {
       try {
         this.boxLoading = true;
         this.configQueryList = (await getDictionaryByGroup('FieldType')).data;
+        this.operateTypes = (await getDictionaryByGroup('operateType')).data;
 
         const configTableData = (await getConfigTable({ dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }] })).data.datas[0];
 
@@ -110,10 +111,12 @@ export default {
           if (key === 'buttons') {
             const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
             let buttons = (await getMenuButtons({ roleId: roleId, key: this.itemObj.key })).data.datas.filter(item => item.unique !== '1003');
+
             if (!configTableData[key]) {
               this.form.buttons = buttons.map(items => {
                 {
                   return {
+                    unique: items.unique,
                     name: items.name,
                     requestUrl: '',
                     isBatch: 0,
@@ -129,10 +132,23 @@ export default {
               });
             } else {
               this.form.buttons = buttons.map(itemK => {
-                let obj = new Object();
+                let obj = {
+                  unique: itemK.unique,
+                  name: itemK.name,
+                  requestUrl: '',
+                  isBatch: 0,
+                  fields: [
+                    {
+                      fieldsType: 'input',
+                      submitFieldsName: '',
+                      matchFiledsName: ''
+                    }
+                  ]
+                };
+
                 JSON.parse(configTableData[key]).forEach(itemP => {
                   if (itemK.name === itemP.name) {
-                    obj = itemP;
+                    Object.assign(obj, itemP);
                   }
                 });
                 return obj;
@@ -204,7 +220,6 @@ export default {
     },
     hidePopups() {
       this.$emit('hidePopups');
-      // this.$refs.form.resetFields();
       this.form = {
         id: 0,
         buttons: [],

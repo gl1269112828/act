@@ -1,10 +1,11 @@
 <template>
-  <div class="nav-bar-container">
-    <div class="nav-bar-header definition-flex">
-      <div class="nav-bar-fold">
+  <div class="navbar-container">
+    <div class="definition-flex navbar-header ">
+      <div class="navbar-fold">
         <i :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'" @click="handleCollapse"></i>
       </div>
-      <div class="nav-bar-info">
+      <l-tagViews class="navbar-tagviews" />
+      <div class="navbar-info">
         <el-dropdown>
           <span class="el-dropdown-link">
             欢迎您，{{ userInfo.userName }}
@@ -23,17 +24,15 @@
         </el-dropdown>
       </div>
     </div>
-
-    <l-tagsView />
   </div>
 </template>
 
 <script>
-import LTagsView from '@/components/LTagsView';
+import LTagViews from '@/components/LTagViews';
 import { mapGetters } from 'vuex';
 export default {
   components: {
-    LTagsView
+    LTagViews
   },
   computed: {
     ...mapGetters(['isCollapse'])
@@ -57,22 +56,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.nav-bar-container {
+.navbar-container {
   background-color: #fff;
-  .nav-bar-header {
+  .navbar-header {
     justify-content: space-between;
+    align-items: center;
     padding: 0 16px;
     height: 60px;
-    border-bottom: solid 1px #e6e6e6;
     box-sizing: border-box;
-    .nav-bar-fold {
+    .navbar-fold {
       line-height: 60px;
       font-size: 24px;
       i {
         cursor: pointer;
       }
     }
-    .nav-bar-info {
+    .navbar-tagviews {
+      width: 85%;
+    }
+    .navbar-info {
       line-height: 60px;
     }
   }

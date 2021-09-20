@@ -138,13 +138,15 @@ export default {
         this.conditionList = (await getDictionaryByGroup('Condition')).data;
         this.configQueryList = (await getDictionaryByGroup('FieldType')).data;
 
-        const configTableData = await getConfigTable({
-          dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }]
-        });
-        if (configTableData.data.datas.length > 0) {
-          configTableData.data.datas[0].fields = JSON.parse(configTableData.data.datas[0].fields);
+        const configTableData = (
+          await getConfigTable({
+            dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }]
+          })
+        ).data.datas;
+        if (configTableData.length > 0) {
+          configTableData[0].fields = JSON.parse(configTableData[0].fields);
           Object.keys(this.form).forEach(key => {
-            this.form[key] = configTableData.data.datas[0][key];
+            this.form[key] = configTableData[0][key];
           });
         } else {
           this.form.id = 0;

@@ -10,11 +10,13 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="handleSearch()" v-hasBtn="1003">查询</el-button>
-          <el-button type="primary" size="mini" @click="handleAdd()" v-hasBtn="1001">添加</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <LTable :tableLoading="tableLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :tableQueryData.sync="tableQueryData" :getTableList="getTableList">
+    <div class="operate-container">
+      <el-button type="primary" size="mini" @click="handleAdd()" v-hasBtn="1001">添加</el-button>
+    </div>
+    <LTable class="l-table" :tableLoading="tableLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :tableQueryData.sync="tableQueryData" :getTableList="getTableList">
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
           <el-button type="text" size="mini" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
@@ -54,14 +56,6 @@ export default {
         { label: '序号', prop: 'serialNumber' },
         { label: '页面名称', prop: 'name' },
         { label: '页面标识', prop: 'key' },
-        // {
-        //   label: '页面标识1',
-        //   prop: 'key',
-        //   children: [
-        //     { label: '页面标识2', prop: 'key' },
-        //     { label: '页面标识3', prop: 'key' }
-        //   ]
-        // },
         { label: '操作', prop: 'operate', width: '220', render: true }
       ],
       tableData: [], //表格数据
@@ -140,4 +134,13 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.automated-configuration-container {
+  .l-table {
+    margin-top: 5px;
+  }
+  /deep/ .el-form-item--mini.el-form-item {
+    margin-bottom: 5px;
+  }
+}
+</style>

@@ -20,7 +20,13 @@ export default {
       endDate: ''
     };
   },
-  created() {},
+  watch: {
+    value(val) {
+      const time = val.split(',');
+      this.startDate = time[0];
+      this.endDate = time[1];
+    }
+  },
   methods: {
     mirStartDate(val) {
       const startTimestamp = this.conversionTimestamp(val);
@@ -30,7 +36,7 @@ export default {
         this.$message.error('开始日期不能大于结束日期');
         return;
       }
-      !!this.endDate ? this.$emit('update:value', `${val},${this.endDate}`) : this.$emit('update:value', val);
+      this.$emit('update:value', `${val},${this.endDate}`);
     },
     mirEndDate(val) {
       const startTimestamp = this.conversionTimestamp(this.startDate);
@@ -40,7 +46,7 @@ export default {
         this.$message.error('结束日期不能小于开始日期');
         return;
       }
-      !!this.startDate ? this.$emit('update:value', `${this.startDate},${val}`) : this.$emit('update:value', val);
+      this.$emit('update:value', `${this.startDate},${val}`);
     },
     conversionTimestamp(str) {
       if (!str) {

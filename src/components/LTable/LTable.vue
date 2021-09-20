@@ -1,6 +1,6 @@
 <template>
   <div class="l-table">
-    <el-table v-loading="tableLoading" :data="tableData" size="medium" @selection-change="mirChange" :max-height="tableHeight">
+    <el-table v-loading="tableLoading" border :data="tableData" size="medium" @selection-change="mirChange" :max-height="tableHeight" @row-click="rowClick">
       <template v-for="(item, i) in tableHeader">
         <template v-if="item.customize">
           <slot :name="item.prop" :data="item"></slot>
@@ -104,7 +104,7 @@ export default {
   },
   data() {
     return {
-      tableHeight: 600
+      tableHeight: 480
     };
   },
   created() {
@@ -135,6 +135,9 @@ export default {
     },
     mirChange(selection) {
       this.$emit('update:selectTableData', selection);
+    },
+    rowClick(row, column, event) {
+      this.$emit('update:rowClick', row, column, event);
     }
   }
 };

@@ -1,13 +1,13 @@
 <template>
-  <div class="publicPopups">
-    <el-dialog :title="operateObj.name" :visible="showOperate" :close-on-click-modal="false" width="800px" top="10vh" @close="hidePopups()">
+  <div class="public-popups">
+    <el-dialog :title="selectObj.name" :visible="showOperate" :close-on-click-modal="false" width="800px" top="10vh" @close="hidePopups()">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="small">
         <el-form-item
           :label="item.name + ':'"
           v-for="(item, i) in formList"
           :key="i"
           :prop="item.field"
-          v-show="(operateObj.name === '添加' && item.isAdd) || (operateObj.name === '编辑' && item.isEdit)"
+          v-show="(selectObj.name === '添加' && item.isAdd) || (selectObj.name === '编辑' && item.isEdit)"
         >
           <el-input v-model="form[item.field]" :placeholder="'请输入' + item.name" clearable v-if="item.queryType === 'input'" />
           <el-select v-model="form[item.field]" :placeholder="'请选择' + item.name" clearable v-else-if="item.queryType === 'select'">
@@ -31,7 +31,7 @@ export default {
       type: Boolean,
       default: false
     },
-    operateObj: {
+    selectObj: {
       type: Object,
       default: () => ({})
     },
@@ -81,7 +81,7 @@ export default {
 
       this.formList = arrs;
 
-      if (this.operateObj.name === '编辑') {
+      if (this.selectObj.name === '编辑') {
         Object.assign(this.form, selectTableData);
       }
     },
@@ -91,11 +91,11 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.btnLoading = true;
-          if (this.operateObj.name === '添加' || this.operateObj.name === '编辑') {
-            request({ url: this.operateObj.requestUrl, method: 'post', data: form })
+          if (this.selectObj.name === '添加' || this.selectObj.name === '编辑') {
+            request({ url: this.selectObj.requestUrl, method: 'post', data: form })
               .then(response => {
                 this.hidePopups();
-                this.$notify.success({ title: `${this.operateObj.name}成功` });
+                this.$notify.success({ title: `${this.selectObj.name}成功` });
                 this.$parent.getTableList();
                 this.btnLoading = false;
               })

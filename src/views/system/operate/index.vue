@@ -7,9 +7,11 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="handleSearch()" v-hasBtn="1003">查询</el-button>
-          <el-button type="primary" size="mini" @click="handleAdd()" v-hasBtn="1001">添加</el-button>
         </el-form-item>
       </el-form>
+    </div>
+    <div class="operate-container">
+      <el-button type="primary" size="mini" @click="handleAdd()" v-hasBtn="1001">添加</el-button>
     </div>
     <LTable :tableLoading="tableLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :tableQueryData.sync="tableQueryData" :getTableList="getTableList">
       <template slot="operate" slot-scope="scope">
@@ -111,4 +113,13 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.operates-container {
+  .l-table {
+    margin-top: 5px;
+  }
+  /deep/ .el-form-item--mini.el-form-item {
+    margin-bottom: 5px;
+  }
+}
+</style>
