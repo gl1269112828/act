@@ -1,6 +1,6 @@
 <template>
   <div class="public-popups">
-    <el-dialog :title="selectObj.name" :visible="showOperate" :close-on-click-modal="false" width="800px" top="10vh" @close="hidePopups()">
+    <el-dialog :title="selectObj.name" :visible="showOperate" :close-on-click-modal="false" append-to-body width="800px" top="10vh" @close="hidePopups()">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="small">
         <el-form-item
           :label="item.name + ':'"
@@ -42,6 +42,10 @@ export default {
     selectTableData: {
       type: Array,
       default: () => []
+    },
+    getTableList: {
+      type: Function,
+      default: null
     }
   },
   data() {
@@ -78,7 +82,7 @@ export default {
         }
         this.$set(form, item.field, undefined);
       }
-
+      console.log();
       this.formList = arrs;
 
       if (this.selectObj.name === '编辑') {
@@ -96,7 +100,7 @@ export default {
               .then(response => {
                 this.hidePopups();
                 this.$notify.success({ title: `${this.selectObj.name}成功` });
-                this.$parent.getTableList();
+                this.getTableList();
                 this.btnLoading = false;
               })
               .catch(err => {

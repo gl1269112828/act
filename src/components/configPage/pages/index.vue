@@ -23,7 +23,14 @@
         </template>
       </template>
     </LTable>
-    <ConfigTableForm :showOperate="isOperate" :selectObj="selectObjs" :operateFields="operateFields" :selectTableData="selectTableData" v-on:hidePopups="isOperate = false" />
+    <ConfigTableForm
+      :showOperate="isOperate"
+      :selectObj="selectObjs"
+      :operateFields="operateFields"
+      :selectTableData="selectTableData"
+      :getTableList="getTableList"
+      v-on:hidePopups="isOperate = false"
+    />
     <ConfigAssociatedChildTable :showAssociatedChildTable="isAssociatedChildTable" :selectObj="selectObjs" :selectTableData="selectTableData" v-on:hidePopups="isAssociatedChildTable = false" />
   </div>
   <el-empty description="暂无配置信息" v-else-if="showPage === 2"></el-empty>
@@ -87,7 +94,6 @@ export default {
   methods: {
     async getData(key) {
       try {
-        this.tableLoading = true;
         const { data } = await getPageDetail(key);
         if (data.pageConfigs) {
           this.showPage = 1;
@@ -129,9 +135,8 @@ export default {
                 : queries.push({ name: item.name, queryType: item.queryType, field: item.field, operate: item.condition, value: '' });
             }
           }
-
-          headers.unshift({ prop: 'selection' });
           headers.unshift({ prop: 'serialNumber' });
+          headers.unshift({ prop: 'selection' });
 
           // console.log(JSON.parse(JSON.stringify(queries)));
           // console.log(JSON.parse(JSON.stringify(fields)));
@@ -147,39 +152,41 @@ export default {
         } else {
           this.showPage = 2;
         }
-
+      } catch (error) {}
+    },
+    async getTableList() {
+      try {
+        this.tableLoading = true;
+        let pageQuery = [];
+        this.queryModuleData.forEach(item => {
+          if (!!item.value) {
+            if (item.queryType === 'date') {
+              const dates = item.value.split(',');
+              dates.forEach((itemJ, index) => {
+                if (index === 0 && !!itemJ) {
+                  pageQuery.push({ field: item.field, operate: 'GreaterThanOrEqual', value: itemJ });
+                } else if (index === 1 && !!itemJ) {
+                  pageQuery.push({ field: item.field, operate: 'LessThanOrEqual', value: itemJ });
+                }
+              });
+            } else {
+              pageQuery.push(item);
+            }
+          }
+        });
+        const tableQueryData = {
+          pageIndex: this.tableQueryData.pageIndex || 1,
+          pageMax: this.tableQueryData.pageMax || 10,
+          dynamicFilters: pageQuery
+        };
+        this.tableQueryData = tableQueryData;
+        const resTable = await request({ url: this.pageData.dataUrl, method: 'post', data: tableQueryData });
+        this.total = resTable.data.totalCount;
+        this.tableData = resTable.data.datas;
         this.tableLoading = false;
       } catch (error) {
         this.tableLoading = false;
       }
-    },
-    async getTableList() {
-      let pageQuery = [];
-      this.queryModuleData.forEach(item => {
-        if (!!item.value) {
-          if (item.queryType === 'date') {
-            const dates = item.value.split(',');
-            dates.forEach((itemJ, index) => {
-              if (index === 0 && !!itemJ) {
-                pageQuery.push({ field: item.field, operate: 'GreaterThanOrEqual', value: itemJ });
-              } else if (index === 1 && !!itemJ) {
-                pageQuery.push({ field: item.field, operate: 'LessThanOrEqual', value: itemJ });
-              }
-            });
-          } else {
-            pageQuery.push(item);
-          }
-        }
-      });
-      const tableQueryData = {
-        pageIndex: this.tableQueryData.pageIndex || 1,
-        pageMax: this.tableQueryData.pageMax || 10,
-        dynamicFilters: pageQuery
-      };
-      this.tableQueryData = tableQueryData;
-      const resTable = await request({ url: this.pageData.dataUrl, method: 'post', data: tableQueryData });
-      this.total = resTable.data.totalCount;
-      this.tableData = resTable.data.datas;
     },
     handleSearch() {
       this.getTableList();
@@ -226,9 +233,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.l-table {
-  margin-top: 5px;
+.config-page-container {
+  .l-table {
+    margin-top: 5px;
+  }
 }
+
 .config-page-prompt {
   margin-top: 100px;
   text-align: center;

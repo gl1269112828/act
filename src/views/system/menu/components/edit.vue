@@ -30,6 +30,9 @@
             <el-option v-for="(item, i) in parentMenuDatas" :key="i" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="是否显示:">
+          <el-switch v-model="form.isLeftShow" :active-value="true" :inactive-value="false"></el-switch>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel()" size="small">取消</el-button>
@@ -72,7 +75,8 @@ export default {
         level: undefined,
         parentId: undefined,
         key: undefined,
-        operates: undefined
+        operates: undefined,
+        isLeftShow: true
       },
       rules: {
         name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],

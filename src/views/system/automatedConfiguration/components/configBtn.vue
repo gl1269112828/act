@@ -20,7 +20,7 @@
                 <el-input v-model="item.name" placeholder="请输入按钮名称" disabled />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="12" v-if="!(item.fields.length > 0 && item.fields[0].fieldsType === 'associatedChildTable')">
               <el-form-item label="请求地址:" :rules="[{ required: true, message: '请输入请求地址', trigger: 'blur' }]" :prop="'buttons.' + i + '.requestUrl'">
                 <el-input v-model="item.requestUrl" placeholder="请输入请求地址" clearable />
               </el-form-item>
@@ -28,24 +28,29 @@
             <el-col :span="24" v-if="item.name !== '添加' && item.name !== '编辑'">
               <div class="config-list-title">字段配置</div>
               <el-col :span="24" v-for="(itemJ, j) in item.fields" :key="j">
-                <el-col :span="6">
+                <el-col :span="5">
                   <el-form-item label="类型:">
                     <el-select v-model="itemJ.fieldsType" placeholder="请选择类型">
                       <el-option v-for="(itemS, s) in configQueryList" :key="s" :label="itemS.key" :value="itemS.value"></el-option>
                     </el-select>
                   </el-form-item>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="5">
                   <el-form-item label="提交字段名:" :rules="[{ required: true, message: '请输入提交字段名', trigger: 'blur' }]" :prop="'buttons.' + i + '.fields.' + j + '.submitFieldsName'">
                     <el-input v-model="itemJ.submitFieldsName" placeholder="请输入提交字段名" clearable />
                   </el-form-item>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="5">
                   <el-form-item label="匹配字段名:" :rules="[{ required: true, message: '请输入匹配字段名', trigger: 'blur' }]" :prop="'buttons.' + i + '.fields.' + j + '.matchFiledsName'">
                     <el-input v-model="itemJ.matchFiledsName" placeholder="请输入匹配字段名" clearable />
                   </el-form-item>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="5" v-if="itemJ.fieldsType === 'associatedChildTable'">
+                  <el-form-item label="页面key:" :rules="[{ required: true, message: '请输入页面key', trigger: 'blur' }]" :prop="'buttons.' + i + '.fields.' + j + '.pageMark'">
+                    <el-input v-model="itemJ.pageMark" placeholder="请输入页面key" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="4">
                   <img class="list-operate-img" :src="require('@/static/listAdd.png')" alt="" @click="handleAddFiled(item, i, j)" v-if="j === 0" />
                   <img class="list-operate-img" :src="require('@/static/listLess.png')" alt="" @click="handleLessFiled(item, i, j)" v-if="j > 0" />
                 </el-col>
@@ -103,7 +108,6 @@ export default {
       try {
         this.boxLoading = true;
         this.configQueryList = (await getDictionaryByGroup('FieldType')).data;
-        this.operateTypes = (await getDictionaryByGroup('operateType')).data;
 
         const configTableData = (await getConfigTable({ dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }] })).data.datas[0];
 
@@ -116,6 +120,7 @@ export default {
               this.form.buttons = buttons.map(items => {
                 {
                   return {
+                    pageMark: this.itemObj.key,
                     unique: items.unique,
                     name: items.name,
                     requestUrl: '',
@@ -124,7 +129,8 @@ export default {
                       {
                         fieldsType: 'input',
                         submitFieldsName: '',
-                        matchFiledsName: ''
+                        matchFiledsName: '',
+                        pageMark: ''
                       }
                     ]
                   };
@@ -133,6 +139,7 @@ export default {
             } else {
               this.form.buttons = buttons.map(itemK => {
                 let obj = {
+                  pageMark: this.itemObj.key,
                   unique: itemK.unique,
                   name: itemK.name,
                   requestUrl: '',
@@ -141,11 +148,11 @@ export default {
                     {
                       fieldsType: 'input',
                       submitFieldsName: '',
-                      matchFiledsName: ''
+                      matchFiledsName: '',
+                      pageMark: ''
                     }
                   ]
                 };
-
                 JSON.parse(configTableData[key]).forEach(itemP => {
                   if (itemK.name === itemP.name) {
                     Object.assign(obj, itemP);

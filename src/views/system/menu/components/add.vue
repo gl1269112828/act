@@ -30,6 +30,9 @@
             <el-option v-for="(item, i) in parentMenuDatas" :key="i" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="是否显示:">
+          <el-switch v-model="form.isLeftShow" :active-value="true" :inactive-value="false"></el-switch>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel()" size="small">取消</el-button>
@@ -61,19 +64,20 @@ export default {
       menuCheckOptions: [],
       operateList: [],
       form: {
-        name: undefined, //菜单名称
-        url: undefined, //菜单url
-        icon: undefined, //菜单图标
-        level: undefined, //菜单层级
-        parentId: undefined, //父级菜单
+        name: undefined,
+        url: undefined,
+        icon: undefined,
+        level: undefined,
+        parentId: undefined,
         key: undefined,
-        operates: undefined //按钮权限
+        operates: undefined,
+        isLeftShow: true
       },
       rules: {
-        name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }], //菜单名称
-        url: [{ required: true, message: '请输入菜单url', trigger: 'blur' }], //菜单url
-        level: [{ required: true, message: '请选择菜单层级', trigger: 'change' }], //菜单层级
-        parentId: [{ required: true, message: '请选择父级菜单', trigger: 'change' }] //父级菜单
+        name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
+        url: [{ required: true, message: '请输入菜单url', trigger: 'blur' }],
+        level: [{ required: true, message: '请选择菜单层级', trigger: 'change' }],
+        parentId: [{ required: true, message: '请选择父级菜单', trigger: 'change' }]
       }
     };
   },

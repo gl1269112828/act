@@ -16,9 +16,9 @@
     <LTable class="l-table" :tableLoading="tableLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :tableQueryData.sync="tableQueryData" :getTableList="getTableList">
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
-          <el-button type="text" size="mini" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
-          <el-button type="text" size="mini" @click="handleResetPwd(scope.data)" v-hasBtn="1006">重置密码</el-button>
-          <el-button type="text" size="mini" @click="handleDelete(scope.data)" :disabled="scope.data.id === 1 ? true : false" v-hasBtn="1004">删除</el-button>
+          <el-button class="table-operate-btn" type="text" size="mini" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
+          <el-button class="table-operate-btn" type="text" size="mini" @click="handleResetPwd(scope.data)" v-hasBtn="1006">重置密码</el-button>
+          <el-button class="table-operate-btn" type="text" size="mini" @click="handleDelete(scope.data)" :disabled="scope.data.id === 1 ? true : false" v-hasBtn="1004">删除</el-button>
         </div>
       </template>
     </LTable>

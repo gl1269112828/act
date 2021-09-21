@@ -1,6 +1,6 @@
 <template>
   <div class="l-table">
-    <el-table v-loading="tableLoading" border :data="tableData" size="medium" @selection-change="mirChange" :max-height="tableHeight" @row-click="rowClick">
+    <el-table v-loading="tableLoading" border :data="tableData" size="mini" @selection-change="mirChange" :max-height="tableHeight" @row-click="rowClick">
       <template v-for="(item, i) in tableHeader">
         <template v-if="item.customize">
           <slot :name="item.prop" :data="item"></slot>
@@ -8,9 +8,6 @@
         <template v-else>
           <el-table-column :key="i" type="selection" width="80" align="center" v-if="item.prop === 'selection'"></el-table-column>
           <el-table-column :key="i" type="index" :index="indexMethod" :label="'序号'" width="60" align="center" v-else-if="item.prop === 'serialNumber'"></el-table-column>
-          <!-- <el-table-column :key="i + item.label" :prop="item.prop" :label="item.label" :width="item.width || ''" align="center" v-if="item.children && item.children.length > 0">
-            <el-table-column :prop="itemJ.prop" :label="itemJ.label" :width="itemJ.width || ''" align="center" v-for="(itemJ, j) in item.children" :key="j + itemJ.prop"></el-table-column>
-          </el-table-column> -->
           <template v-else>
             <el-table-column
               :key="i"

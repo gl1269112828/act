@@ -19,11 +19,11 @@
     <LTable class="l-table" :tableLoading="tableLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :tableQueryData.sync="tableQueryData" :getTableList="getTableList">
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
-          <el-button type="text" size="mini" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
-          <el-button type="text" size="mini" @click="handleTableConfig(scope.data)" v-hasBtn="1006">表格配置</el-button>
-          <el-button type="text" size="mini" @click="handleBtnConfig(scope.data)" v-hasBtn="1007">按钮配置</el-button>
-          <el-button type="text" size="mini" @click="handleFieldConfig(scope.data)" v-hasBtn="1008">字段配置</el-button>
-          <el-button type="text" size="mini" @click="handleDelete(scope.data)" v-hasBtn="1004">删除</el-button>
+          <el-button class="table-operate-btn" type="text" size="mini" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
+          <el-button class="table-operate-btn" type="text" size="mini" @click="handleTableConfig(scope.data)" v-hasBtn="1006">表格配置</el-button>
+          <el-button class="table-operate-btn" type="text" size="mini" @click="handleBtnConfig(scope.data)" v-hasBtn="1007">按钮配置</el-button>
+          <el-button class="table-operate-btn" type="text" size="mini" @click="handleFieldConfig(scope.data)" v-hasBtn="1008">字段配置</el-button>
+          <el-button class="table-operate-btn" type="text" size="mini" @click="handleDelete(scope.data)" v-hasBtn="1004">删除</el-button>
         </div>
       </template>
     </LTable>
@@ -56,7 +56,7 @@ export default {
         { label: '序号', prop: 'serialNumber' },
         { label: '页面名称', prop: 'name' },
         { label: '页面标识', prop: 'key' },
-        { label: '操作', prop: 'operate', width: '220', render: true }
+        { label: '操作', prop: 'operate', width: '260', render: true }
       ],
       tableData: [], //表格数据
       total: 0, //表格总数

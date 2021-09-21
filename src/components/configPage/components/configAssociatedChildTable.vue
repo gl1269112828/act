@@ -1,6 +1,6 @@
 <template>
   <div class="config-associated-child-table">
-    <el-dialog :title="selectObj.name" :visible="showAssociatedChildTable" :close-on-click-modal="false" width="1200px" top="10vh" @close="hidePopups()">
+    <el-dialog :title="selectObj.name" :visible="showAssociatedChildTable" :close-on-click-modal="false" width="1200px" top="4vh" @close="hidePopups()">
       <ConfigTableQuery class="config-page-header" :queryModuleData.sync="queryModuleData" @handleSearch="handleSearch" />
       <ConfigOperateButtons :operateButtons="operateButtons" @handleOperate="handleOperate" />
       <LTable
@@ -24,7 +24,14 @@
           </template>
         </template>
       </LTable>
-      <ConfigTableForm :showOperate="isOperate" :selectObj="selectObjs" :operateFields="operateFields" :selectTableDatas="selectTableDatas" v-on:hidePopups="isOperate = false" />
+      <ConfigTableForm
+        :showOperate="isOperate"
+        :selectObj="selectObjs"
+        :operateFields="operateFields"
+        :selectTableData="selectTableDatas"
+        :getTableList="getTableList"
+        v-on:hidePopups="isOperate = false"
+      />
       <ConfigAssociatedChildTable :showAssociatedChildTable="isAssociatedChildTable" :selectObj="selectObjs" v-on:hidePopups="isAssociatedChildTable = false" />
     </el-dialog>
   </div>
@@ -69,6 +76,7 @@ export default {
     return {
       tableLoading: false,
       tableComponentNames: tableComponentNames,
+      showPage: 0,
       pageData: {},
 
       queryModuleData: [],
@@ -98,109 +106,106 @@ export default {
     async getData(key) {
       try {
         const selectObj = this.selectObj;
-        console.log(JSON.parse(JSON.stringify(selectObj)));
-        console.log(JSON.parse(JSON.stringify(this.selectTableData)));
+        const selectTableData = this.selectTableData;
 
+        const { data } = await getPageDetail(selectObj.fields[0].pageMark);
+
+        this.showPage = 1;
+
+        if (data.pageConfigs) {
+          this.pageData = data.pageConfigs;
+
+          const fields = JSON.parse(data.pageConfigs.fields);
+
+          if (!!data.pageConfigs.buttons) {
+            this.operateButtons = JSON.parse(data.pageConfigs.buttons);
+          }
+
+          let headers = [];
+          let queries = [];
+          let slots = [];
+
+          for (let i = 0; i < fields.length; i++) {
+            const item = fields[i];
+            headers.push({ label: item.name, prop: item.field, width: item.width });
+            if (!!item.url) {
+              item['selectArray'] = (await request({ url: item.url, method: 'GET' })).data;
+              slots.push({ selectArray: item.selectArray, prop: item.field });
+              headers[i]['render'] = true;
+            }
+            if (item.isCustomize) {
+              headers[i]['customize'] = true;
+            }
+
+            if (item.isQuery) {
+              !!item.url
+                ? queries.push({
+                    name: item.name,
+                    queryType: item.queryType,
+                    field: item.field,
+                    operate: item.condition,
+                    selectArray: item.selectArray,
+                    value: ''
+                  })
+                : queries.push({ name: item.name, queryType: item.queryType, field: item.field, operate: item.condition, value: '' });
+            }
+          }
+
+          headers.unshift({ prop: 'selection' });
+          headers.unshift({ prop: 'serialNumber' });
+
+          // console.log(JSON.parse(JSON.stringify(queries)));
+          // console.log(JSON.parse(JSON.stringify(fields)));
+          // console.log(JSON.parse(JSON.stringify(slots)));
+          // console.log(JSON.parse(JSON.stringify(headers)));
+
+          this.queryModuleData = queries;
+          this.operateFields = fields;
+          this.tableSlotData = slots;
+          this.tableHeader = headers;
+
+          await this.getTableList();
+        } else {
+          this.showPage = 2;
+        }
+      } catch (error) {}
+    },
+    async getTableList() {
+      try {
+        const selectObj = this.selectObj;
+        const selectTableData = this.selectTableData;
+        this.tableLoading = true;
+        let pageQuery = [{ field: selectObj.fields[0].submitFieldsName, operate: 'Equal', value: selectTableData[0][selectObj.fields[0].matchFiledsName] }];
+        console.log(JSON.parse(JSON.stringify(this.queryModuleData)));
+        this.queryModuleData.forEach(item => {
+          if (!!item.value) {
+            if (item.queryType === 'date') {
+              const dates = item.value.split(',');
+              dates.forEach((itemJ, index) => {
+                if (index === 0 && !!itemJ) {
+                  pageQuery.push({ field: item.field, operate: 'GreaterThanOrEqual', value: itemJ });
+                } else if (index === 1 && !!itemJ) {
+                  pageQuery.push({ field: item.field, operate: 'LessThanOrEqual', value: itemJ });
+                }
+              });
+            } else {
+              pageQuery.push(item);
+            }
+          }
+        });
         const tableQueryData = {
           pageIndex: this.tableQueryData.pageIndex || 1,
           pageMax: this.tableQueryData.pageMax || 10,
-          dynamicFilters: [{ field: selectObj.fields[0].submitFieldsName, operate: 'Equal', value: this.selectTableData[0][selectObj.fields[0].matchFiledsName] }]
+          dynamicFilters: pageQuery
         };
-        const data = await request({ url: selectObj.requestUrl, method: 'POST', data: tableQueryData });
-
-        // this.tableLoading = true;
-        // const { data } = await getPageDetail(key);
-        // if (data.pageConfigs) {
-        //   this. = 1;
-
-        //   this.pageData = data.pageConfigs;
-
-        //   const fields = JSON.parse(data.pageConfigs.fields);
-
-        //   if (!!data.pageConfigs.buttons) {
-        //     this.operateButtons = JSON.parse(data.pageConfigs.buttons);
-        //   }
-
-        //   let headers = [];
-        //   let queries = [];
-        //   let slots = [];
-
-        //   for (let i = 0; i < fields.length; i++) {
-        //     const item = fields[i];
-        //     headers.push({ label: item.name, prop: item.field, width: item.width });
-        //     if (!!item.url) {
-        //       item['selectArray'] = (await request({ url: item.url, method: 'GET' })).data;
-        //       slots.push({ selectArray: item.selectArray, prop: item.field });
-        //       headers[i]['render'] = true;
-        //     }
-        //     if (item.isCustomize) {
-        //       headers[i]['customize'] = true;
-        //     }
-
-        //     if (item.isQuery) {
-        //       !!item.url
-        //         ? queries.push({
-        //             name: item.name,
-        //             queryType: item.queryType,
-        //             field: item.field,
-        //             operate: item.condition,
-        //             selectArray: item.selectArray,
-        //             value: ''
-        //           })
-        //         : queries.push({ name: item.name, queryType: item.queryType, field: item.field, operate: item.condition, value: '' });
-        //     }
-        //   }
-
-        //   headers.unshift({ prop: 'selection' });
-        //   headers.unshift({ prop: 'serialNumber' });
-
-        //   // console.log(JSON.parse(JSON.stringify(queries)));
-        //   // console.log(JSON.parse(JSON.stringify(fields)));
-        //   // console.log(JSON.parse(JSON.stringify(slots)));
-        //   // console.log(JSON.parse(JSON.stringify(headers)));
-
-        //   this.queryModuleData = queries;
-        //   this.operateFields = fields;
-        //   this.tableSlotData = slots;
-        //   this.tableHeader = headers;
-
-        //   await this.getTableList();
-        // } else {
-        //   this. = 2;
-        // }
-
+        this.tableQueryData = tableQueryData;
+        const resTable = await request({ url: this.pageData.dataUrl, method: 'POST', data: tableQueryData });
+        this.total = resTable.data.totalCount;
+        this.tableData = resTable.data.datas;
         this.tableLoading = false;
       } catch (error) {
         this.tableLoading = false;
       }
-    },
-    async getTableList() {
-      let pageQuery = [];
-      this.queryModuleData.forEach(item => {
-        if (!!item.value) {
-          if (item.queryType === 'date') {
-            const dates = item.value.split(',');
-            dates.forEach((itemJ, index) => {
-              if (index === 0 && !!itemJ) {
-                pageQuery.push({ field: item.field, operate: 'GreaterThanOrEqual', value: itemJ });
-              } else if (index === 1 && !!itemJ) {
-                pageQuery.push({ field: item.field, operate: 'LessThanOrEqual', value: itemJ });
-              }
-            });
-          } else {
-            pageQuery.push(item);
-          }
-        }
-      });
-      const tableQueryData = {
-        pageIndex: this.tableQueryData.pageIndex || 1,
-        pageMax: this.tableQueryData.pageMax || 10,
-        dynamicFilters: pageQuery
-      };
-      this.tableQueryData = tableQueryData;
-      const resTable = await request({ url: this.pageData.dataUrl, method: 'post', data: tableQueryData });
-      this.total = resTable.data.totalCount;
-      this.tableData = resTable.data.datas;
     },
     handleSearch() {
       this.getTableList();
@@ -254,4 +259,10 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.config-associated-child-table {
+  .l-table {
+    margin-top: 5px;
+  }
+}
+</style>

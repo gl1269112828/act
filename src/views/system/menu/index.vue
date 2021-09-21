@@ -14,10 +14,13 @@
       <el-button type="primary" size="mini" @click="handleAdd()" v-hasBtn="1001">添加</el-button>
     </div>
     <LTable class="l-table" :tableLoading="tableLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :tableQueryData.sync="tableQueryData" :getTableList="getTableList">
+      <template slot="isLeftShow" slot-scope="scope">
+        <span>{{ scope.data.isLeftShow ? '显示' : '不显示' }}</span>
+      </template>
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
-          <el-button type="text" size="mini" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
-          <el-button type="text" size="mini" @click="handleDelete(scope.data)" v-hasBtn="1004">删除</el-button>
+          <el-button class="table-operate-btn" type="text" size="mini" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
+          <el-button class="table-operate-btn" type="text" size="mini" @click="handleDelete(scope.data)" v-hasBtn="1004">删除</el-button>
         </div>
       </template>
     </LTable>
@@ -43,10 +46,11 @@ export default {
         { label: '序号', prop: 'serialNumber' },
         { label: '名称', prop: 'name' },
         { label: '图标', prop: 'icon' },
-        { label: '级别', prop: 'level' },
+        { label: '级别', prop: 'level', width: '60' },
         { label: '路由', prop: 'url' },
         { label: 'key', prop: 'key' },
-        { label: '创建时间', prop: 'createTime' },
+        { label: '是否显示', prop: 'isLeftShow', width: '80', render: true },
+        // { label: '创建时间', prop: 'createTime' },
         { label: '操作', prop: 'operate', width: '100', render: true }
       ],
       tableData: [], //表格数据
