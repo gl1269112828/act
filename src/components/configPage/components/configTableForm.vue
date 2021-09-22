@@ -82,7 +82,6 @@ export default {
         }
         this.$set(form, item.field, undefined);
       }
-      console.log();
       this.formList = arrs;
 
       if (this.selectObj.name === '编辑') {
@@ -95,20 +94,19 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.btnLoading = true;
-          if (this.selectObj.name === '添加' || this.selectObj.name === '编辑') {
-            request({ url: this.selectObj.requestUrl, method: 'post', data: form })
-              .then(response => {
-                this.hidePopups();
-                this.$notify.success({ title: `${this.selectObj.name}成功` });
-                this.getTableList();
-                this.btnLoading = false;
-              })
-              .catch(err => {
-                this.btnLoading = false;
-              });
-          } else {
-          }
+          // if (this.selectObj.name === '添加' || this.selectObj.name === '编辑') {
+          request({ url: this.selectObj.requestUrl, method: 'post', data: form })
+            .then(response => {
+              this.hidePopups();
+              this.$notify.success({ title: `${this.selectObj.name}成功` });
+              this.getTableList();
+              this.btnLoading = false;
+            })
+            .catch(err => {
+              this.btnLoading = false;
+            });
         }
+        // }
       });
     },
     hidePopups() {

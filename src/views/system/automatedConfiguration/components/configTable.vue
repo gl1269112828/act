@@ -64,9 +64,9 @@
                 <el-input v-model="item.width" placeholder="请输入列宽" clearable />
               </el-form-item>
             </el-col>
-            <el-col :span="6" v-if="item.isQuery">
-              <el-form-item label="查询类型:" label-width="130px">
-                <el-select v-model="item.queryType" placeholder="请选择查询条件">
+            <el-col :span="6">
+              <el-form-item label="字段类型:" label-width="130px">
+                <el-select v-model="item.queryType" placeholder="请选择字段条件">
                   <el-option v-for="(items, i) in configQueryList" :key="i" :label="items.key" :value="items.value"></el-option>
                 </el-select>
               </el-form-item>

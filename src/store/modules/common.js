@@ -27,9 +27,77 @@ const actions = {
   constructRouter({ dispatch, commit }) {
     return new Promise(async (resolve, reject) => {
       const menus = await this.dispatch('login/getMenu');
+      console.log(JSON.parse(JSON.stringify(menus)));
+      // {
+      //   path: '/configManage',
+      //   component: Layout,
+      //   children: [
+      //     {
+      //       path: '/automatedConfiguration',
+      //       name: 'automatedConfiguration',
+      //       component: () => import('@/views/configManage/automatedConfiguration/index'),
+      //       meta: { title: '配置页面' }
+      //     }
+      //   ]
+      // },
+
+      // const getRouters = (array, parentObj, parentPath) => {
+      //   let defaultRouters = [];
+      //   let dynamicConfigurations = [{ path: '/configPage', component: Layout, children: [] }];
+      //   for (let i = 0; i < array.length; i++) {
+      //     let item = array[i];
+      //     let purePath;
+      //     let currentPath;
+      //     if (item.path.indexOf('?') > -1) {
+      //       purePath = item.path.substring(0, item.path.indexOf('?'));
+      //     } else {
+      //       purePath = item.path;
+      //     }
+      //     if (parentPath) {
+      //       currentPath = `${parentPath}${purePath}`;
+      //     } else {
+      //       currentPath = item.path;
+      //     }
+
+      //     console.log(purePath);
+      //     console.log(currentPath);
+
+      //     let currentObj = {
+      //       path: purePath,
+      //       meta: {
+      //         title: item.title,
+      //         icon: item.icon,
+      //         key: item.key,
+      //         id: item.id
+      //       },
+      //       children: []
+      //     };
+      //     if (!!item.key) {
+      //       if (parentObj) {
+      //         currentObj['component'] = resolve => require([`@/views${currentPath}/index.vue`], resolve);
+      //         parentObj.children.push(currentObj);
+      //       } else {
+      //         currentObj['component'] = resolve => require(['@/components/configPage/pages/index.vue'], resolve);
+      //         dynamicConfigurations[0].children.push(currentObj);
+      //       }
+      //     } else {
+      //       currentObj['component'] = Layout;
+      //       defaultRouters.push(currentObj);
+      //     }
+      //     if (item.children && item.children.length) {
+      //       getRouters(item.children, currentObj, purePath);
+      //     }
+      //   }
+      //   return [...defaultRouters, ...dynamicConfigurations];
+      // };
+
+      // const a = getRouters(menus);
+      // commit('SET_DYNANICROUTER', a);
+      // resolve(a);
+      // console.log(JSON.parse(JSON.stringify(a)));
+
       let arr = new Array();
       let brr = [{ path: '/configPage', component: Layout, children: [] }];
-      const crr = [{ path: '*', redirect: '/404' }];
       let index = 0;
       const recursionFn = (gObj, parentPath, array) => {
         let drr = new Array();
@@ -55,7 +123,6 @@ const actions = {
               index++;
             } else {
               cObj.path = purePath;
-              // cObj.meta['key'] = "";
               cObj['component'] = resolve => require([`@/views${pcPath}/index.vue`], resolve);
               drr.push(cObj);
             }
@@ -89,9 +156,11 @@ const actions = {
           }
         }
       }
-      // console.log(JSON.parse(JSON.stringify([...arr, ...brr, ...crr])));
-      commit('SET_DYNANICROUTER', [...arr, ...brr, ...crr]);
-      resolve([...arr, ...brr, ...crr]);
+      brr.push({ path: '*', redirect: '/404' });
+
+      console.log(JSON.parse(JSON.stringify([...arr, ...brr])));
+      commit('SET_DYNANICROUTER', [...arr, ...brr]);
+      resolve([...arr, ...brr]);
     });
   }
 };

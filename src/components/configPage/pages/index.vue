@@ -101,6 +101,7 @@ export default {
           this.pageData = data.pageConfigs;
 
           const fields = JSON.parse(data.pageConfigs.fields);
+          console.log(fields)
 
           if (!!data.pageConfigs.buttons) {
             this.operateButtons = JSON.parse(data.pageConfigs.buttons);
@@ -193,6 +194,7 @@ export default {
     },
     handleOperate(item) {
       if (item.name === '添加') {
+        this.selectObjs = item;
         this.isOperate = true;
       } else {
         if (!this.selectTableData.length) {
