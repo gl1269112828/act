@@ -18,7 +18,7 @@
           <el-switch v-model="form[item.field]" :active-value="true" :inactive-value="false" v-else-if="item.fieldType === 'switch'"></el-switch>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer" v-if="formList.length > 0">
+      <div slot="footer" class="dialog-footer">
         <el-button @click="cancel()" size="small">取消</el-button>
         <el-button type="primary" :loading="btnLoading" @click="confirm()" size="small">确定</el-button>
       </div>

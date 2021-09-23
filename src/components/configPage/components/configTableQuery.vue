@@ -7,7 +7,7 @@
       </el-select>
       <DateRange :value.sync="item.value" v-else-if="item.fieldType === 'date'" />
     </el-form-item>
-    <el-form-item>
+    <el-form-item v-if="queryModuleData.length > 0">
       <el-button type="primary" size="mini" @click="handleSearch()">查询</el-button>
       <el-button type="primary" size="mini" @click="handleReset()">重置</el-button>
     </el-form-item>
