@@ -102,6 +102,8 @@ export default {
 
           const fields = JSON.parse(data.pageConfigs.fields);
 
+          console.log(JSON.parse(JSON.stringify(fields)));
+
           if (!!data.pageConfigs.buttons) {
             this.operateButtons = JSON.parse(data.pageConfigs.buttons);
           }
@@ -112,17 +114,21 @@ export default {
 
           for (let i = 0; i < fields.length; i++) {
             const item = fields[i];
-            headers.push({ label: item.name, prop: item.field, width: item.width });
+            if (!item.showTypes.includes('isTable')) {
+              headers.push({ label: item.name, prop: item.field, width: item.width });
+            }
             if (!!item.url) {
               item['selectArray'] = (await request({ url: item.url, method: 'GET' })).data;
               slots.push({ selectArray: item.selectArray, prop: item.field });
-              headers[i]['render'] = true;
+              if (!item.showTypes.includes('isTable')) {
+                headers[i]['render'] = true;
+              }
             }
-            if (item.isCustomize) {
+            if (item.showTypes.includes('isCustomize') && !item.showTypes.includes('isTable')) {
               headers[i]['customize'] = true;
             }
 
-            if (item.isQuery) {
+            if (item.showTypes.includes('isQuery')) {
               !!item.url
                 ? queries.push({
                     name: item.name,

@@ -1,7 +1,7 @@
 <template>
   <div class="config-table-container">
     <el-dialog title="配置表格" :visible="showConfigTable" :close-on-click-modal="false" width="1200px" top="4vh" @close="hidePopups()">
-      <el-form ref="form" :model="form" label-width="140px" size="mini" v-loading="boxLoading" element-loading-text="拼命加载中">
+      <el-form ref="form" :model="form" :label-width="formWidth" size="mini" v-loading="boxLoading" element-loading-text="拼命加载中">
         <el-row>
           <el-col :span="12">
             <el-form-item label="数据地址:" prop="dataUrl" :rules="[{ required: true, message: '请输入数据地址', trigger: 'blur' }]">
@@ -11,77 +11,61 @@
           <el-col :span="24" class="config-table-operate">
             <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddList">添加</el-button>
           </el-col>
-          <el-col class="config-table-list" :span="24" v-for="(item, i) in form.fields" :key="i" v-cloak>
-            <el-col :span="24">
-              <el-col :span="4">
-                <el-form-item label="是否添加:" label-width="130px">
-                  <el-switch v-model="item.isAdd" :active-value="1" :inactive-value="0"></el-switch>
+          <el-col class="config-table-list" :span="24">
+            <el-col class="config-table-item" :span="24" v-for="(item, i) in form.fields" :key="i" v-cloak>
+              <el-col :span="24">
+                <el-col :span="18">
+                  <el-form-item label="字段配置:">
+                    <el-select v-model="item.showTypes" multiple placeholder="请选择字段配置">
+                      <el-option v-for="item in showTypes" :key="item.key" :label="item.key" :value="item.value"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col class="config-list-close" :span="6">
+                  <img :src="require('@/static/moveUp.png')" alt="" @click="handerMoveUp(item, i)" v-show="form.fields.length > 1" />
+                  <img :src="require('@/static/moveDown.png')" alt="" @click="handeMoveDown(item, i)" v-show="form.fields.length > 1" />
+                  <img :src="require('@/static/listClose.png')" alt="" @click="handerListLess(item, i)" v-show="form.fields.length > 1" />
+                </el-col>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="名称:" :rules="[{ required: true, message: '请输入名称', trigger: 'blur' }]" :prop="'fields.' + i + '.name'">
+                  <el-input v-model="item.name" placeholder="请输入名称" clearable />
                 </el-form-item>
               </el-col>
-              <el-col :span="4">
-                <el-form-item label="是否编辑:" label-width="130px">
-                  <el-switch v-model="item.isEdit" :active-value="1" :inactive-value="0"></el-switch>
+              <el-col :span="6">
+                <el-form-item label="字段:" :rules="[{ required: true, message: '请输入字段', trigger: 'blur' }]" :prop="'fields.' + i + '.field'">
+                  <el-input v-model="item.field" placeholder="请输入字段" clearable />
                 </el-form-item>
               </el-col>
-              <el-col :span="4">
-                <el-form-item label="是否查询:" label-width="130px">
-                  <el-switch v-model="item.isQuery" :active-value="1" :inactive-value="0"></el-switch>
+              <el-col :span="6">
+                <el-form-item label="数据源:">
+                  <el-input v-model="item.url" placeholder="请输入数据源" clearable />
                 </el-form-item>
               </el-col>
-              <el-col :span="4">
-                <el-form-item label="是否必填:" label-width="130px">
-                  <el-switch v-model="item.isRequired" :active-value="1" :inactive-value="0"></el-switch>
+              <el-col :span="6">
+                <el-form-item label="列宽:">
+                  <el-input v-model="item.width" placeholder="请输入列宽" clearable />
                 </el-form-item>
               </el-col>
-              <el-col :span="4">
-                <el-form-item label="是否自定义:" label-width="130px">
-                  <el-switch v-model="item.isCustomize" :active-value="1" :inactive-value="0"></el-switch>
+              <el-col :span="6">
+                <el-form-item label="字段类型:">
+                  <el-select v-model="item.fieldType" placeholder="请选择字段条件">
+                    <el-option v-for="(items, i) in fieldTypeList" :key="i" :label="items.key" :value="items.value"></el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
-              <el-col class="config-list-close" :span="4">
-                <img :src="require('@/static/moveUp.png')" alt="" @click="handerMoveUp(item, i)" v-show="form.fields.length > 1" />
-                <img :src="require('@/static/moveDown.png')" alt="" @click="handeMoveDown(item, i)" v-show="form.fields.length > 1" />
-                <img :src="require('@/static/listClose.png')" alt="" @click="handerListLess(item, i)" v-show="form.fields.length > 1" />
+              <el-col :span="6" v-if="item.isQuery">
+                <el-form-item label="查询条件:">
+                  <el-select v-model="item.condition" placeholder="请选择查询条件">
+                    <el-option v-for="(items, i) in conditionList" :key="i" :label="items.key" :value="items.value"></el-option>
+                  </el-select>
+                </el-form-item>
               </el-col>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="名称:" label-width="130px" :rules="[{ required: true, message: '请输入名称', trigger: 'blur' }]" :prop="'fields.' + i + '.name'">
-                <el-input v-model="item.name" placeholder="请输入名称" clearable />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="字段:" label-width="130px" :rules="[{ required: true, message: '请输入字段', trigger: 'blur' }]" :prop="'fields.' + i + '.field'">
-                <el-input v-model="item.field" placeholder="请输入字段" clearable />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="数据源:" label-width="130px">
-                <el-input v-model="item.url" placeholder="请输入数据源" clearable />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="列宽:" label-width="130px">
-                <el-input v-model="item.width" placeholder="请输入列宽" clearable />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="字段类型:" label-width="130px">
-                <el-select v-model="item.fieldType" placeholder="请选择字段条件">
-                  <el-option v-for="(items, i) in fieldTypeList" :key="i" :label="items.key" :value="items.value"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6" v-if="item.isQuery">
-              <el-form-item label="查询条件:" label-width="130px">
-                <el-select v-model="item.condition" placeholder="请选择查询条件">
-                  <el-option v-for="(items, i) in conditionList" :key="i" :label="items.key" :value="items.value"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6" v-if="item.isCustomize">
-              <el-form-item label="自定义组件名称:" label-width="130px">
-                <el-input v-model="item.moduleName" placeholder="请输入组件名称" clearable />
-              </el-form-item>
+              <el-col :span="6" v-if="item.isCustomize">
+                <el-form-item label="自定义组件:" label-width="130px">
+                  <el-input v-model="item.moduleName" placeholder="请输入组件名称" clearable />
+                </el-form-item>
+              </el-col>
             </el-col>
           </el-col>
           <el-col :span="24" class="config-table-operate" style="border:none" v-if="form.fields.length > 3">
@@ -113,14 +97,16 @@ export default {
     return {
       boxLoading: false,
       btnLoading: false,
+      showTypes: [],
       conditionList: [],
       fieldTypeList: [],
+      formWidth: '100px',
       form: {
         id: 0,
         buttons: undefined,
         functions: undefined,
         dataUrl: undefined,
-        fields: [{ name: '', field: '', url: '', width: '', isAdd: 0, isEdit: 0, isQuery: 0, isCustomize: 0, isRequired: 0, fieldType: 'input', condition: 'Like', moduleName: '' }]
+        fields: [{ name: '', field: '', url: '', width: '', showTypes: [], fieldType: 'input', condition: 'Like', moduleName: '' }]
       }
     };
   },
@@ -137,6 +123,7 @@ export default {
         this.boxLoading = true;
         this.conditionList = (await getDictionaryByGroup('Condition')).data;
         this.fieldTypeList = (await getDictionaryByGroup('fieldType')).data;
+        this.showTypes = (await getDictionaryByGroup('TableFieldElement')).data;
 
         const configTableData = (await getConfigTable({ dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }] })).data.datas;
 
@@ -154,7 +141,7 @@ export default {
       }
     },
     handleAddList() {
-      this.form.fields.push({ name: '', field: '', url: '', width: '', isAdd: 0, isEdit: 0, isQuery: 0, isCustomize: 0, isRequired: 0, fieldType: 'input', condition: 'Like', moduleName: '' });
+      this.form.fields.push({ name: '', field: '', url: '', width: '', showTypes: [], fieldType: 'input', condition: 'Like', moduleName: '' });
     },
     handerListLess(item, index) {
       this.form.fields.splice(index, 1);
@@ -165,14 +152,14 @@ export default {
     },
     handerMoveUp(item, index) {
       if (index === 0) {
-        this.$message.warning('已到最顶部');
+        this.$message.warning('已到最第一条');
         return;
       }
       this.form.fields = this.moveFn(index, index - 1, this.form.fields);
     },
     handeMoveDown(item, index) {
       if (index === this.form.fields.length - 1) {
-        this.$message.warning('已到最底部');
+        this.$message.warning('已到最后一条');
         return;
       }
       this.form.fields = this.moveFn(index, index + 1, this.form.fields);
@@ -205,7 +192,7 @@ export default {
         buttons: undefined,
         functions: undefined,
         dataUrl: undefined,
-        fields: [{ name: '', field: '', url: '', width: '', isAdd: 0, isEdit: 0, isQuery: 0, isRequired: 0, isCustomize: 0, fieldType: 'input', condition: 'Like', moduleName: '' }]
+        fields: [{ name: '', field: '', url: '', width: '', showTypes: [], fieldType: 'input', condition: 'Like', moduleName: '' }]
       };
     },
     cancel() {
@@ -218,21 +205,27 @@ export default {
 [v-cloak] {
   display: none;
 }
-
 .config-table-list {
-  padding: 20px 0 2px 0;
-  border-bottom: 1px solid #b8d7f7;
-  .config-list-close {
-    text-align: right;
-    img {
-      cursor: pointer;
-      width: 28px;
-      height: 28px;
-      margin-left: 10px;
-      vertical-align: middle;
+  overflow: hidden;
+  overflow-y: scroll;
+  max-height: 500px;
+  padding: 0 15px;
+  .config-table-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #b8d7f7;
+    .config-list-close {
+      text-align: right;
+      img {
+        cursor: pointer;
+        width: 28px;
+        height: 28px;
+        margin-left: 10px;
+        vertical-align: middle;
+      }
     }
   }
 }
+
 .config-table-operate {
   padding: 10px 0;
   text-align: right;

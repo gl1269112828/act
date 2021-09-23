@@ -1,6 +1,6 @@
 <template>
   <div class="l-table">
-    <el-table v-loading="tableLoading" border :data="tableData" size="small" @selection-change="mirChange" :max-height="tableHeight" @row-click="rowClick">
+    <el-table v-loading="tableLoading" border :data="tableData" size="mini" @selection-change="mirChange" :max-height="tableHeight" @row-click="rowClick">
       <template v-for="(item, i) in tableHeader">
         <template v-if="item.customize">
           <slot :name="item.prop" :data="item"></slot>
@@ -139,4 +139,11 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+/deep/ .el-table thead {
+  font-size: 14px;
+}
+/deep/ .el-table__body-wrapper {
+  font-size: 14px;
+}
+</style>
