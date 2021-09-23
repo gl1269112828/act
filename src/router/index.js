@@ -11,18 +11,18 @@ const routes = [
     name: 'login',
     component: () => import('@/views/login/index')
   },
-  {
-    path: '/home',
-    component: Layout,
-    children: [
-      {
-        path: '/',
-        name: 'home',
-        component: () => import('@/views/home/index'),
-        meta: { title: '首页' }
-      }
-    ]
-  },
+  // {
+  //   path: '/home',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: '/',
+  //       name: 'home',
+  //       component: () => import('@/views/home/index'),
+  //       meta: { title: '首页' }
+  //     }
+  //   ]
+  // },
   // {
   //   path: '/system',
   //   component: Layout,

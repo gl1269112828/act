@@ -21,7 +21,6 @@ router.beforeEach(async (to, from, next) => {
         const routers = await store.dispatch('common/constructRouter');
         router.addRoutes([...routers]);
         next({ ...to, replace: true });
-        // next();
       } else {
         if (to.meta.title !== '首页') {
           await store.dispatch('login/getButtonAuthority', to.query.id);
