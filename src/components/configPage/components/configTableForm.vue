@@ -1,7 +1,7 @@
 <template>
   <div class="public-popups">
     <el-dialog :title="selectObj.name" :visible="showOperate" :close-on-click-modal="false" append-to-body width="800px" top="10vh" @close="hidePopups()">
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="small">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="small" v-loading="boxLoading" element-loading-text="拼命加载中">
         <el-form-item
           :label="item.name + ':'"
           v-for="(item, i) in formList"
@@ -10,10 +10,12 @@
           v-show="(selectObj.name === '添加' && item.isAdd) || (selectObj.name === '编辑' && item.isEdit)"
         >
           <el-input v-model="form[item.field]" :placeholder="'请输入' + item.name" clearable v-if="item.fieldType === 'input'" />
+          <el-input type="textarea" v-model="form[item.field]" :placeholder="'请输入' + item.name" v-if="item.fieldType === 'textarea'"></el-input>
           <el-select v-model="form[item.field]" :placeholder="'请选择' + item.name" clearable v-else-if="item.fieldType === 'select'">
             <el-option v-for="(items, i) in item.selectArray" :key="i" :label="items.key" :value="items.value"></el-option>
           </el-select>
           <el-date-picker v-model="form[item.field]" value-format="yyyy-MM-dd hh:mm:ss" type="datetime" placeholder="请选择时间" v-else-if="item.fieldType === 'date'"></el-date-picker>
+          <el-switch v-model="form[item.field]" :active-value="true" :inactive-value="false" v-else-if="item.fieldType === 'switch'"></el-switch>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer" v-if="formList.length > 0">
@@ -50,6 +52,7 @@ export default {
   },
   data() {
     return {
+      boxLoading: false,
       btnLoading: false,
       formList: [],
       form: {},
@@ -65,6 +68,7 @@ export default {
   },
   methods: {
     async getData() {
+      this.boxLoading = true;
       let form = this.form;
       const selectTableData = this.selectTableData[0];
       const arrs = JSON.parse(JSON.stringify(this.operateFields));
@@ -83,12 +87,11 @@ export default {
         this.$set(form, item.field, undefined);
       }
       this.formList = arrs;
-      console.log(JSON.parse(JSON.stringify(selectTableData)))
-      console.log(JSON.parse(JSON.stringify(this.formList)))
 
       if (this.selectObj.name === '编辑') {
         Object.assign(this.form, selectTableData);
       }
+      this.boxLoading = false;
     },
 
     confirm() {
