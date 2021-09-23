@@ -66,8 +66,8 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="字段类型:" label-width="130px">
-                <el-select v-model="item.queryType" placeholder="请选择字段条件">
-                  <el-option v-for="(items, i) in configQueryList" :key="i" :label="items.key" :value="items.value"></el-option>
+                <el-select v-model="item.fieldType" placeholder="请选择字段条件">
+                  <el-option v-for="(items, i) in fieldTypeList" :key="i" :label="items.key" :value="items.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -114,13 +114,13 @@ export default {
       boxLoading: false,
       btnLoading: false,
       conditionList: [],
-      configQueryList: [],
+      fieldTypeList: [],
       form: {
         id: 0,
         buttons: undefined,
         functions: undefined,
         dataUrl: undefined,
-        fields: [{ name: '', field: '', url: '', width: '', isAdd: 0, isEdit: 0, isQuery: 0, isCustomize: 0, isRequired: 0, queryType: 'input', condition: 'Like', moduleName: '' }]
+        fields: [{ name: '', field: '', url: '', width: '', isAdd: 0, isEdit: 0, isQuery: 0, isCustomize: 0, isRequired: 0, fieldType: 'input', condition: 'Like', moduleName: '' }]
       }
     };
   },
@@ -136,13 +136,10 @@ export default {
       try {
         this.boxLoading = true;
         this.conditionList = (await getDictionaryByGroup('Condition')).data;
-        this.configQueryList = (await getDictionaryByGroup('FieldType')).data;
+        this.fieldTypeList = (await getDictionaryByGroup('fieldType')).data;
 
-        const configTableData = (
-          await getConfigTable({
-            dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }]
-          })
-        ).data.datas;
+        const configTableData = (await getConfigTable({ dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }] })).data.datas;
+
         if (configTableData.length > 0) {
           configTableData[0].fields = JSON.parse(configTableData[0].fields);
           Object.keys(this.form).forEach(key => {
@@ -157,7 +154,7 @@ export default {
       }
     },
     handleAddList() {
-      this.form.fields.push({ name: '', field: '', url: '', width: '', isAdd: 0, isEdit: 0, isQuery: 0, isCustomize: 0, isRequired: 0, queryType: 'input', condition: 'Like', moduleName: '' });
+      this.form.fields.push({ name: '', field: '', url: '', width: '', isAdd: 0, isEdit: 0, isQuery: 0, isCustomize: 0, isRequired: 0, fieldType: 'input', condition: 'Like', moduleName: '' });
     },
     handerListLess(item, index) {
       this.form.fields.splice(index, 1);
@@ -208,7 +205,7 @@ export default {
         buttons: undefined,
         functions: undefined,
         dataUrl: undefined,
-        fields: [{ name: '', field: '', url: '', width: '', isAdd: 0, isEdit: 0, isQuery: 0, isRequired: 0, isCustomize: 0, queryType: 'input', condition: 'Like', moduleName: '' }]
+        fields: [{ name: '', field: '', url: '', width: '', isAdd: 0, isEdit: 0, isQuery: 0, isRequired: 0, isCustomize: 0, fieldType: 'input', condition: 'Like', moduleName: '' }]
       };
     },
     cancel() {

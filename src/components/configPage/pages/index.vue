@@ -101,7 +101,6 @@ export default {
           this.pageData = data.pageConfigs;
 
           const fields = JSON.parse(data.pageConfigs.fields);
-          console.log(fields)
 
           if (!!data.pageConfigs.buttons) {
             this.operateButtons = JSON.parse(data.pageConfigs.buttons);
@@ -127,13 +126,13 @@ export default {
               !!item.url
                 ? queries.push({
                     name: item.name,
-                    queryType: item.queryType,
+                    fieldType: item.fieldType,
                     field: item.field,
                     operate: item.condition,
                     selectArray: item.selectArray,
                     value: ''
                   })
-                : queries.push({ name: item.name, queryType: item.queryType, field: item.field, operate: item.condition, value: '' });
+                : queries.push({ name: item.name, fieldType: item.fieldType, field: item.field, operate: item.condition, value: '' });
             }
           }
           headers.unshift({ prop: 'serialNumber' });
@@ -161,7 +160,7 @@ export default {
         let pageQuery = [];
         this.queryModuleData.forEach(item => {
           if (!!item.value) {
-            if (item.queryType === 'date') {
+            if (item.fieldType === 'date') {
               const dates = item.value.split(',');
               dates.forEach((itemJ, index) => {
                 if (index === 0 && !!itemJ) {

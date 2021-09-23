@@ -31,7 +31,7 @@
                 <el-col :span="5">
                   <el-form-item label="类型:">
                     <el-select v-model="itemJ.fieldsType" placeholder="请选择类型">
-                      <el-option v-for="(itemS, s) in configQueryList" :key="s" :label="itemS.key" :value="itemS.value"></el-option>
+                      <el-option v-for="(itemS, s) in fieldTypeList" :key="s" :label="itemS.key" :value="itemS.value"></el-option>
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -83,7 +83,7 @@ export default {
     return {
       boxLoading: false,
       btnLoading: false,
-      configQueryList: [],
+      fieldTypeList: [],
       form: {
         id: 0,
         buttons: [],
@@ -107,7 +107,7 @@ export default {
     async getData() {
       try {
         this.boxLoading = true;
-        this.configQueryList = (await getDictionaryByGroup('FieldType')).data;
+        this.fieldTypeList = (await getDictionaryByGroup('FieldType')).data;
 
         const configTableData = (await getConfigTable({ dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }] })).data.datas[0];
 
@@ -118,6 +118,7 @@ export default {
 
             if (!configTableData[key]) {
               this.form.buttons = buttons.map(items => {
+                
                 {
                   return {
                     pageMark: this.itemObj.key,
