@@ -127,7 +127,12 @@ export default {
               item['selectArray'] = (await request({ url: item.url, method: 'GET' })).data;
               slots.push({ selectArray: item.selectArray, prop: item.field });
               headers[index]['render'] = true;
+            } else {
+              if (headers[index].render) {
+                delete headers[index].render;
+              }
             }
+
             if (item.showTypes.includes('isCustomize')) {
               if (i > 0) {
                 index++;
