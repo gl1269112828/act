@@ -46,9 +46,6 @@ export default {
   methods: {
     getTags(route) {
       let tags = this.tags;
-      if (route.meta.title === '首页') {
-        return;
-      }
       tags.forEach(item => {
         item.checked = false;
         if (item.query.id == route.query.id) {

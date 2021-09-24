@@ -133,12 +133,12 @@ export default {
               }
             }
 
-            if (item.showTypes.includes('isCustomize')) {
+            if (item.showTypes.includes('isTableCustomize')) {
               if (i > 0) {
                 index++;
               }
               headers.push({ label: item.name, prop: item.field, width: item.width });
-              headers[index]['customize'] = true;
+              headers[index]['tableRowCustomize'] = true;
             }
 
             if (item.showTypes.includes('isQuery')) {

@@ -2,7 +2,7 @@
   <div class="l-table">
     <el-table v-loading="tableLoading" border :data="tableData" size="mini" @selection-change="mirChange" :max-height="tableHeight" @row-click="rowClick">
       <template v-for="(item, i) in tableHeader">
-        <template v-if="item.customize">
+        <template v-if="item.tableRowCustomize">
           <slot :name="item.prop" :data="item"></slot>
         </template>
         <template v-else>

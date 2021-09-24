@@ -11,6 +11,9 @@
             </el-select>
             <el-date-picker v-model="form[item.field]" value-format="yyyy-MM-dd hh:mm:ss" type="datetime" placeholder="请选择时间" v-else-if="item.fieldType === 'date'"></el-date-picker>
             <el-switch v-model="form[item.field]" :active-value="true" :inactive-value="false" v-else-if="item.fieldType === 'switch'"></el-switch>
+            <!-- <template v-for="(item, h) in tableComponentNames">
+              <component :is="item" :key="h + item"></component>
+            </template> -->
           </el-form-item>
         </template>
       </el-form>
@@ -23,7 +26,16 @@
 </template>
 <script>
 import request from '@/utils/request';
+import { fieldComponentObj } from '@/utils/configPageCustomize';
+
+let fieldComponentNames = [];
+Object.keys(fieldComponentObj).forEach(key => {
+  fieldComponentNames.push(key);
+});
 export default {
+  components: {
+    ...fieldComponentNames
+  },
   props: {
     showOperate: {
       type: Boolean,

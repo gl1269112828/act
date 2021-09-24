@@ -4,7 +4,7 @@
       <el-form ref="form" :model="form" :label-width="formWidth" size="mini" v-loading="boxLoading" element-loading-text="拼命加载中">
         <el-row>
           <el-col class="config-table-url" :span="18">
-            <el-form-item label="数据地址:" prop="dataUrl" :rules="[{ required: true, message: '请输入数据地址', trigger: 'blur' }]">
+            <el-form-item label="表格数据地址:" prop="dataUrl" :rules="[{ required: true, message: '请输入数据地址', trigger: 'blur' }]">
               <el-input v-model="form.dataUrl" placeholder="请输入数据地址" clearable />
             </el-form-item>
           </el-col>
@@ -102,7 +102,7 @@ export default {
       showTypes: [],
       conditionList: [],
       fieldTypeList: [],
-      formWidth: '100px',
+      formWidth: '110px',
       form: {
         id: 0,
         buttons: undefined,
