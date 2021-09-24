@@ -102,7 +102,7 @@ export default {
 
           const fields = JSON.parse(data.pageConfigs.fields);
 
-          console.log(JSON.parse(JSON.stringify(fields)));
+          // console.log(JSON.parse(JSON.stringify(fields)));
 
           if (!!data.pageConfigs.buttons) {
             this.operateButtons = JSON.parse(data.pageConfigs.buttons);
@@ -160,7 +160,7 @@ export default {
           // console.log(JSON.parse(JSON.stringify(queries)));
           // console.log(JSON.parse(JSON.stringify(fields)));
           // console.log(JSON.parse(JSON.stringify(slots)));
-          console.log(JSON.parse(JSON.stringify(headers)));
+          // console.log(JSON.parse(JSON.stringify(headers)));
 
           this.queryModuleData = queries;
           this.operateFields = fields;

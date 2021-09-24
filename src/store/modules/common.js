@@ -29,9 +29,10 @@ const actions = {
       const menus = await this.dispatch('login/getMenu');
       // console.log(JSON.parse(JSON.stringify(menus)));
 
+      let defaultRouters = [];
+      let dynamicConfigurations = [{ path: '/configPage', component: Layout, children: [] }];
+
       const getRouters = (array, parentObj, parentPath) => {
-        let defaultRouters = [];
-        let dynamicConfigurations = [{ path: '/configPage', component: Layout, children: [] }];
 
         for (let i = 0; i < array.length; i++) {
           let item = array[i],
@@ -41,7 +42,7 @@ const actions = {
           item.path.indexOf('?') > -1 ? (purePath = item.path.substring(0, item.path.indexOf('?'))) : (purePath = item.path);
 
           parentPath ? (currentPath = `${parentPath}${purePath}`) : (currentPath = item.path);
-          
+
           let currentObj = {
             path: purePath,
             meta: { title: item.title, icon: item.icon, key: item.key, id: item.id },

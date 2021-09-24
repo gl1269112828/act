@@ -4,11 +4,11 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="small" v-loading="boxLoading" element-loading-text="拼命加载中">
         <template v-for="(item, i) in formList">
           <el-form-item :key="i" :label="item.name + ':'" :prop="item.field" v-if="item.showTypes.includes('isAdd') || item.showTypes.includes('isEdit')">
-            <el-input v-model="form[item.field]" :placeholder="'请输入' + item.name" clearable v-if="item.fieldType === 'input'" />
-            <el-input v-model="form[item.field]" type="textarea" :placeholder="'请输入' + item.name" v-if="item.fieldType === 'textarea'"></el-input>
-            <el-select v-model="form[item.field]" :placeholder="'请选择' + item.name" clearable v-else-if="item.fieldType === 'select'">
+            <el-input v-model="form[item.field]" :disabled="readonlyFn(item.showTypes)" :placeholder="'请输入' + item.name" clearable v-if="item.fieldType === 'input'" />
+            <el-input v-model="form[item.field]" :disabled="readonlyFn(item.showTypes)" type="textarea" :placeholder="'请输入' + item.name" v-if="item.fieldType === 'textarea'"></el-input>
+            <el-select v-model="form[item.field]" :disabled="readonlyFn(item.showTypes)" :placeholder="'请选择' + item.name" clearable v-else-if="item.fieldType === 'select'">
               <el-option v-for="(items, i) in item.selectArray" :key="i" :label="items.key" :value="items.value"></el-option>
-            </el-select> 
+            </el-select>
             <el-date-picker v-model="form[item.field]" value-format="yyyy-MM-dd hh:mm:ss" type="datetime" placeholder="请选择时间" v-else-if="item.fieldType === 'date'"></el-date-picker>
             <el-switch v-model="form[item.field]" :active-value="true" :inactive-value="false" v-else-if="item.fieldType === 'switch'"></el-switch>
           </el-form-item>
@@ -44,6 +44,17 @@ export default {
     getTableList: {
       type: Function,
       default: null
+    }
+  },
+  computed: {
+    readonlyFn() {
+      return function(showTypes) {
+        if (showTypes.includes('isReadonly')) {
+          return true;
+        } else {
+          return false;
+        }
+      };
     }
   },
   data() {
