@@ -213,7 +213,7 @@ export default {
 .config-table-list {
   overflow: hidden;
   overflow-y: scroll;
-  max-height: 500px;
+  max-height: 400px;
   padding: 0 15px;
   .config-table-item {
     padding: 15px 0;

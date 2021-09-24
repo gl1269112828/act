@@ -20,9 +20,8 @@
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
           <el-button class="table-operate-btn" type="text" size="mini" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
-          <el-button class="table-operate-btn" type="text" size="mini" @click="handleTableConfig(scope.data)" v-hasBtn="1006">表格配置</el-button>
+          <el-button class="table-operate-btn" type="text" size="mini" @click="handleFieldConfig(scope.data)" v-hasBtn="1006">字段配置</el-button>
           <el-button class="table-operate-btn" type="text" size="mini" @click="handleBtnConfig(scope.data)" v-hasBtn="1007">按钮配置</el-button>
-          <el-button class="table-operate-btn" type="text" size="mini" @click="handleFieldConfig(scope.data)" v-hasBtn="1008">字段配置</el-button>
           <el-button class="table-operate-btn" type="text" size="mini" @click="handleDelete(scope.data)" v-hasBtn="1004">删除</el-button>
         </div>
       </template>
@@ -106,7 +105,7 @@ export default {
       this.itemObj = scope;
       this.isPageEdit = true;
     },
-    handleTableConfig(scope) {
+    handleFieldConfig(scope) {
       this.itemObj = scope;
       this.isConfigTable = true;
     },
@@ -114,7 +113,6 @@ export default {
       this.itemObj = scope;
       this.isConfigBtn = true;
     },
-    handleFieldConfig() {},
 
     //删除
     handleDelete(scope) {
