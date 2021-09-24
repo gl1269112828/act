@@ -111,21 +111,29 @@ export default {
           let headers = [];
           let queries = [];
           let slots = [];
+          let index = 0;
 
           for (let i = 0; i < fields.length; i++) {
             const item = fields[i];
-            if (!item.showTypes.includes('isTable')) {
+            if (item.showTypes.includes('isTable')) {
+              if (i > 0) {
+                index++;
+              }
               headers.push({ label: item.name, prop: item.field, width: item.width });
             }
+            // console.log(index);
+            // console.log(JSON.parse(JSON.stringify(headers)));
             if (!!item.url) {
               item['selectArray'] = (await request({ url: item.url, method: 'GET' })).data;
               slots.push({ selectArray: item.selectArray, prop: item.field });
-              if (!item.showTypes.includes('isTable')) {
-                headers[i]['render'] = true;
-              }
+              headers[index]['render'] = true;
             }
-            if (item.showTypes.includes('isCustomize') && !item.showTypes.includes('isTable')) {
-              headers[i]['customize'] = true;
+            if (item.showTypes.includes('isCustomize')) {
+              if (i > 0) {
+                index++;
+              }
+              headers.push({ label: item.name, prop: item.field, width: item.width });
+              headers[index]['customize'] = true;
             }
 
             if (item.showTypes.includes('isQuery')) {
@@ -147,7 +155,7 @@ export default {
           // console.log(JSON.parse(JSON.stringify(queries)));
           // console.log(JSON.parse(JSON.stringify(fields)));
           // console.log(JSON.parse(JSON.stringify(slots)));
-          // console.log(JSON.parse(JSON.stringify(headers)));
+          console.log(JSON.parse(JSON.stringify(headers)));
 
           this.queryModuleData = queries;
           this.operateFields = fields;
@@ -158,7 +166,9 @@ export default {
         } else {
           this.showPage = 2;
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     },
     async getTableList() {
       try {

@@ -3,7 +3,7 @@
     <el-dialog title="配置表格" :visible="showConfigTable" :close-on-click-modal="false" width="1200px" top="4vh" @close="hidePopups()">
       <el-form ref="form" :model="form" :label-width="formWidth" size="mini" v-loading="boxLoading" element-loading-text="拼命加载中">
         <el-row>
-          <el-col :span="12">
+          <el-col class="config-table-url" :span="18">
             <el-form-item label="数据地址:" prop="dataUrl" :rules="[{ required: true, message: '请输入数据地址', trigger: 'blur' }]">
               <el-input v-model="form.dataUrl" placeholder="请输入数据地址" clearable />
             </el-form-item>
@@ -27,6 +27,13 @@
                   <img :src="require('@/static/listClose.png')" alt="" @click="handerListLess(item, i)" v-show="form.fields.length > 1" />
                 </el-col>
               </el-col>
+              <el-col :span="24">
+                <el-col :span="18">
+                  <el-form-item label="数据源:">
+                    <el-input v-model="item.url" placeholder="请输入数据源" clearable />
+                  </el-form-item>
+                </el-col>
+              </el-col>
               <el-col :span="6">
                 <el-form-item label="名称:" :rules="[{ required: true, message: '请输入名称', trigger: 'blur' }]" :prop="'fields.' + i + '.name'">
                   <el-input v-model="item.name" placeholder="请输入名称" clearable />
@@ -35,11 +42,6 @@
               <el-col :span="6">
                 <el-form-item label="字段:" :rules="[{ required: true, message: '请输入字段', trigger: 'blur' }]" :prop="'fields.' + i + '.field'">
                   <el-input v-model="item.field" placeholder="请输入字段" clearable />
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
-                <el-form-item label="数据源:">
-                  <el-input v-model="item.url" placeholder="请输入数据源" clearable />
                 </el-form-item>
               </el-col>
               <el-col :span="6">
@@ -204,6 +206,9 @@ export default {
 <style lang="scss" scoped>
 [v-cloak] {
   display: none;
+}
+.config-table-url {
+  padding: 0 20px;
 }
 .config-table-list {
   overflow: hidden;
