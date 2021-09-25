@@ -124,40 +124,56 @@ export default {
           let headers = [];
           let queries = [];
           let slots = [];
+          let index = 0;
+          console.log(JSON.parse(JSON.stringify(fields)));
 
           for (let i = 0; i < fields.length; i++) {
             const item = fields[i];
-            headers.push({ label: item.name, prop: item.field, width: item.width });
-            if (!!item.url) {
-              item['selectArray'] = (await request({ url: item.url, method: 'GET' })).data;
-              slots.push({ selectArray: item.selectArray, prop: item.field });
-              headers[i]['render'] = true;
-            }
-            if (item.isCustomize) {
-              headers[i]['customize'] = true;
+            if (item.showTypes.includes('isTable')) {
+              if (i > 0) {
+                index++;
+              }
+              headers.push({ label: item.name, prop: item.field, width: item.width });
             }
 
-            if (item.isQuery) {
+            // if (!!item.url) {
+            //   item['selectArray'] = (await request({ url: item.url, method: 'GET' })).data;
+            //   slots.push({ selectArray: item.selectArray, prop: item.field });
+            //   headers[index]['render'] = true;
+            // } else {
+            //   if (headers[index].render) {
+            //     delete headers[index].render;
+            //   }
+            // }
+
+            if (item.showTypes.includes('isTableCustomize')) {
+              if (i > 0) {
+                index++;
+              }
+              headers.push({ label: item.name, prop: item.field, width: item.width });
+              headers[index]['tableRowCustomize'] = true;
+            }
+
+            if (item.showTypes.includes('isQuery')) {
               !!item.url
                 ? queries.push({
                     name: item.name,
-                    queryType: item.queryType,
+                    fieldType: item.fieldType,
                     field: item.field,
                     operate: item.condition,
                     selectArray: item.selectArray,
                     value: ''
                   })
-                : queries.push({ name: item.name, queryType: item.queryType, field: item.field, operate: item.condition, value: '' });
+                : queries.push({ name: item.name, fieldType: item.fieldType, field: item.field, operate: item.condition, value: '' });
             }
           }
-
-          headers.unshift({ prop: 'selection' });
           headers.unshift({ prop: 'serialNumber' });
+          headers.unshift({ prop: 'selection' });
 
-          // console.log(JSON.parse(JSON.stringify(queries)));
+          console.log(JSON.parse(JSON.stringify(queries)));
           // console.log(JSON.parse(JSON.stringify(fields)));
           // console.log(JSON.parse(JSON.stringify(slots)));
-          // console.log(JSON.parse(JSON.stringify(headers)));
+          console.log(JSON.parse(JSON.stringify(headers)));
 
           this.queryModuleData = queries;
           this.operateFields = fields;
@@ -168,7 +184,9 @@ export default {
         } else {
           this.showPage = 2;
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     },
     async getTableList() {
       try {
@@ -176,7 +194,7 @@ export default {
         const selectTableData = this.selectTableData;
         this.tableLoading = true;
         let pageQuery = [{ field: selectObj.fields[0].submitFieldsName, operate: 'Equal', value: selectTableData[0][selectObj.fields[0].matchFiledsName] }];
-        console.log(JSON.parse(JSON.stringify(this.queryModuleData)));
+        // console.log(JSON.parse(JSON.stringify(this.queryModuleData)));
         this.queryModuleData.forEach(item => {
           if (!!item.value) {
             if (item.queryType === 'date') {

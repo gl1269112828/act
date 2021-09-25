@@ -171,9 +171,7 @@ export default {
         } else {
           this.showPage = 2;
         }
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     },
     async getTableList() {
       try {

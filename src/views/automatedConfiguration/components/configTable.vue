@@ -28,7 +28,7 @@
                 </el-col>
               </el-col>
               <el-col :span="24">
-                <el-col :span="18">
+                <el-col :span="12">
                   <el-form-item label="数据源:">
                     <el-input v-model="item.url" placeholder="请输入数据源" clearable />
                   </el-form-item>
@@ -56,14 +56,14 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="6" v-if="item.isQuery">
+              <el-col :span="6" v-if="item.showTypes.includes('isQuery')">
                 <el-form-item label="查询条件:">
                   <el-select v-model="item.condition" placeholder="请选择查询条件">
                     <el-option v-for="(items, i) in conditionList" :key="i" :label="items.key" :value="items.value"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="6" v-if="item.isCustomize">
+              <el-col :span="6" v-if="item.showTypes.includes('isCustomize')">
                 <el-form-item label="自定义组件:" label-width="130px">
                   <el-input v-model="item.moduleName" placeholder="请输入组件名称" clearable />
                 </el-form-item>
