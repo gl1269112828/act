@@ -125,7 +125,6 @@ export default {
           let queries = [];
           let slots = [];
           let index = 0;
-          console.log(JSON.parse(JSON.stringify(fields)));
 
           for (let i = 0; i < fields.length; i++) {
             const item = fields[i];
@@ -136,15 +135,15 @@ export default {
               headers.push({ label: item.name, prop: item.field, width: item.width });
             }
 
-            // if (!!item.url) {
-            //   item['selectArray'] = (await request({ url: item.url, method: 'GET' })).data;
-            //   slots.push({ selectArray: item.selectArray, prop: item.field });
-            //   headers[index]['render'] = true;
-            // } else {
-            //   if (headers[index].render) {
-            //     delete headers[index].render;
-            //   }
-            // }
+            if (!!item.url) {
+              item['selectArray'] = (await request({ url: item.url, method: 'GET' })).data;
+              slots.push({ selectArray: item.selectArray, prop: item.field });
+              headers[index]['render'] = true;
+            } else {
+              if (headers[index].render) {
+                delete headers[index].render;
+              }
+            }
 
             if (item.showTypes.includes('isTableCustomize')) {
               if (i > 0) {
