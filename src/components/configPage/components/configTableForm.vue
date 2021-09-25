@@ -1,19 +1,51 @@
 <template>
   <div class="public-popups">
     <el-dialog :title="selectObj.name" :visible="showOperate" :close-on-click-modal="false" append-to-body width="800px" top="10vh" @close="hidePopups()">
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="small" v-loading="boxLoading" element-loading-text="拼命加载中">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="small" v-loading="boxLoading" element-loading-text="加载中">
         <template v-for="(item, i) in formList">
           <el-form-item :key="i" :label="item.name + ':'" :prop="item.field" v-if="item.showTypes.includes('isAdd') || item.showTypes.includes('isEdit')">
-            <el-input v-model="form[item.field]" :disabled="readonlyFn(item.showTypes)" :placeholder="'请输入' + item.name" clearable v-if="item.fieldType === 'input'" />
-            <el-input v-model="form[item.field]" :disabled="readonlyFn(item.showTypes)" type="textarea" :placeholder="'请输入' + item.name" v-if="item.fieldType === 'textarea'"></el-input>
-            <el-select v-model="form[item.field]" :disabled="readonlyFn(item.showTypes)" :placeholder="'请选择' + item.name" clearable v-else-if="item.fieldType === 'select'">
-              <el-option v-for="(items, i) in item.selectArray" :key="i" :label="items.key" :value="items.value"></el-option>
+            <el-input
+              v-model="form[item.field]"
+              type="text"
+              :disabled="readonlyFn(item.showTypes)"
+              :placeholder="'请输入' + item.name"
+              clearable
+              v-if="verFieldType(item.showTypes, item.fieldType, 'input')"
+            />
+            <el-input
+              v-model="form[item.field]"
+              :disabled="readonlyFn(item.showTypes)"
+              type="textarea"
+              :placeholder="'请输入' + item.name"
+              v-else-if="verFieldType(item.showTypes, item.fieldType, 'textarea')"
+            ></el-input>
+            <el-select
+              v-model="form[item.field]"
+              :disabled="readonlyFn(item.showTypes)"
+              :placeholder="'请选择' + item.name"
+              clearable
+              v-else-if="verFieldType(item.showTypes, item.fieldType, 'select')"
+            >
+              <el-option v-for="(itemS, i) in item.selectArray" :key="i" :label="itemS.key" :value="itemS.value"></el-option>
             </el-select>
-            <el-date-picker v-model="form[item.field]" value-format="yyyy-MM-dd hh:mm:ss" type="datetime" placeholder="请选择时间" v-else-if="item.fieldType === 'date'"></el-date-picker>
-            <el-switch v-model="form[item.field]" :active-value="true" :inactive-value="false" v-else-if="item.fieldType === 'switch'"></el-switch>
-            <!-- <template v-for="(item, h) in tableComponentNames">
-              <component :is="item" :key="h + item"></component>
-            </template> -->
+            <el-date-picker
+              v-model="form[item.field]"
+              :disabled="readonlyFn(item.showTypes)"
+              value-format="yyyy-MM-dd hh:mm:ss"
+              type="datetime"
+              placeholder="请选择时间"
+              v-else-if="verFieldType(item.showTypes, item.fieldType, 'date')"
+            ></el-date-picker>
+            <el-switch
+              v-model="form[item.field]"
+              :disabled="readonlyFn(item.showTypes)"
+              :active-value="true"
+              :inactive-value="false"
+              v-else-if="verFieldType(item.showTypes, item.fieldType, 'switch')"
+            ></el-switch>
+            <template v-for="itemC in formFieldComponentNames">
+              <component :is="itemC" :key="i + itemC" :selectTableData="selectTableData" v-if="item.showTypes.includes('isFormFieldCustomize')"></component>
+            </template>
           </el-form-item>
         </template>
       </el-form>
@@ -26,15 +58,15 @@
 </template>
 <script>
 import request from '@/utils/request';
-import { fieldComponentObj } from '@/utils/configPageCustomize';
+import { formFieldComponentObj } from '@/utils/configPageCustomize';
 
-let fieldComponentNames = [];
-Object.keys(fieldComponentObj).forEach(key => {
-  fieldComponentNames.push(key);
+let formFieldComponentNames = [];
+Object.keys(formFieldComponentObj).forEach(key => {
+  formFieldComponentNames.push(key);
 });
 export default {
   components: {
-    ...fieldComponentNames
+    ...formFieldComponentObj
   },
   props: {
     showOperate: {
@@ -67,12 +99,22 @@ export default {
           return false;
         }
       };
+    },
+    verFieldType() {
+      return function(showTypes, fieldType, value) {
+        if (fieldType === value && !showTypes.includes('isFormFieldCustomize')) {
+          return true;
+        } else {
+          return false;
+        }
+      };
     }
   },
   data() {
     return {
       boxLoading: false,
       btnLoading: false,
+      formFieldComponentNames: formFieldComponentNames,
       formList: [],
       form: {},
       rules: {}
@@ -106,6 +148,7 @@ export default {
         this.$set(form, item.field, undefined);
       }
       this.formList = arrs;
+      console.log(JSON.parse(JSON.stringify(this.formList)));
 
       if (this.selectObj.name === '编辑') {
         Object.assign(this.form, selectTableData);

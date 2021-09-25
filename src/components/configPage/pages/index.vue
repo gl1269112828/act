@@ -102,8 +102,6 @@ export default {
 
           const fields = JSON.parse(data.pageConfigs.fields);
 
-          // console.log(JSON.parse(JSON.stringify(fields)));
-
           if (!!data.pageConfigs.buttons) {
             this.operateButtons = JSON.parse(data.pageConfigs.buttons);
           }
@@ -121,8 +119,7 @@ export default {
               }
               headers.push({ label: item.name, prop: item.field, width: item.width });
             }
-            // console.log(index);
-            // console.log(JSON.parse(JSON.stringify(headers)));
+
             if (!!item.url) {
               item['selectArray'] = (await request({ url: item.url, method: 'GET' })).data;
               slots.push({ selectArray: item.selectArray, prop: item.field });
@@ -231,7 +228,8 @@ export default {
           })
             .then(() => {
               let delData = {
-                [item.fields[0].submitFieldsName]: this.selectTableData.map(items => items[item.fields[0].matchFiledsName])
+                [item.fields[0].submitFieldsName]:
+                  this.selectTableData.length === 1 ? this.selectTableData[0][item.fields[0].matchFiledsName] : this.selectTableData.map(items => items[item.fields[0].matchFiledsName])
               };
               request({ url: item.requestUrl, method: 'post', data: delData }).then(response => {
                 this.$notify.success({ title: `${item.name}成功` });

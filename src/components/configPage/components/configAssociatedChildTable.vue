@@ -106,7 +106,6 @@ export default {
     async getData(key) {
       try {
         const selectObj = this.selectObj;
-        const selectTableData = this.selectTableData;
 
         const { data } = await getPageDetail(selectObj.fields[0].pageMark);
 
@@ -169,10 +168,10 @@ export default {
           headers.unshift({ prop: 'serialNumber' });
           headers.unshift({ prop: 'selection' });
 
-          console.log(JSON.parse(JSON.stringify(queries)));
+          // console.log(JSON.parse(JSON.stringify(queries)));
           // console.log(JSON.parse(JSON.stringify(fields)));
           // console.log(JSON.parse(JSON.stringify(slots)));
-          console.log(JSON.parse(JSON.stringify(headers)));
+          // console.log(JSON.parse(JSON.stringify(headers)));
 
           this.queryModuleData = queries;
           this.operateFields = fields;

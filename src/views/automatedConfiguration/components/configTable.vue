@@ -1,6 +1,6 @@
 <template>
   <div class="config-table-container">
-    <el-dialog title="配置表格" :visible="showConfigTable" :close-on-click-modal="false" width="1200px" top="4vh" @close="hidePopups()">
+    <el-dialog title="配置表格" :visible="showConfigTable" :close-on-click-modal="false" width="1300px" top="4vh" @close="hidePopups()">
       <el-form ref="form" :model="form" :label-width="formWidth" size="mini" v-loading="boxLoading" element-loading-text="拼命加载中">
         <el-row>
           <el-col class="config-table-url" :span="18">
@@ -33,6 +33,13 @@
                     <el-input v-model="item.url" placeholder="请输入数据源" clearable />
                   </el-form-item>
                 </el-col>
+                <el-col :span="6" v-if="item.showTypes.includes('isQuery')">
+                  <el-form-item label="查询条件:">
+                    <el-select v-model="item.condition" placeholder="请选择查询条件">
+                      <el-option v-for="(items, i) in conditionList" :key="i" :label="items.key" :value="items.value"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="名称:" :rules="[{ required: true, message: '请输入名称', trigger: 'blur' }]" :prop="'fields.' + i + '.name'">
@@ -45,27 +52,15 @@
                 </el-form-item>
               </el-col>
               <el-col :span="6">
-                <el-form-item label="列宽:">
-                  <el-input v-model="item.width" placeholder="请输入列宽" clearable />
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
                 <el-form-item label="字段类型:">
                   <el-select v-model="item.fieldType" placeholder="请选择字段条件">
                     <el-option v-for="(items, i) in fieldTypeList" :key="i" :label="items.key" :value="items.value"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="6" v-if="item.showTypes.includes('isQuery')">
-                <el-form-item label="查询条件:">
-                  <el-select v-model="item.condition" placeholder="请选择查询条件">
-                    <el-option v-for="(items, i) in conditionList" :key="i" :label="items.key" :value="items.value"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="6" v-if="item.showTypes.includes('isCustomize')">
-                <el-form-item label="自定义组件:" label-width="130px">
-                  <el-input v-model="item.moduleName" placeholder="请输入组件名称" clearable />
+              <el-col :span="6">
+                <el-form-item label="列宽:">
+                  <el-input v-model="item.width" placeholder="请输入列宽" clearable />
                 </el-form-item>
               </el-col>
             </el-col>
@@ -102,13 +97,13 @@ export default {
       showTypes: [],
       conditionList: [],
       fieldTypeList: [],
-      formWidth: '110px',
+      formWidth: '135px',
       form: {
         id: 0,
         buttons: undefined,
         functions: undefined,
         dataUrl: undefined,
-        fields: [{ name: '', field: '', url: '', width: '', showTypes: [], fieldType: 'input', condition: 'Like', moduleName: '' }]
+        fields: [{ name: '', field: '', url: '', width: '', showTypes: [], fieldType: 'input', condition: 'Like' }]
       }
     };
   },
@@ -143,7 +138,7 @@ export default {
       }
     },
     handleAddList() {
-      this.form.fields.push({ name: '', field: '', url: '', width: '', showTypes: [], fieldType: 'input', condition: 'Like', moduleName: '' });
+      this.form.fields.push({ name: '', field: '', url: '', width: '', showTypes: [], fieldType: 'input', condition: 'Like' });
     },
     handerListLess(item, index) {
       this.form.fields.splice(index, 1);
@@ -194,7 +189,7 @@ export default {
         buttons: undefined,
         functions: undefined,
         dataUrl: undefined,
-        fields: [{ name: '', field: '', url: '', width: '', showTypes: [], fieldType: 'input', condition: 'Like', moduleName: '' }]
+        fields: [{ name: '', field: '', url: '', width: '', showTypes: [], fieldType: 'input', condition: 'Like' }]
       };
     },
     cancel() {
