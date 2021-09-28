@@ -11,10 +11,18 @@
 import { getOperate } from '@/api/system';
 export default {
   props: {
+    item: {
+      type: Object,
+      default: () => ({})
+    },
     selectTableData: {
       type: Array,
       default: () => []
     }
+  },
+  model: {
+    prop: 'operateList',
+    event: 'change'
   },
   data() {
     return {
@@ -27,22 +35,14 @@ export default {
   created() {
     this.getData();
   },
-  watch: {
-    selectTableData(val) {
-      console.log(val);
-      if (val.length) {
-        const operateModels = val[0].operateModels;
-        this.operateList = operateModels.map(item => item.id);
-        this.isIndeterminate = !!this.operateList.length && this.operateList.length < this.menuCheckOptions.length;
-        this.checkAll = this.operateList.length === this.menuCheckOptions.length;
-      }
-    }
-  },
   methods: {
     async getData() {
       const operateResponse = await getOperate({ pageIndex: 1, pageMax: 9999, dynamicFilters: [] });
       this.menuCheckOptions = operateResponse.data.datas;
-      console.log(this.selectTableData);
+      const operateModels = this.selectTableData[0].operateModels;
+      this.operateList = operateModels.map(item => item.id);
+      this.isIndeterminate = !!this.operateList.length && this.operateList.length < this.menuCheckOptions.length;
+      this.checkAll = this.operateList.length === this.menuCheckOptions.length;
     },
     handleCheckAllChange(val) {
       if (val) {
@@ -51,11 +51,13 @@ export default {
         this.operateList = [];
       }
       this.isIndeterminate = false;
+      this.$emit('change', JSON.stringify(this.operateList));
     },
     handleCheckedCitiesChange(value) {
       let checkedCount = value.length;
       this.checkAll = checkedCount === this.menuCheckOptions.length;
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.menuCheckOptions.length;
+      this.$emit('change', JSON.stringify(this.operateList));
     }
   }
 };

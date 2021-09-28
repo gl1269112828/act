@@ -3,28 +3,28 @@
     <el-dialog :title="selectObj.name" :visible="showOperate" :close-on-click-modal="false" append-to-body width="800px" top="10vh" @close="hidePopups()">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="small" v-loading="boxLoading" element-loading-text="加载中">
         <template v-for="(item, i) in formList">
-          <el-form-item :key="i" :label="item.name + ':'" :prop="item.field" v-if="item.showTypes.includes('isAdd') || item.showTypes.includes('isEdit')">
+          <el-form-item :key="i" :label="item.name + ':'" :prop="item.field" v-if="item.showTypes.includes('isAdd') || item.showTypes.includes('idEdit')">
             <el-input
               v-model="form[item.field]"
               type="text"
               :disabled="readonlyFn(item.showTypes)"
               :placeholder="'请输入' + item.name"
               clearable
-              v-if="verFieldType(item.showTypes, item.fieldType, 'input')"
+              v-if="verFieldType(item.showTypes, item.fieldType, 'input') && verAddAndEdit(item.showTypes)"
             />
             <el-input
               v-model="form[item.field]"
               :disabled="readonlyFn(item.showTypes)"
               type="textarea"
               :placeholder="'请输入' + item.name"
-              v-else-if="verFieldType(item.showTypes, item.fieldType, 'textarea')"
+              v-else-if="verFieldType(item.showTypes, item.fieldType, 'textarea') && verAddAndEdit(item.showTypes)"
             ></el-input>
             <el-select
               v-model="form[item.field]"
               :disabled="readonlyFn(item.showTypes)"
               :placeholder="'请选择' + item.name"
               clearable
-              v-else-if="verFieldType(item.showTypes, item.fieldType, 'select')"
+              v-else-if="verFieldType(item.showTypes, item.fieldType, 'select') && verAddAndEdit(item.showTypes)"
             >
               <el-option v-for="(itemS, i) in item.selectArray" :key="i" :label="itemS.key" :value="itemS.value"></el-option>
             </el-select>
@@ -34,17 +34,29 @@
               value-format="yyyy-MM-dd hh:mm:ss"
               type="datetime"
               placeholder="请选择时间"
-              v-else-if="verFieldType(item.showTypes, item.fieldType, 'date')"
+              v-else-if="verFieldType(item.showTypes, item.fieldType, 'date') && verAddAndEdit(item.showTypes)"
             ></el-date-picker>
             <el-switch
               v-model="form[item.field]"
               :disabled="readonlyFn(item.showTypes)"
               :active-value="true"
               :inactive-value="false"
-              v-else-if="verFieldType(item.showTypes, item.fieldType, 'switch')"
+              v-else-if="verFieldType(item.showTypes, item.fieldType, 'switch') && verAddAndEdit(item.showTypes)"
             ></el-switch>
             <template v-for="itemC in formFieldComponentNames">
-              <component :is="itemC" :key="i + itemC" :selectTableData="selectTableData" v-if="item.showTypes.includes('isFormFieldCustomize')"></component>
+              <component
+                v-model="form[item.field]"
+                :is="itemC"
+                :key="i + itemC"
+                :selectTableData="selectTableData"
+                :item="item"
+                v-if="item.showTypes.includes('isFormFieldCustomize') && verAddAndEdit(item.showTypes) && showOperate"
+              ></component>
+            </template>
+          </el-form-item>
+          <el-form-item :key="i" :label="item.name + ':'" :prop="item.field" v-if="item.showTypes.includes('isFormFieldCustomize') && verAddAndEdit(item.showTypes) && showOperate">
+            <template v-for="itemC in formFieldComponentNames">
+              <component v-model="form[item.field]" :is="itemC" :key="i + itemC" :selectTableData="selectTableData" :item="item"></component>
             </template>
           </el-form-item>
         </template>
@@ -108,6 +120,15 @@ export default {
           return false;
         }
       };
+    },
+    verAddAndEdit() {
+      return function(showTypes) {
+        if (this.selectObj.name === '添加') {
+          return showTypes.includes('isAdd');
+        } else if (this.selectObj.name === '编辑') {
+          return showTypes.includes('isEdit');
+        }
+      };
     }
   },
   data() {
@@ -148,7 +169,7 @@ export default {
         this.$set(form, item.field, undefined);
       }
       this.formList = arrs;
-      console.log(JSON.parse(JSON.stringify(this.formList)));
+      // console.log(JSON.parse(JSON.stringify(this.formList)));
 
       if (this.selectObj.name === '编辑') {
         Object.assign(this.form, selectTableData);
@@ -157,12 +178,11 @@ export default {
     },
 
     confirm() {
-      let form = JSON.parse(JSON.stringify(this.form));
       this.$refs['form'].validate(valid => {
         if (valid) {
+          let formData = JSON.parse(JSON.stringify(this.form));
           this.btnLoading = true;
-          // if (this.selectObj.name === '添加' || this.selectObj.name === '编辑') {
-          request({ url: this.selectObj.requestUrl, method: 'post', data: form })
+          request({ url: this.selectObj.requestUrl, method: 'post', data: formData })
             .then(response => {
               this.hidePopups();
               this.$notify.success({ title: `${this.selectObj.name}成功` });
@@ -173,7 +193,6 @@ export default {
               this.btnLoading = false;
             });
         }
-        // }
       });
     },
     hidePopups() {
