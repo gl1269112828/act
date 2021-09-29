@@ -39,9 +39,6 @@ export default {
       btnComponentNames: btnComponentNames
     };
   },
-  created() {
-    console.log(JSON.parse(JSON.stringify(this.operateButtons)));
-  },
   methods: {
     handleOperate(item) {
       this.$emit('handleOperate', item);

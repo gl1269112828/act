@@ -49,10 +49,6 @@ export default {
       rules: {}
     };
   },
-  created() {
-    console.log(this.item);
-    console.log(this.selectTableData);
-  },
   methods: {
     handleConfigAuthority() {
       if (!this.selectTableData.length) {
@@ -103,8 +99,6 @@ export default {
     // 添加
     confirm() {
       let form = this.form;
-      console.log(JSON.parse(JSON.stringify(form)));
-    //   return;
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.btnLoading = true;

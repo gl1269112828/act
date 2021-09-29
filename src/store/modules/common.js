@@ -33,13 +33,12 @@ const actions = {
       let dynamicConfigurations = [{ path: '/configPage', component: Layout, children: [] }];
 
       const getRouters = (array, parentObj, parentPath) => {
-
         for (let i = 0; i < array.length; i++) {
           let item = array[i],
-            purePath,
+            purePath = item.path,
             currentPath;
 
-          item.path.indexOf('?') > -1 ? (purePath = item.path.substring(0, item.path.indexOf('?'))) : (purePath = item.path);
+          // item.path.indexOf('?') > -1 ? (purePath = item.path.substring(0, item.path.indexOf('?'))) : (purePath = item.path);
 
           parentPath ? (currentPath = `${parentPath}${purePath}`) : (currentPath = item.path);
 

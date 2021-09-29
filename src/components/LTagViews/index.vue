@@ -48,7 +48,11 @@ export default {
       let tags = this.tags;
       tags.forEach(item => {
         item.checked = false;
-        if (item.query.id == route.query.id) {
+        if (!!route.query.key) {
+          if (item.query.key == route.query.key) {
+            item.checked = true;
+          }
+        } else if (item.path === route.path) {
           item.checked = true;
         }
       });
@@ -57,11 +61,11 @@ export default {
         dynamicRouter.forEach(item => {
           if (item.path === '/configPage') {
             item.children.forEach(itemJ => {
-              if (itemJ.meta.key === route.query.key && !tags.some(item => item.query.id == route.query.id)) {
+              if (itemJ.meta.key === route.query.key && !tags.some(itemS => itemS.query.key == route.query.key)) {
                 tags.push({
                   name: itemJ.meta.title,
                   path: itemJ.path,
-                  query: { id: itemJ.meta.id, key: itemJ.meta.key },
+                  query: { key: itemJ.meta.key },
                   isDelete: false,
                   checked: true
                 });
@@ -70,11 +74,11 @@ export default {
           }
         });
       } else {
-        if (!tags.some(item => item.query.id == route.query.id)) {
+        if (!tags.some(item => item.path == route.path)) {
           tags.push({
             name: route.meta.title,
             path: route.path,
-            query: { id: route.query.id, key: route.query.key },
+            query: {},
             isDelete: false,
             checked: true
           });
