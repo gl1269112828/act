@@ -5,12 +5,20 @@
         <el-row>
           <el-col class="config-table-list" :span="24" v-for="(item, i) in form.buttons" :key="i" v-cloak>
             <el-col :span="24">
-              <el-col :span="4" v-if="item.name !== '添加' && item.name !== '编辑'">
-                <el-form-item label="是否批量操作:">
-                  <el-switch v-model="item.isBatch" :active-value="1" :inactive-value="0"></el-switch>
+              <el-col :span="18">
+                <el-form-item label="按钮配置:">
+                  <el-select v-model="item.btnConfigs" multiple placeholder="请选择按钮配置">
+                    <el-option
+                      v-for="items in btnConfigs"
+                      :key="items.key"
+                      :disabled="(item.name === '添加' || item.name === '编辑') && items.value === 'isBatch' ? true : false"
+                      :label="items.key"
+                      :value="items.value"
+                    ></el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
-              <el-col class="config-list-close" :span="item.name !== '添加' && item.name !== '编辑' ? 20 : 24">
+              <el-col class="config-list-close" :span="6">
                 <img :src="require('@/static/moveUp.png')" alt="" @click="handerMoveUp(item, i)" />
                 <img :src="require('@/static/moveDown.png')" alt="" @click="handeMoveDown(item, i)" />
               </el-col>
@@ -84,14 +92,12 @@ export default {
       boxLoading: false,
       btnLoading: false,
       fieldTypeList: [],
+      btnConfigs: [],
       form: {
         id: 0,
-        buttons: [],
+        buttons: undefined,
         functions: undefined,
         dataUrl: undefined,
-        isMultipe: undefined,
-        isRow: undefined,
-        rowWith: 180,
         fields: undefined
       }
     };
@@ -108,6 +114,7 @@ export default {
       try {
         this.boxLoading = true;
         this.fieldTypeList = (await getDictionaryByGroup('FieldType')).data;
+        this.btnConfigs = (await getDictionaryByGroup('ButtonConfigGroup')).data;
 
         const configTableData = (await getConfigTable({ dynamicFilters: [{ field: 'pageId', operate: 'Equal', value: this.itemObj.id }] })).data.datas[0];
 
@@ -115,17 +122,15 @@ export default {
           if (key === 'buttons') {
             const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
             let buttons = (await getMenuButtons({ roleId: roleId, key: this.itemObj.key })).data.datas.filter(item => item.unique !== '1003');
-
             if (!configTableData[key]) {
               this.form.buttons = buttons.map(items => {
-                
                 {
                   return {
                     pageMark: this.itemObj.key,
                     unique: items.unique,
                     name: items.name,
                     requestUrl: '',
-                    isBatch: 0,
+                    btnConfigs: [],
                     fields: [
                       {
                         fieldsType: 'input',
@@ -144,7 +149,7 @@ export default {
                   unique: itemK.unique,
                   name: itemK.name,
                   requestUrl: '',
-                  isBatch: 0,
+                  btnConfigs: [],
                   fields: [
                     {
                       fieldsType: 'input',
@@ -208,12 +213,12 @@ export default {
     },
     // 添加
     confirm() {
-      let form = JSON.parse(JSON.stringify(this.form));
-      form.buttons = JSON.stringify(form.buttons);
+      let formData = JSON.parse(JSON.stringify(this.form));
+      formData.buttons = JSON.stringify(formData.buttons);
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.btnLoading = true;
-          addOrEditAutomatedConfigTable(form)
+          addOrEditAutomatedConfigTable(formData)
             .then(response => {
               this.hidePopups();
               this.$notify.success({ title: '添加成功' });

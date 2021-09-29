@@ -234,7 +234,7 @@ export default {
           this.$message.warning('请选择一条数据');
           return;
         }
-        if (!item.isBatch && this.selectTableDatas.length > 1) {
+        if (!item.btnConfigs.includes('isBatch') && this.selectTableDatas.length > 1) {
           this.$message.warning('最多选择一条数据');
           return;
         }

@@ -1,6 +1,6 @@
 <template>
   <div class="navbar-container">
-    <div class="definition-flex navbar-header ">
+    <div class="flex navbar-header ">
       <div class="navbar-fold">
         <i :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'" @click="handleCollapse"></i>
       </div>

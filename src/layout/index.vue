@@ -1,5 +1,5 @@
 <template>
-  <section class="definition-flex layout-container">
+  <section class="flex layout-container">
     <sidebar></sidebar>
     <section class="layout-r">
       <navBar></navBar>

@@ -1,7 +1,7 @@
 <template>
   <div class="config-page-container" v-if="showPage === 1">
     <ConfigTableQuery class="config-page-header" :queryModuleData.sync="queryModuleData" @handleSearch="handleSearch" />
-    <ConfigOperateButtons :operateButtons="operateButtons" @handleOperate="handleOperate" />
+    <ConfigOperateButtons :operateButtons="operateButtons" :selectTableData="selectTableData" :getTableList="getTableList" @handleOperate="handleOperate" />
     <LTable
       class="l-table"
       :tableLoading="tableLoading"
@@ -76,6 +76,7 @@ export default {
       tableQueryData: {},
 
       operateButtons: [],
+
       operateFields: [],
       isOperate: false,
       isAssociatedChildTable: false,
@@ -216,7 +217,7 @@ export default {
           this.$message.warning('请选择一条数据');
           return;
         }
-        if (!item.isBatch && this.selectTableData.length > 1) {
+        if (!item.btnConfigs.includes('isBatch') && this.selectTableData.length > 1) {
           this.$message.warning('最多选择一条数据');
           return;
         }
