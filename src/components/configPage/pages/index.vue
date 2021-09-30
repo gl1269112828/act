@@ -84,12 +84,12 @@ export default {
     };
   },
   created() {
-    this.getData(this.$route.meta.key);
+    this.getData(this.$route.query.key);
   },
   watch: {
     $route(to, form) {
       Object.assign(this.$data, this.$options.data());
-      this.getData(to.meta.key);
+      this.getData(to.query.key);
     }
   },
   methods: {
