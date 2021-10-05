@@ -23,7 +23,7 @@ router.beforeEach(async (to, from, next) => {
         next({ ...to, replace: true });
       } else {
         if (to.meta.title !== '首页') {
-          await store.dispatch('login/getButtonAuthority', to.meta.id);
+          await store.dispatch('login/getButtonAuthority', to.query.id);
         }
         next();
       }

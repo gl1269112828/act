@@ -3,19 +3,19 @@
     <div class="sidebar-logo-container" :style="{ width: isCollapse ? '64px' : siderbarStyObj.menuWidth }">LOGO</div>
     <el-menu class="sidebar" mode="vertical" :collapse="isCollapse" :collapse-transition="false" :default-active="defaultActive" @select="handleSelect">
       <template v-for="(item, i) in menus">
-        <el-submenu :index="menuIndex(item.path, item.key)" :key="i" v-if="item.children.length > 0">
+        <el-submenu :index="menuIndex(item.path, item.id, item.key)" :key="i" v-if="item.children.length > 0">
           <template slot="title">
             <i :class="item.icon"></i>
             <span slot="title">{{ item.title }}</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item :index="menuIndex(itemJ.path, itemJ.key)" v-for="(itemJ, j) in item.children" :key="j">
+            <el-menu-item :index="menuIndex(itemJ.path, itemJ.id, itemJ.key)" v-for="(itemJ, j) in item.children" :key="j">
               <i :class="itemJ.icon"></i>
               {{ itemJ.title }}
             </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-menu-item :index="menuIndex(item.path, item.key)" :key="i" v-else>
+        <el-menu-item :index="menuIndex(item.path, item.id, item.key)" :key="i" v-else>
           <i :class="item.icon"></i>
           <span slot="title">{{ item.title }}</span>
         </el-menu-item>
@@ -32,9 +32,9 @@ export default {
   computed: {
     ...mapGetters(['isCollapse', 'menus']),
     menuIndex() {
-      return (path, key) => {
+      return (path, id, key) => {
         let menuPath;
-        !!key ? (menuPath = `${path}?key=${key}`) : (menuPath = path);
+        !!key ? (menuPath = `${path}?id=${id}&key=${key}`) : (menuPath = `${path}?id=${id}`);
         return menuPath;
       };
     }

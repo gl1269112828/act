@@ -5,7 +5,7 @@
         <el-row>
           <el-col class="config-table-list" :span="24" v-for="(item, i) in form.buttons" :key="i" v-cloak>
             <el-col :span="24">
-              <el-col :span="18">
+              <el-col :span="18" v-if="verSearch(item.unique)">
                 <el-form-item label="按钮配置:">
                   <el-select v-model="item.btnConfigs" multiple placeholder="请选择按钮配置">
                     <el-option
@@ -18,7 +18,7 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col class="config-list-close" :span="6">
+              <el-col class="config-list-close" :span="verSearch(item.unique) ? 6 : 24">
                 <img :src="require('@/static/moveUp.png')" alt="" @click="handerMoveUp(item, i)" />
                 <img :src="require('@/static/moveDown.png')" alt="" @click="handeMoveDown(item, i)" />
               </el-col>
@@ -28,12 +28,12 @@
                 <el-input v-model="item.name" placeholder="请输入按钮名称" disabled />
               </el-form-item>
             </el-col>
-            <el-col :span="12" v-if="!(item.fields.length > 0 && item.fields[0].fieldsType === 'associatedChildTable')">
+            <el-col :span="12" v-if="!(item.fields.length > 0 && item.fields[0].fieldsType === 'associatedChildTable') && verSearch(item.unique)">
               <el-form-item label="请求地址:" :rules="[{ required: true, message: '请输入请求地址', trigger: 'blur' }]" :prop="'buttons.' + i + '.requestUrl'">
                 <el-input v-model="item.requestUrl" placeholder="请输入请求地址" clearable />
               </el-form-item>
             </el-col>
-            <el-col :span="24" v-if="item.name !== '添加' && item.name !== '编辑'">
+            <el-col :span="24" v-if="item.name !== '添加' && item.name !== '编辑' && verSearch(item.unique)">
               <div class="config-list-title">字段配置</div>
               <el-col :span="24" v-for="(itemJ, j) in item.fields" :key="j">
                 <el-col :span="5">
@@ -87,6 +87,17 @@ export default {
       defalut: () => ({})
     }
   },
+  computed: {
+    verSearch() {
+      return unique => {
+        if (unique === '1003') {
+          return false;
+        } else {
+          return true;
+        }
+      };
+    }
+  },
   data() {
     return {
       boxLoading: false,
@@ -121,7 +132,8 @@ export default {
         Object.keys(configTableData).forEach(async key => {
           if (key === 'buttons') {
             const roleId = parseInt(JSON.parse(sessionStorage.getItem('userInfo')).roleId);
-            let buttons = (await getMenuButtons({ roleId: roleId, key: this.itemObj.key })).data.datas.filter(item => item.unique !== '1003');
+            let buttons = (await getMenuButtons({ roleId: roleId, key: this.itemObj.key })).data.datas;
+            // .filter(item => item.unique !== '1003');
             if (!configTableData[key]) {
               this.form.buttons = buttons.map(items => {
                 {

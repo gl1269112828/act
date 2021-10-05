@@ -31,7 +31,7 @@ export default {
     mirStartDate(val) {
       const startTimestamp = this.conversionTimestamp(val);
       const endTimestamp = this.conversionTimestamp(this.endDate);
-      if (startTimestamp && endTimestamp && startTimestamp > endTimestamp) {
+      if (!!startTimestamp && endTimestamp && startTimestamp > endTimestamp) {
         this.startDate = '';
         this.$message.error('开始日期不能大于结束日期');
         return;
@@ -41,7 +41,7 @@ export default {
     mirEndDate(val) {
       const startTimestamp = this.conversionTimestamp(this.startDate);
       const endTimestamp = this.conversionTimestamp(val);
-      if (startTimestamp && endTimestamp && endTimestamp < startTimestamp) {
+      if (!!startTimestamp && endTimestamp && endTimestamp < startTimestamp) {
         this.endDate = '';
         this.$message.error('结束日期不能小于开始日期');
         return;
@@ -49,8 +49,9 @@ export default {
       this.$emit('update:value', `${this.startDate},${val}`);
     },
     conversionTimestamp(str) {
+      console.log(!str);
       if (!str) {
-        return;
+        return '';
       }
       let newDataStr = str.replace(/\.|\-/g, '/');
       let date = new Date(newDataStr);

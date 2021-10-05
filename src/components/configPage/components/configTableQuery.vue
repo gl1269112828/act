@@ -7,10 +7,10 @@
       </el-select>
       <DateRange :value.sync="item.value" v-else-if="item.fieldType === 'date'" />
     </el-form-item>
-    <el-form-item v-if="queryModuleData.length > 0">
+    <!-- <el-form-item v-if="queryModuleData.length > 0">
       <el-button type="primary" size="mini" @click="handleSearch()">查询</el-button>
       <el-button type="primary" size="mini" @click="handleReset()">重置</el-button>
-    </el-form-item>
+    </el-form-item> -->
   </el-form>
 </template>
 
@@ -30,15 +30,15 @@ export default {
     return {};
   },
   methods: {
-    handleSearch() {
-      this.$emit('update:queryModuleData', this.queryModuleData);
-      this.$emit('handleSearch');
-    },
-    handleReset() {
-      this.queryModuleData.forEach(item => this.$set(item, 'value', ''));
-      this.$emit('update:queryModuleData', this.queryModuleData);
-      this.$emit('handleReset');
-    }
+    // handleSearch() {
+    //   this.$emit('update:queryModuleData', this.queryModuleData);
+    //   this.$emit('handleSearch');
+    // },
+    // handleReset() {
+    //   this.queryModuleData.forEach(item => this.$set(item, 'value', ''));
+    //   this.$emit('update:queryModuleData', this.queryModuleData);
+    //   this.$emit('handleReset');
+    // }
   }
 };
 </script>

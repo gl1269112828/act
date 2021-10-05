@@ -175,6 +175,7 @@ export default {
       try {
         this.tableLoading = true;
         let pageQuery = [];
+        console.log(JSON.parse(JSON.stringify(this.queryModuleData)));
         this.queryModuleData.forEach(item => {
           if (!!item.value) {
             if (item.fieldType === 'date') {
@@ -209,7 +210,12 @@ export default {
       this.getTableList();
     },
     handleOperate(item) {
-      if (item.name === '添加') {
+      if (item.name === '查询') {
+        this.getTableList();
+      } else if (item.name === '重置') {
+        this.queryModuleData.forEach(item => this.$set(item, 'value', ''));
+        this.getTableList();
+      } else if (item.name === '添加') {
         this.selectObjs = item;
         this.isOperate = true;
       } else {
