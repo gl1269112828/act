@@ -82,7 +82,7 @@ export default {
   min-height: 100vh;
   .sidebar-logo-container {
     width: $menuWidth;
-    line-height: 13px;
+    line-height: 0px;
     background-color: #409eff;
     text-align: center;
     font-weight: bold;
