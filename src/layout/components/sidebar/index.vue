@@ -1,6 +1,8 @@
 <template>
   <div class="sidebar-container">
-    <div class="sidebar-logo-container" :style="{ width: isCollapse ? '64px' : siderbarStyObj.menuWidth }">LOGO</div>
+    <div class="sidebar-logo-container"  :style="{ width: isCollapse ? '64px' : siderbarStyObj.menuWidth }">
+      <img src="../../../assets/logo1.png" />
+    </div>
     <el-menu class="sidebar" mode="vertical" :collapse="isCollapse" :collapse-transition="false" :default-active="defaultActive" @select="handleSelect">
       <template v-for="(item, i) in menus">
         <el-submenu :index="menuIndex(item.path, item.id, item.key)" :key="i" v-if="item.children.length > 0">
@@ -80,7 +82,7 @@ export default {
   min-height: 100vh;
   .sidebar-logo-container {
     width: $menuWidth;
-    line-height: 60px;
+    line-height: 13px;
     background-color: #409eff;
     text-align: center;
     font-weight: bold;
