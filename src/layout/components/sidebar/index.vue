@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar-container">
     <div class="sidebar-logo-container"  :style="{ width: isCollapse ? '64px' : siderbarStyObj.menuWidth }">
-      <img src="../../../assets/logo1.png" />
+      <img :src="require('@/assets/logo1.png')" />
     </div>
     <el-menu class="sidebar" mode="vertical" :collapse="isCollapse" :collapse-transition="false" :default-active="defaultActive" @select="handleSelect">
       <template v-for="(item, i) in menus">
