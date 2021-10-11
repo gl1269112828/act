@@ -65,7 +65,7 @@ export default {
                 tags.push({
                   name: itemJ.meta.title,
                   path: itemJ.path,
-                  query: { key: itemJ.meta.key },
+                  query: { id: this.$route.query.id, key: itemJ.meta.key },
                   isDelete: false,
                   checked: true
                 });
@@ -105,20 +105,6 @@ export default {
     },
     handleCloseAll() {
       this.tags = [{ name: '首页', path: '/home', query: {}, isDelete: false, checked: false }];
-    },
-    handleScrollLeft() {
-      let scrollLeft = this.scrollLeft + 400;
-      this.$nextTick(() => {
-        this.$refs.tagview.scrollLeft = scrollLeft;
-        this.scrollLeft = scrollLeft;
-      });
-    },
-    handleScrollRight() {
-      let scrollLeft = this.scrollLeft - 400;
-      this.$nextTick(() => {
-        this.$refs.tagview.scrollLeft = scrollLeft;
-        this.scrollLeft = scrollLeft;
-      });
     }
   }
 };

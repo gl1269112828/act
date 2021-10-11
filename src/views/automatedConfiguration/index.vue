@@ -9,17 +9,17 @@
           <el-input v-model="tableQueryData.dynamicFilters[1].value" placeholder="请输入页面标识" clearable></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="mini" @click="handleSearch()" v-hasBtn="1003">查询</el-button>
+          <el-button type="primary" size="mini" @click="handleSearch()" v-hasBtn="1001">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
     <div class="operate-container">
-      <el-button type="primary" size="mini" @click="handleAdd()" v-hasBtn="1001">添加</el-button>
+      <el-button type="primary" size="mini" @click="handleAdd()" v-hasBtn="1002">添加</el-button>
     </div>
     <LTable class="l-table" :tableLoading="tableLoading" :tableHeader="tableHeader" :tableData="tableData" :total="total" :tableQueryData.sync="tableQueryData" :getTableList="getTableList">
       <template slot="operate" slot-scope="scope">
         <div class="table-btn">
-          <el-button class="table-operate-btn" type="text" size="mini" @click="handleEdit(scope.data)" v-hasBtn="1002">编辑</el-button>
+          <el-button class="table-operate-btn" type="text" size="mini" @click="handleEdit(scope.data)" v-hasBtn="1003">编辑</el-button>
           <el-button class="table-operate-btn" type="text" size="mini" @click="handleFieldConfig(scope.data)" v-hasBtn="1006">字段配置</el-button>
           <el-button class="table-operate-btn" type="text" size="mini" @click="handleBtnConfig(scope.data)" v-hasBtn="1007">按钮配置</el-button>
           <el-button class="table-operate-btn" type="text" size="mini" @click="handleDelete(scope.data)" v-hasBtn="1004">删除</el-button>

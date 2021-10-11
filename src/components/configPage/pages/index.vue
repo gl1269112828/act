@@ -1,7 +1,7 @@
 <template>
   <div class="config-page-container" v-if="showPage === 1">
     <ConfigTableQuery class="config-page-header" :queryModuleData.sync="queryModuleData" @handleSearch="handleSearch" />
-    <ConfigOperateButtons :operateButtons="operateButtons" :selectTableData="selectTableData" :getTableList="getTableList" @handleOperate="handleOperate" />
+    <ConfigOperateButtons :operateButtons="operateButtons" :selectTableData="selectTableData" :getTableList="getTableList" :queryModuleData.sync="queryModuleData" @handleOperate="handleOperate" />
     <LTable
       class="l-table"
       :tableLoading="tableLoading"
@@ -175,7 +175,7 @@ export default {
       try {
         this.tableLoading = true;
         let pageQuery = [];
-        console.log(JSON.parse(JSON.stringify(this.queryModuleData)));
+
         this.queryModuleData.forEach(item => {
           if (!!item.value) {
             if (item.fieldType === 'date') {

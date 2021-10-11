@@ -50,6 +50,7 @@ export default {
     },
     conversionTimestamp(str) {
       console.log(!str);
+      return
       if (!str) {
         return '';
       }
