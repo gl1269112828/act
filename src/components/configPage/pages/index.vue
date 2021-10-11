@@ -236,7 +236,7 @@ export default {
             .then(() => {
               let delData = {
                 [item.fields[0].submitFieldsName]:
-                  this.selectTableData.length === 1 ? this.selectTableData[0][item.fields[0].matchFiledsName] : this.selectTableData.map(items => items[item.fields[0].matchFiledsName])
+                  this.selectTableData.length === 1 ? [this.selectTableData[0][item.fields[0].matchFiledsName]] : this.selectTableData.map(items => items[item.fields[0].matchFiledsName])
               };
               request({ url: item.requestUrl, method: 'post', data: delData }).then(response => {
                 this.$notify.success({ title: `${item.name}成功` });

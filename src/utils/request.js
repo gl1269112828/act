@@ -11,7 +11,6 @@ service.interceptors.request.use(
     config => {
         let token = sessionStorage.getItem("accessToken")
         if (token) {
-            // config.headers['Authorization'] = 'Bearer ' + token;
             config.headers['Authorization'] ='Bearer '+ token;
         }
         return config
