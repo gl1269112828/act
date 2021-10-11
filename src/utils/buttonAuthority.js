@@ -1,9 +1,8 @@
 import Vue from 'vue';
 
 function hasPermission(parms) {
-  const str = String(parms);
   const authoritys = JSON.parse(sessionStorage.getItem('authoritys')) || [];
-  return authoritys.indexOf(str) > -1;
+  return parms === 'reset' ? true : authoritys.includes(String(parms));
 }
 
 Vue.directive('hasBtn', {

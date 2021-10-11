@@ -87,7 +87,6 @@ export default {
     // 添加
     confirm() {
       let form = this.form;
-      console.log(JSON.parse(JSON.stringify(form)));
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.btnLoading = true;

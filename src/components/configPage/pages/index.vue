@@ -1,7 +1,7 @@
 <template>
   <div class="config-page-container" v-if="showPage === 1">
     <ConfigTableQuery class="config-page-header" :queryModuleData.sync="queryModuleData" @handleSearch="handleSearch" />
-    <ConfigOperateButtons :operateButtons="operateButtons" :selectTableData="selectTableData" :getTableList="getTableList" :queryModuleData.sync="queryModuleData" @handleOperate="handleOperate" />
+    <ConfigOperateButtons :operateButtons="operateButtons" :selectTableData="selectTableData" :getTableList="getTableList" @handleOperate="handleOperate" />
     <LTable
       class="l-table"
       :tableLoading="tableLoading"
@@ -104,7 +104,18 @@ export default {
           const fields = JSON.parse(data.pageConfigs.fields);
 
           if (!!data.pageConfigs.buttons) {
-            this.operateButtons = JSON.parse(data.pageConfigs.buttons);
+            const operateButtons = JSON.parse(data.pageConfigs.buttons);
+            let currentArr = [];
+            let newArr = [];
+            for (let b = 0; b < operateButtons.length; b++) {
+              let item = operateButtons[b];
+              if (item.name === '查询' || item.unique == '1001') {
+                currentArr = [item, { name: '重置', unique: 'reset', btnConfigs: [] }];
+                newArr = operateButtons.slice(b + 1);
+                break;
+              }
+            }
+            this.operateButtons = currentArr.length ? [...currentArr, ...newArr] : operateButtons;
           }
 
           let headers = [];

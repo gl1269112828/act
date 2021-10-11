@@ -1,12 +1,14 @@
 <template>
   <div class="operate-btns-container">
     <template v-for="(item, i) in operateButtons">
-      <el-button type="primary" size="mini" :key="i" @click="handleOperate(item, i)" v-hasBtn="item.unique" v-cloak v-if="!item.btnConfigs.includes('isBtnCustomize')">{{ item.name }}</el-button>
+      <el-button :type="item.unique !== 'reset' ? 'primary' : ''" size="mini" :key="i" @click="handleOperate(item, i)" v-hasBtn="item.unique" v-cloak v-if="!item.btnConfigs.includes('isBtnCustomize')">
+        {{ item.name }}
+      </el-button>
       <template v-for="(items, s) in btnComponentNames" v-hasBtn="item.unique" v-else>
         <component :is="items" :item="item" :selectTableData="selectTableData" :getTableList="getTableList" :key="i + s"></component>
       </template>
     </template>
-    <el-button size="mini" @click="handleReset()">重置</el-button>
+    <!-- <el-button size="mini" @click="handleReset()">重置</el-button> -->
   </div>
 </template>
 
@@ -33,10 +35,6 @@ export default {
     getTableList: {
       type: Function,
       defalut: null
-    },
-    queryModuleData: {
-      type: Array,
-      default: () => []
     }
   },
   data() {
@@ -47,11 +45,6 @@ export default {
   methods: {
     handleOperate(item) {
       this.$emit('handleOperate', item);
-    },
-    handleReset() {
-      this.queryModuleData.forEach(item => (item.value = ''));
-      this.$emit('update:queryModuleData', this.queryModuleData);
-      this.$parent.getTableList();
     }
   }
 };

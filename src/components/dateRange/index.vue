@@ -28,32 +28,35 @@ export default {
     }
   },
   methods: {
-    mirStartDate(val) {
-      const startTimestamp = this.conversionTimestamp(val);
+    mirStartDate(date) {
+      if (!date) {
+        this.$emit('update:value', `,${this.endDate}`);
+        return false;
+      }
+      const startTimestamp = this.conversionTimestamp(date);
       const endTimestamp = this.conversionTimestamp(this.endDate);
-      if (!!startTimestamp && endTimestamp && startTimestamp > endTimestamp) {
+      if (!!startTimestamp && !!endTimestamp && startTimestamp > endTimestamp) {
         this.startDate = '';
         this.$message.error('开始日期不能大于结束日期');
         return;
       }
-      this.$emit('update:value', `${val},${this.endDate}`);
+      this.$emit('update:value', `${date},${this.endDate}`);
     },
-    mirEndDate(val) {
+    mirEndDate(date) {
+      if (!date) {
+        this.$emit('update:value', `${this.startDate},`);
+        return false;
+      }
       const startTimestamp = this.conversionTimestamp(this.startDate);
-      const endTimestamp = this.conversionTimestamp(val);
+      const endTimestamp = this.conversionTimestamp(date);
       if (!!startTimestamp && endTimestamp && endTimestamp < startTimestamp) {
         this.endDate = '';
         this.$message.error('结束日期不能小于开始日期');
         return;
       }
-      this.$emit('update:value', `${this.startDate},${val}`);
+      this.$emit('update:value', `${this.startDate},${date}`);
     },
     conversionTimestamp(str) {
-      console.log(!str);
-      return
-      if (!str) {
-        return '';
-      }
       let newDataStr = str.replace(/\.|\-/g, '/');
       let date = new Date(newDataStr);
       let timestamp = date.getTime();
