@@ -11,7 +11,7 @@ service.interceptors.request.use(
     config => {
         let token = sessionStorage.getItem("accessToken")
         if (token) {
-            config.headers['Authorization'] ='Bearer '+ token;
+            config.headers['Authorization'] = 'Bearer ' + token;
         }
         return config
     },
@@ -22,14 +22,14 @@ service.interceptors.request.use(
 
 /*
 *请求状态
-* @param { code } 1: 请求成功  403: 表示token失效  其余抛出错误message
+* @param { code } 1: 请求成功  401: 表示token失效  其余抛出错误message
  */
 
 service.interceptors.response.use(response => {
     const data = response.data;
     if (data.code === 200) {
         return data
-    } else if (data.code == 403) {
+    } else if (data.code == 401) {
         Message.error("登陆超时,请重新登录")
         sessionStorage.clear()   //token失效后这边需要把token清除掉
         router.push({ name: "login" })
@@ -41,7 +41,12 @@ service.interceptors.response.use(response => {
         return Promise.reject(data.msg)
     }
 }, error => {
-    return Promise.reject(error)
+    if (error.response.status == 401) {
+        sessionStorage.clear()   //token失效后这边需要把token清除掉
+        router.push({ name: "login" })
+    } else {
+        return Promise.reject(error)
+    }
 })
 
 export default service
