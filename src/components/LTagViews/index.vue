@@ -78,7 +78,7 @@ export default {
           tags.push({
             name: route.meta.title,
             path: route.path,
-            query: {},
+            query: { id: this.$route.query.id },
             isDelete: false,
             checked: true
           });
