@@ -24,7 +24,7 @@ module.exports = {
         disableHostCheck:true,
         proxy: {
             '/': {
-                target: 'http://chebb.top:8099',
+                target: 'your server api',
                 changOrigin: true,//允许跨域
                 ws: false,
                 pathRewrite: {
