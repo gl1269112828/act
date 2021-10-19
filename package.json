@@ -1,11 +1,25 @@
 {
-  "name": "autonomous-configuration-template",
-  "version": "0.1.0",
-  "private": true,
+  "name": "act",
+  "version": "1.0.0",
+  "private": false,
+  "description": "act is an open source and free automated configuration middle and back-end integrated product solution. It is an automated configuration system developed by vue2 and element ui. The most popular front-end technology stack and back-end service technology stack can be used to quickly build a back-end management system, Assistant agile system development.",
+  "keyword": [
+    "act",
+    "alacrity",
+    "management system"
+  ],
+  "author": "destiny; simple.phil",
+  "license": "Apache 2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/simple-phil/act.git"
+  },
+  "main": "lib/act.umd.min.js",
   "scripts": {
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "lib": "vue-cli-service build --target lib --name act --dest lib ./src/main.js"
   },
   "dependencies": {
     "ant-design-vue": "^1.7.6",
