@@ -8,3 +8,4 @@ act is an open source and free automated configuration middle and back-end integ
 
 # Join Us
 QQ Group : 592407137
+WeChat : gr09210505
