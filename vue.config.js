@@ -7,6 +7,9 @@ function resolve(dir) {
 // const name = defaultSettings.title || ""// page title
 
 module.exports = {
+    css: {
+        extract: false// 组件的样式是否另外打包成单独的css文件。默认为true
+    },
     runtimeCompiler: true,
     publicPath: '/',
     outputDir: 'dist',//打包名
@@ -21,7 +24,7 @@ module.exports = {
             warnings: true,
             errors: true
         },
-        disableHostCheck:true,
+        disableHostCheck: true,
         proxy: {
             '/': {
                 target: 'your server api',
