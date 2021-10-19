@@ -7,4 +7,4 @@ act is an open source and free automated configuration middle and back-end integ
 # Other Synchronous Repository
 
 # Join Us
-QQ Group : 592407137|WeChat : gr09210505
+QQ Group : 592407137  WeChat : gr09210505
