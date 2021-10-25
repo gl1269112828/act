@@ -8,7 +8,6 @@
         <component :is="items" :item="item" :selectTableData="selectTableData" :getTableList="getTableList" :key="i + s"></component>
       </template>
     </template>
-    <!-- <el-button size="mini" @click="handleReset()">重置</el-button> -->
   </div>
 </template>
 

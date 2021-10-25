@@ -43,7 +43,7 @@
               :inactive-value="false"
               v-else-if="verFieldType(item.showTypes, item.fieldType, 'switch') && verAddAndEdit(item.showTypes)"
             ></el-switch>
-            <template v-for="itemC in formFieldComponentNames">
+            <!-- <template v-for="itemC in formFieldComponentNames">
               <component
                 v-model="form[item.field]"
                 :is="itemC"
@@ -52,7 +52,7 @@
                 :item="item"
                 v-if="item.showTypes.includes('isFormFieldCustomize') && verAddAndEdit(item.showTypes) && showOperate"
               ></component>
-            </template>
+            </template> -->
           </el-form-item>
           <el-form-item :key="i" :label="item.name + ':'" :prop="item.field" v-if="item.showTypes.includes('isFormFieldCustomize') && verAddAndEdit(item.showTypes) && showOperate">
             <template v-for="itemC in formFieldComponentNames">
